@@ -1,158 +1,114 @@
-# docker-compose.yml — Joincom Admin Demo (DB + MinIO + Mock + Mail)
-
-# 说明：一键启动本地依赖：Postgres、MinIO、Prism Mock（可选）、MailHog（可选）
-
-# 用法：
-
-# docker compose up -d
-
-# docker compose logs -f db minio prism mail
-
-# docker compose down -v   # 停止并清空数据卷（谨慎）
-
+# docker-compose.yml — Joincom Admin Demo (DB + MinIO + Prism + MailHog)
 version: "3.8"
-
 name: joincom-admin-demo
 
 services:
+  # PostgreSQL 数据库
+  db:
+    image: postgres:14
+    container_name: demo-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-demo}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-demo}
+      POSTGRES_DB: ${DB_NAME:-demo}
+      TZ: ${TZ:-Asia/Shanghai}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - demo-net
+    restart: unless-stopped
 
-# ---------------------------
+  # MinIO 对象存储
+  minio:
+    image: minio/minio:latest
+    container_name: demo-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-demo}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-demodemo}
+      TZ: ${TZ:-Asia/Shanghai}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - miniodata:/data
+    networks:
+      - demo-net
+    restart: unless-stopped
 
-# PostgreSQL (业务数据库)
+  # 初始化 MinIO 存储桶
+  minio-init:
+    image: minio/mc:latest
+    container_name: demo-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    environment:
+      MC_HOST_local: http://$${MINIO_ROOT_USER}:$${MINIO_ROOT_PASSWORD}@minio:9000
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-demo}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-demodemo}
+      BUCKET: ${S3_BUCKET:-joincom-demo}
+    command: >
+      mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD &&
+      mc mb -p local/$$BUCKET || true &&
+      mc anonymous set download local/$$BUCKET &&
+      echo 'MinIO bucket $$BUCKET ready'
+    networks:
+      - demo-net
+    restart: "no"
 
-# ---------------------------
+  # Prism Mock Server
+  prism:
+    image: stoplight/prism:5
+    container_name: demo-prism
+    depends_on:
+      - minio
+      - db
+    working_dir: /data
+    command: ["mock", "/data/openapi.yaml", "--config", "/data/mock.prism.yaml"]
+    volumes:
+      - ./openapi:/data
+      - ./mock.prism.yaml:/data/mock.prism.yaml
+      - ./mocks:/data/mocks
+    ports:
+      - "4010:4010"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4010/__admin__/documentation"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks:
+      - demo-net
+    restart: unless-stopped
 
-db:
-image: postgres:14
-container_name: demo-db
-environment:
-POSTGRES_USER: ${DB_USER:-demo}
-POSTGRES_PASSWORD: ${DB_PASSWORD:-demo}
-POSTGRES_DB: ${DB_NAME:-demo}
-TZ: ${TZ:-Asia/Shanghai}
-ports:
-- "${DB_PORT:-5432}:5432"
-healthcheck:
-test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
-interval: 5s
-timeout: 3s
-retries: 10
-volumes:
-- dbdata:/var/lib/postgresql/data
-networks:
-- demo-net
-restart: unless-stopped
-
-# ---------------------------
-
-# MinIO (对象存储，模拟 OSS)
-
-# 控制台：[http://localhost:9001](http://localhost:9001)  账号/密码：demo/demodemo
-
-# ---------------------------
-
-minio:
-image: minio/minio:latest
-container_name: demo-minio
-command: server /data --console-address ":9001"
-environment:
-MINIO_ROOT_USER: ${S3_ACCESS_KEY:-demo}
-MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-demodemo}
-TZ: ${TZ:-Asia/Shanghai}
-ports:
-- "9000:9000"  # S3 API
-- "9001:9001"  # Console
-healthcheck:
-test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-interval: 5s
-timeout: 3s
-retries: 20
-volumes:
-- miniodata:/data
-networks:
-- demo-net
-restart: unless-stopped
-
-# ---------------------------
-
-# 初始化 MinIO 存储桶与策略（一次性 Job）
-
-# ---------------------------
-
-minio-init:
-image: minio/mc:latest
-container_name: demo-minio-init
-depends_on:
-minio:
-condition: service_healthy
-entrypoint: ["/bin/sh", "-c"]
-environment:
-MC_HOST_local: http://$${MINIO_ROOT_USER}:$${MINIO_ROOT_PASSWORD}@minio:9000
-MINIO_ROOT_USER: ${S3_ACCESS_KEY:-demo}
-MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-demodemo}
-BUCKET: ${S3_BUCKET:-joincom-demo}
-command: >
-"mc alias set local [http://minio:9000](http://minio:9000) $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD &&
-mc mb -p local/$$BUCKET || true &&
-mc anonymous set download local/$$BUCKET &&
-echo 'MinIO bucket $$BUCKET ready'"
-networks:
-- demo-net
-restart: "no"
-
-# ---------------------------
-
-# Prism Mock Server（可选）：从 openapi/ 直接提供 Mock 接口
-
-# ---------------------------
-
-prism:
-image: stoplight/prism:5
-container_name: demo-prism
-depends_on:
-- minio
-- db
-working_dir: /data
-command: ["mock", "/data/openapi.yaml", "--config", "/data/mock.prism.yaml"]
-volumes:
-- ./openapi:/data
-- ./mock.prism.yaml:/data/mock.prism.yaml
-- ./mocks:/data/mocks
-ports:
-- "4010:4010"
-healthcheck:
-test: ["CMD", "wget", "-qO-", "http://localhost:4010/**admin**/documentation" ]
-interval: 10s
-timeout: 3s
-retries: 10
-networks:
-- demo-net
-restart: unless-stopped
-
-# ---------------------------
-
-# MailHog（可选）：本地邮件调试 / SMTP Mock
-
-# Web UI: [http://localhost:8025](http://localhost:8025)
-
-# SMTP:   localhost:1025
-
-# ---------------------------
-
-mail:
-image: mailhog/mailhog:latest
-container_name: demo-mailhog
-ports:
-- "1025:1025"  # SMTP
-- "8025:8025"  # Web UI
-networks:
-- demo-net
-restart: unless-stopped
+  # MailHog SMTP / Web UI
+  mail:
+    image: mailhog/mailhog:latest
+    container_name: demo-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - demo-net
+    restart: unless-stopped
 
 networks:
-demo-net:
-driver: bridge
+  demo-net:
+    driver: bridge
 
 volumes:
-dbdata:
-miniodata:
+  dbdata:
+  miniodata:
