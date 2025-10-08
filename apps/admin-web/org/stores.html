@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>门店管理</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">门店管理</div></header>
+<aside><nav class="menu">
+<h4>组织与用户</h4>
+<a href="./stores.html" class="active">门店管理</a>
+<a href="./companies.html">公司管理</a>
+<a href="./users.html">用户</a>
+<a href="./roles-permissions.html">角色权限</a>
+<a href="./dictionaries.html">数据字典</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>门店列表</div></div>
+<div id="tbl"></div></div>
+</main></div>
+<script type="module">
+import { $, toast } from '../assets/app.js';
+let stores=[{id:'S-1001', name:'门店A', city:'广州', owner_kyc:'passed', esign:'signed', active:86, risk:'—', price:'广州移动 180'}];
+function render(){ $('#tbl').innerHTML=`<table><thead><tr><th>门店ID</th><th>名称</th><th>城市</th><th>实名</th><th>签约</th><th>活跃</th><th>风险</th><th>活动授权价</th></tr></thead>
+<tbody>${stores.map(s=>`<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${s.owner_kyc}</td><td>${s.esign}</td><td>${s.active}</td><td>${s.risk}</td><td contenteditable='true'>${s.price}</td></tr>`).join('')}</tbody></table>` }
+render();
+</script>
+</body></html>

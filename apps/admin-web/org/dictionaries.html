@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>数据字典</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">数据字典</div></header>
+<aside><nav class="menu">
+<h4>组织与用户</h4>
+<a href="./dictionaries.html" class="active">数据字典</a>
+<a href="./roles-permissions.html">角色权限</a>
+<a href="./users.html">用户</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>字典项</div><div><button class="btn" id="btnAdd">新增</button></div></div>
+<div id="tbl"></div></div>
+</main></div>
+<script type="module">
+import { $, toast } from '../assets/app.js';
+let dict=[{type:'城市', key:'GZ', value:'广州', state:'enabled'}];
+function tag(s){return `<span class='tag ${s==='enabled'?'confirmed':'failed'}'>${s}</span>`}
+function render(){ $('#tbl').innerHTML=`<table><thead><tr><th>类型</th><th>键</th><th>值</th><th>状态</th></tr></thead>
+<tbody>${dict.map(d=>`<tr><td>${d.type}</td><td>${d.key}</td><td contenteditable='true'>${d.value}</td><td>${tag(d.state)}</td></tr>`).join('')}</tbody></table>` }
+$('#btnAdd').onclick=()=>{ dict.unshift({type:'城市',key:'SZ',value:'深圳',state:'enabled'}); render(); }
+render();
+</script>
+</body></html>

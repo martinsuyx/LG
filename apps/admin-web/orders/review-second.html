@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>复审列表</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">复审列表 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>订单与审核</h4>
+<a href="./orders.html">订单列表（初审）</a>
+<a href="./review-second.html" class="active">复审列表</a>
+<a href="./evidence-library.html">证据库</a>
+<a href="./supplement-withdraw.html">补件&撤回</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>复审列表</div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<script src="../assets/app.js"></script>
+<script>
+const items=[
+{id:'O-3001', from:'风控命中', amount:199, time:'2025-09-20 13:00', state:'manual_review'},
+{id:'O-3002', from:'初审转入', amount:59, time:'2025-09-20 13:20', state:'manual_review'},
+];
+function render(){ $('#tbl').innerHTML=`<table><thead><tr>
+<th>订单ID</th><th>来源</th><th>金额</th><th>时间</th><th>状态</th><th>操作</th>
+</tr></thead><tbody>${items.map(o=>`<tr>
+<td><a href='./order-detail.html?id=${o.id}'>${o.id}</a></td><td>${o.from}</td><td class='amount'>¥ ${o.amount.toLocaleString('zh-CN')}</td><td>${o.time}</td>
+<td><span class='tag pending'>复审中</span></td>
+<td><button class='btn primary' onclick='pass("${o.id}")'>通过</button> <button class='btn danger' onclick='rej("${o.id}")'>拒绝</button></td>
+</tr>`).join('')}</tbody></table>` }
+window.pass=(id)=>{ toast(`复审通过 · ${id}`,'success'); }
+window.rej=(id)=>{ toast(`复审拒绝 · ${id}`,'error'); }
+render();
+</script>
+</body></html>

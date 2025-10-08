@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>申诉与复核</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">申诉与复核 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>风控与合规</h4>
+<a href="./appeals.html" class="active">申诉与复核</a>
+<a href="./risk-tickets.html">命中工单</a>
+<a href="./risk-rules.html">规则库</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>申诉列表</div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<script type="module">
+import { $, toast } from '../assets/app.js';
+const appeals=[
+{id:'A-9001', subject:'订单 O-2001', reason:'误判地理', state:'open', time:'2025-09-20 14:20'},
+];
+function render(){ $('#tbl').innerHTML=`<table><thead><tr>
+<th>申诉ID</th><th>对象</th><th>理由</th><th>时间</th><th>状态</th><th>处理</th>
+</tr></thead><tbody>${appeals.map(a=>`<tr>
+<td>${a.id}</td><td>${a.subject}</td><td>${a.reason}</td><td>${a.time}</td><td><span class='tag pending'>${a.state}</span></td>
+<td><button class='btn' onclick='handle("${a.id}","uphold")'>维持</button> <button class='btn primary' onclick='handle("${a.id}","overturn")'>改判</button></td>
+</tr>`).join('')}</tbody></table>` }
+window.handle=(id, d)=>{ toast(`已 ${d==='uphold'?'维持':'改判'} · ${id}`,'success') }
+render();
+</script>
+</body></html>

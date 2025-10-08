@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>风控规则库</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">风控规则库 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>风控与合规</h4>
+<a href="./risk-rules.html" class="active">规则库</a>
+<a href="./risk-lists.html">黑白名单</a>
+<a href="./risk-devices.html">设备画像</a>
+<a href="./risk-geofence.html">地理围栏</a>
+<a href="./risk-monitor.html">监控看板</a>
+<a href="./risk-tickets.html">命中工单</a>
+<a href="./appeals.html">申诉与复核</a>
+<a href="./kyc-review.html">KYC 审核</a>
+<a href="./esign.html">电子签约</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>规则清单</div><div><button class="btn primary" id="btnNew">新建规则</button></div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<div class="drawer"><div class="head"><div>规则编辑</div><div><button class="btn" onclick="closeDrawer()">关闭</button></div></div><div class="body" id="drawerBody"></div></div>
+<script type="module">
+import { $, openDrawer, closeDrawer, toast } from '../assets/app.js';
+let rules=[
+{id:'R-1001', name:'同号多单', type:'velocity', action:'review', status:'active', hits:32, version:'r-2025.09.01'},
+{id:'R-1002', name:'地理越界', type:'geo', action:'reject', status:'inactive', hits:12, version:'r-2025.08.20'},
+];
+function tag(s){return `<span class='tag ${s==='active'?'confirmed':'failed'}'>${s}</span>`}
+function render(){
+$('#tbl').innerHTML=`<table><thead><tr><th>ID</th><th>名称</th><th>类型</th><th>动作</th><th>状态</th><th>命中</th><th>版本</th><th>操作</th></tr></thead>
+<tbody>${rules.map(r=>`<tr>
+<td>${r.id}</td><td>${r.name}</td><td>${r.type}</td><td>${r.action}</td><td>${tag(r.status)}</td><td>${r.hits}</td><td>${r.version}</td>
+<td><button class='btn' onclick='edit("${r.id}")'>编辑</button>
+<button class='btn' onclick='pub("${r.id}")'>发布</button>
+<button class='btn' onclick='rb("${r.id}")'>回滚</button>
+<button class='btn' onclick='toggle("${r.id}")'>启停</button></td></tr>`).join('')}</tbody></table>`;
+}
+window.edit=(id)=>{ const r=rules.find(x=>x.id===id); if(!r) return; openDrawer(); $('#drawerBody').innerHTML=`
+<div class='desc'>
+<div class='row'><div class='label'>名称</div><div class='value'><input id='name' value='${r.name}' style='height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px'></div></div>
+<div class='row'><div class='label'>动作</div><div class='value'><select id='act'><option ${r.action==='allow'?'selected':''}>allow</option><option ${r.action==='review'?'selected':''}>review</option><option ${r.action==='reject'?'selected':''}>reject</option><option ${r.action==='freeze'?'selected':''}>freeze</option></select></div></div>
+<div class='row'><div class='label'>条件</div><div class='value'><textarea id='cond' rows='4' style='width:100%;border:1px solid var(--line);border-radius:8px'>{"field":"mobile","op":"count>=","window":"24h","value":3}</textarea></div></div>
+</div>
+<div style='margin-top:12px'><button class='btn primary' id='ok'>保存</button> <button class='btn' onclick='closeDrawer()'>取消</button></div>`;
+$('#ok').onclick=()=>{ r.name=$('#name').value||r.name; r.action=$('#act').value; toast('已保存','success'); render(); closeDrawer(); };
+}
+window.pub=(id)=>{ toast('已发布 · '+id,'success') }
+window.rb=(id)=>{ toast('已回滚 · '+id,'success') }
+window.toggle=(id)=>{ const r=rules.find(x=>x.id===id); r.status=r.status==='active'?'inactive':'active'; render(); }
+$('#btnNew').onclick=()=>{ rules.unshift({id:'R-'+Math.floor(Math.random()*1e5),name:'新规则',type:'custom',action:'review',status:'inactive',hits:0,version:'r-NEW'}); render(); }
+render();
+</script>
+</body></html>

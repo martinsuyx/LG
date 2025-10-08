@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>财务报表</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">财务报表</div></header>
+<aside><nav class="menu">
+<h4>报表与总览</h4>
+<a href="./report-finance.html" class="active">财务报表</a>
+<a href="./dashboards.html">总览看板</a>
+<a href="./export-center.html">导出中心</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>资金日报/周报/月报</div><div><select id="period"><option>日报</option><option>周报</option><option>月报</option></select></div></div>
+<div id="tbl"></div></div>
+</main></div>
+<script type="module">import { $ } from '../assets/app.js';
+const rows=[{date:'2025-09-20', recharge:120000, settle:86000, withdraw:12000, balance:3400000, turn:7.2}];
+function render(){ document.querySelector('#tbl').innerHTML=`<table><thead><tr><th>日期</th><th>充值</th><th>结算</th><th>提现</th><th>余额沉淀</th><th>周转天数</th></tr></thead>
+<tbody>${rows.map(r=>`<tr><td>${r.date}</td><td class='right'>¥ ${r.recharge.toLocaleString('zh-CN')}</td><td class='right'>¥ ${r.settle.toLocaleString('zh-CN')}</td><td class='right'>¥ ${r.withdraw.toLocaleString('zh-CN')}</td><td class='right'>¥ ${r.balance.toLocaleString('zh-CN')}</td><td>${r.turn}</td></tr>`).join('')}</tbody></table>` }
+render();
+</script>
+</body></html>

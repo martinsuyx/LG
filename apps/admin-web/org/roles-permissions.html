@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>角色权限</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">角色权限矩阵</div></header>
+<aside><nav class="menu">
+<h4>组织与用户</h4>
+<a href="./roles-permissions.html" class="active">角色权限</a>
+<a href="./users.html">用户</a>
+<a href="./security-policies.html">安全策略</a>
+<a href="./dictionaries.html">数据字典</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>权限矩阵</div><div><button class="btn primary" id="btnSave">保存</button></div></div>
+<div style="padding:12px">
+<table><thead><tr><th>菜单</th><th>查看</th><th>新增</th><th>编辑</th><th>删除</th><th>导出</th><th>审批</th></tr></thead>
+<tbody>
+<tr><td>订单</td><td><input type="checkbox" checked/></td><td><input type="checkbox"/></td><td><input type="checkbox" checked/></td><td><input type="checkbox"/></td><td><input type="checkbox"/></td><td><input type="checkbox"/></td></tr>
+</tbody></table>
+</div>
+</div>
+</main></div>
+<script type="module">import { toast } from '../assets/app.js'; document.querySelector('#btnSave').onclick=()=>toast('已保存','success')</script>
+</body></html>

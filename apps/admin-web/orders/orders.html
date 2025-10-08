@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>订单列表 · 初审</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">订单列表（初审） Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>资金与账户</h4>
+<a href="../finance/finance-recharge.html">客户充值管理</a>
+<h4>活动与任务</h4>
+<a href="../campaigns/campaigns.html">活动列表</a>
+<h4>订单与审核</h4>
+<a href="./orders.html" class="active">订单列表（初审）</a>
+<a href="./review-second.html">复审列表</a>
+<a href="./evidence-library.html">证据库</a>
+<a href="./supplement-withdraw.html">补件&撤回</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar">
+<div class="filters">
+<input type="text" id="kw" placeholder="订单ID/提交人/门店…"/>
+<select id="state">
+<option value="submitted">待审核</option>
+<option value="manual_review">复审中</option>
+<option value="approved">已通过</option>
+<option value="rejected">已拒绝</option>
+</select>
+<button class="btn ghost" id="btnFilter">筛选</button>
+</div>
+<div>
+<button class="btn primary" id="btnBatchPass">批量通过</button>
+<button class="btn danger" id="btnBatchReject" style="margin-left:8px">批量拒绝</button>
+</div>
+</div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<div class="drawer"><div class="head"><div>订单详情</div><div><button class="btn" onclick="closeDrawer()">关闭</button></div></div><div class="body" id="drawerBody"></div></div>
+<script type="module">
+import { $, openDrawer, closeDrawer, toast } from '../assets/app.js';
+const orders=[
+{id:'O-2001', activity:'广州移动', store:'门店A', submitter:'队员B', amount:199, state:'submitted', time:'2025-09-20 11:00', risk:['geo_out_of_fence']},
+{id:'O-2002', activity:'广州移动', store:'门店C', submitter:'队员D', amount:59, state:'submitted', time:'2025-09-20 12:10', risk:[]},
+];
+function tag(s){const map={submitted:'待审核',manual_review:'复审中',approved:'已通过',rejected:'已拒绝'}; const cls={submitted:'pending',manual_review:'pending',approved:'confirmed',rejected:'failed'};return `<span class='tag ${cls[s]||'pending'}'>${map[s]||s}</span>`}
+function render(){
+const kw=$('#kw').value.trim().toLowerCase(); const st=$('#state').value;
+let list=orders.filter(o=>o.state===st||!st).filter(o=>!kw||[o.id,o.submitter,o.store].join('|').toLowerCase().includes(kw));
+$('#tbl').innerHTML=`<table><thead><tr>
+<th><input type='checkbox' id='all'/></th><th>订单ID</th><th>活动</th><th>门店</th><th>提交人</th><th>金额</th><th>风险</th><th>状态</th><th>时间</th><th>操作</th>
+</tr></thead><tbody>${list.map((o,i)=>`<tr>
+<td><input type='checkbox' data-idx='${i}'/></td>
+<td><a href='./order-detail.html?id=${o.id}'>${o.id}</a></td>
+<td>${o.activity}</td><td>${o.store}</td><td>${o.submitter}</td>
+<td class='amount'>¥ ${o.amount.toLocaleString('zh-CN')}</td>
+<td>${o.risk.length?`<span class='tag failed'>${o.risk[0]}</span>`:'—'}</td>
+<td>${tag(o.state)}</td><td>${o.time}</td>
+<td>
+<button class='btn primary' onclick='pass(${i})'>通过</button>
+<button class='btn danger' onclick='reject(${i})'>拒绝</button>
+<button class='btn' onclick='review(${i})'>转复审</button>
+</td>
+</tr>`).join('')}</tbody></table>`;
+$('#all').onchange=(e)=>document.querySelectorAll('[data-idx]').forEach(c=>c.checked=e.target.checked);
+}
+window.pass=(i)=>{ orders[i].state='approved'; toast('已通过','success'); render(); }
+window.reject=(i)=>{ orders[i].state='rejected'; toast('已拒绝','error'); render(); }
+window.review=(i)=>{ orders[i].state='manual_review'; toast('已转复审','success'); render(); }
+$('#btnFilter').onclick=render;
+$('#btnBatchPass').onclick=()=>{ document.querySelectorAll('[data-idx]:checked').forEach(c=>{ orders[Number(c.getAttribute('data-idx'))].state='approved' }); toast('批量通过完成','success'); render(); }
+$('#btnBatchReject').onclick=()=>{ document.querySelectorAll('[data-idx]:checked').forEach(c=>{ orders[Number(c.getAttribute('data-idx'))].state='rejected' }); toast('批量拒绝完成','error'); render(); }
+render();
+</script>
+</body></html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>用户列表</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">用户</div></header>
+<aside><nav class="menu">
+<h4>组织与用户</h4>
+<a href="./users.html" class="active">用户</a>
+<a href="./roles-permissions.html">角色权限</a>
+<a href="./security-policies.html">安全策略</a>
+<a href="./dictionaries.html">数据字典</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>用户列表</div></div>
+<div id="tbl"></div>
+</div>
+</main></div>
+<script type="module">
+import { $ , toast } from '../assets/app.js';
+let users=[{id:'U-1001', name:'Alice', mobile:'138****0001', role:'admin', state:'active', last:'2025-09-20 09:00'}];
+function tag(s){return `<span class='tag ${s==='active'?'confirmed':'failed'}'>${s}</span>`}
+function render(){ $('#tbl').innerHTML=`<table><thead><tr><th>用户ID</th><th>姓名</th><th>手机号</th><th>角色</th><th>状态</th><th>最近登录</th><th>操作</th></tr></thead>
+<tbody>${users.map(u=>`<tr><td>${u.id}</td><td>${u.name}</td><td>${u.mobile}</td><td>${u.role}</td><td>${tag(u.state)}</td><td>${u.last}</td>
+<td><button class='btn' onclick='reset("${u.id}")'>重置密码</button> <button class='btn danger' onclick='disable("${u.id}")'>禁用</button></td></tr>`).join('')}</tbody></table>` }
+window.reset=(id)=>toast('已重置 · '+id,'success'); window.disable=(id)=>{ const u=users.find(x=>x.id===id); u.state='inactive'; render(); }
+render();
+</script>
+</body></html>

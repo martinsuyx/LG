@@ -1,0 +1,32 @@
+{
+"scripts": {
+"check": "redocly lint openapi/openapi.yaml && redocly bundle openapi/openapi.yaml -o openapi/bundle.yaml",
+"mock": "prism mock openapi/openapi.yaml --config mock.prism.yaml",
+"sdk:ts": "openapi-generator-cli generate -i openapi/bundle.yaml -g typescript-fetch -o sdk/ts --additional-properties=supportsES6=true,withoutRuntimeChecks=true,enumUnknownDefaultCase=true",
+
+
+"tokens:build": "style-dictionary build",
+
+
+"dev": "echo 'Use `pnpm --filter api dev` and `pnpm --filter admin-web dev` to run apps'",
+
+
+"lint": "eslint . --ext .ts,.tsx,.vue || true",
+"lint:design": "node scripts/lint-design.js || true",
+
+
+"test": "echo 'root test aggregator'",
+"test:visual": "playwright test --config=tests/visual.config.ts",
+
+
+"ci": "pnpm run check && pnpm run sdk:ts && pnpm run tokens:build && pnpm -r build && pnpm run test:visual"
+},
+"devDependencies": {
+"@redocly/cli": "^1.16.0",
+"@openapitools/openapi-generator-cli": "^2.8.0",
+"@stoplight/prism-cli": "^5.8.0",
+"style-dictionary": "^3.9.1",
+"eslint": "^9.12.0",
+"@playwright/test": "^1.48.0"
+}
+}

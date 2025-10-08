@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>补件 & 撤回审核</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">补件 & 撤回 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>订单与审核</h4>
+<a href="./orders.html">订单列表（初审）</a>
+<a href="./review-second.html">复审列表</a>
+<a href="./evidence-library.html">证据库</a>
+<a href="./supplement-withdraw.html" class="active">补件&撤回</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>待补件</div></div>
+<div id="tbl1"></div>
+</div>
+<div class="card" style="margin-top:16px">
+<div class="toolbar"><div>撤回申请</div></div>
+<div id="tbl2"></div>
+</div>
+</main>
+</div>
+<script src="../assets/app.js"></script>
+<script>
+const supplements=[{id:'O-4001', user:'队员E', time:'2025-09-20 14:10', state:'pending'}];
+const withdraws=[{id:'O-5001', user:'队员F', reason:'材料有误', time:'2025-09-20 14:30', state:'pending'}];
+function render(){
+$('#tbl1').innerHTML=`<table><thead><tr><th>订单ID</th><th>提交人</th><th>时间</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>${supplements.map(o=>`<tr><td><a href='./order-detail.html?id=${o.id}'>${o.id}</a></td><td>${o.user}</td><td>${o.time}</td>
+<td><span class='tag pending'>待审核</span></td><td><button class='btn primary' onclick='okSup("${o.id}")'>通过</button> <button class='btn danger' onclick='rejSup("${o.id}")'>拒绝</button></td></tr>`).join('')}</tbody></table>`;
+$('#tbl2').innerHTML=`<table><thead><tr><th>订单ID</th><th>提交人</th><th>撤回理由</th><th>时间</th><th>操作</th></tr></thead>
+<tbody>${withdraws.map(o=>`<tr><td><a href='./order-detail.html?id=${o.id}'>${o.id}</a></td><td>${o.user}</td><td>${o.reason}</td><td>${o.time}</td>
+<td><button class='btn' onclick='allow("${o.id}")'>允许撤回</button> <button class='btn danger' onclick='deny("${o.id}")'>驳回撤回</button></td></tr>`).join('')}</tbody></table>`;
+}
+window.okSup=(id)=>{ toast('补件审核通过 · '+id,'success') }
+window.rejSup=(id)=>{ toast('补件审核拒绝 · '+id,'error') }
+window.allow=(id)=>{ toast('已允许撤回 · '+id,'success') }
+window.deny=(id)=>{ toast('已驳回撤回 · '+id,'error') }
+render();
+</script>
+</body></html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>公司账户</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">纯前端静态预览</div></header>
+<aside>
+<nav class="menu">
+<h4>资金与账户</h4>
+<a href="./finance-recharge.html">客户充值管理</a>
+<a href="./finance-company-account.html" class="active">公司账户</a>
+<a href="./finance-platform-account.html">平台账户</a>
+<a href="./finance-settlement-center.html">结算中心</a>
+<a href="./finance-withdraw.html">提现管理</a>
+<a href="./finance-recon-reports.html">对账报表</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="kpis">
+<div class="kpi"><div class="title">可用余额</div><div class="num" id="avail">¥ 860,000</div></div>
+<div class="kpi"><div class="title">冻结余额</div><div class="num" id="frozen">¥ 120,000</div></div>
+<div class="kpi"><div class="title">待入账</div><div class="num" id="pending">¥ 15,000</div></div>
+</div>
+<div class="card">
+<div class="toolbar"><div>账户明细</div><div><button class="btn" id="btnAdj">发起调账</button></div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<div class="drawer"><div class="head"><div>调账申请</div><div><button class="btn" onclick="closeDrawer()">关闭</button></div></div><div class="body" id="drawerBody"></div></div>
+<script src="../assets/app.js"></script>
+<script>
+const ledger=[
+{id:'L1001', time:'2025-09-19 10:00', entry:'credit', amount:52000, balance_after:900000, biz:'recharge/rcg_1002', note:'客户充值'},
+{id:'L1002', time:'2025-09-19 15:20', entry:'debit', amount:1800, balance_after:898200, biz:'settlement/ord_2001', note:'订单冻结'},
+];
+function row(r){ const color=r.entry==='credit'?'#10B981':'#EF4444'; const sign=r.entry==='credit'?'+':'-'; return `<tr>
+<td>${r.time}</td><td><span class="tag ${r.entry==='credit'?'confirmed':'failed'}">${r.entry}</span></td>
+<td class="right" style="color:${color}">${sign} ¥ ${r.amount.toLocaleString('zh-CN')}</td>
+<td class="right">¥ ${r.balance_after.toLocaleString('zh-CN')}</td>
+<td>${r.biz}</td><td>${r.note||''}</td></tr>` }
+function render(){ $('#tbl').innerHTML = `<table><thead><tr>
+<th>时间</th><th>类型</th><th>金额</th><th>余额</th><th>业务来源</th><th>备注</th>
+</tr></thead><tbody>${ledger.map(row).join('')}</tbody></table>` }
+$('#btnAdj').onclick=()=>{ openDrawer(); $('#drawerBody').innerHTML = `<div class="desc">
+<div class="row"><div class="label">方向</div><div class="value"><select id='dir'><option value='credit'>入账</option><option value='debit'>出账</option></select></div></div>
+<div class="row"><div class="label">金额</div><div class="value"><input type='text' id='amt' placeholder='金额（元）' style='height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px;'></div></div>
+<div class="row"><div class="label">原因</div><div class="value"><input type='text' id='note' placeholder='说明' style='height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px;'></div></div>
+</div>
+<div style='margin-top:12px;display:flex;gap:8px'>
+<button class='btn primary' id='ok'>提交</button>
+<button class='btn' onclick='closeDrawer()'>取消</button>
+</div>`;
+$('#ok').onclick=()=>{ const dir=$('#dir').value; const amt=Number($('#amt').value||0); if(!amt){ toast('金额不合法','error'); return; }
+const bal = ledger.length? ledger[0].balance_after : 0; const after = dir==='credit'? bal+amt : bal-amt;
+ledger.unshift({id:'L'+Math.random(), time:new Date().toLocaleString(), entry:dir, amount:amt, balance_after:after, biz:'adjust', note:$('#note').value||''})
+toast('已提交','success'); render(); closeDrawer();
+}
+}
+render();
+</script>
+</body></html>

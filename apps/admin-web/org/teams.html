@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>团队管理</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">团队管理</div></header>
+<aside><nav class="menu">
+<h4>组织与用户</h4>
+<a href="./companies.html">公司管理</a>
+<a href="./teams.html" class="active">团队管理</a>
+<a href="./org-tree.html">组织树</a>
+<a href="./stores.html">门店管理</a>
+<a href="./users.html">用户</a>
+<a href="./roles-permissions.html">角色权限</a>
+<a href="./security-policies.html">安全策略</a>
+<a href="./dictionaries.html">数据字典</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>团队列表</div><div><button class="btn" id="btnNew">新建团队</button></div></div>
+<div id="tbl"></div></div>
+</main></div>
+<script type="module">
+import { $, toast } from '../assets/app.js';
+let teams=[{id:'T-1001', name:'广州一区', company:'广州某品牌', leader:'L-01', members:120, active:'高', orders:560, state:'active'}];
+function tag(s){return `<span class='tag ${s==='active'?'confirmed':'failed'}'>${s}</span>`}
+function render(){ $('#tbl').innerHTML=`<table><thead><tr><th>ID</th><th>名称</th><th>公司</th><th>队长</th><th>成员数</th><th>活跃</th><th>订单数</th><th>状态</th></tr></thead>
+<tbody>${teams.map(t=>`<tr><td>${t.id}</td><td>${t.name}</td><td>${t.company}</td><td>${t.leader}</td><td>${t.members}</td><td>${t.active}</td><td>${t.orders}</td><td>${tag(t.state)}</td></tr>`).join('')}</tbody></table>` }
+$('#btnNew').onclick=()=>{ teams.unshift({id:'T-'+Math.floor(Math.random()*1e5),name:'新团队',company:'—',leader:'—',members:0,active:'低',orders:0,state:'active'}); render(); }
+render();
+</script>
+</body></html>

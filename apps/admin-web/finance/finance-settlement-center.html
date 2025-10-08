@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>结算中心</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">纯前端静态预览</div></header>
+<aside>
+<nav class="menu">
+<h4>资金与账户</h4>
+<a href="./finance-recharge.html">客户充值管理</a>
+<a href="./finance-company-account.html">公司账户</a>
+<a href="./finance-platform-account.html">平台账户</a>
+<a href="./finance-settlement-center.html" class="active">结算中心</a>
+<a href="./finance-withdraw.html">提现管理</a>
+<a href="./finance-recon-reports.html">对账报表</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>结算任务</div><div><button class="btn primary" id="btnBatchRelease">批量释放</button><button class="btn danger" id="btnBatchReverse" style="margin-left:8px">批量倒扣</button></div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<script src="../assets/app.js"></script>
+<script>
+const tasks=[
+{order:'O-2001', activity:'广州移动', subject:'门店A', amount:180, state:'pending', eta:'2025-09-25'},
+{order:'O-2002', activity:'广州移动', subject:'队员B', amount:20, state:'pending', eta:'2025-09-25'},
+{order:'O-2003', activity:'广州电信', subject:'门店A', amount:185, state:'pending', eta:'2025-09-26'},
+];
+function row(t,i){return `<tr>
+<td><input type='checkbox' data-idx='${i}'/></td><td>${t.order}</td><td>${t.activity}</td><td>${t.subject}</td>
+<td class='right'>¥ ${t.amount.toLocaleString('zh-CN')}</td><td>${t.eta}</td><td>${t.state==='pending'?"待确认":"—"}</td>
+<td><button class='btn primary' onclick='release(${i})'>释放</button> <button class='btn danger' onclick='reverse(${i})'>倒扣</button></td>
+</tr>`}
+function render(){ $('#tbl').innerHTML = `<table><thead><tr>
+<th><input type='checkbox' id='all'/></th><th>订单ID</th><th>活动</th><th>对象</th><th>应付金额</th><th>预计释放</th><th>状态</th><th>操作</th>
+</tr></thead><tbody>${tasks.map(row).join('')}</tbody></table>`; $('#all').onchange=(e)=>document.querySelectorAll('[data-idx]').forEach(c=>c.checked=e.target.checked)}
+window.release=(i)=>{ tasks[i].state='released'; toast('已释放','success'); render(); }
+window.reverse=(i)=>{ tasks[i].state='reversed'; toast('已倒扣','success'); render(); }
+$('#btnBatchRelease').onclick=()=>{ document.querySelectorAll('[data-idx]:checked').forEach(c=>{ tasks[Number(c.getAttribute('data-idx'))].state='released' }); toast('批量释放完成','success'); render(); }
+$('#btnBatchReverse').onclick=()=>{ document.querySelectorAll('[data-idx]:checked').forEach(c=>{ tasks[Number(c.getAttribute('data-idx'))].state='reversed' }); toast('批量倒扣完成','success'); render(); }
+render();
+</script>
+</body></html>

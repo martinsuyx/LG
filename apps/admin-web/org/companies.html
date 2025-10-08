@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>公司管理</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">公司管理</div></header>
+<aside><nav class="menu">
+<h4>组织与用户</h4>
+<a href="./companies.html" class="active">公司管理</a>
+<a href="./teams.html">团队管理</a>
+<a href="./org-tree.html">组织树</a>
+<a href="./stores.html">门店管理</a>
+<a href="./users.html">用户</a>
+<a href="./roles-permissions.html">角色权限</a>
+<a href="./security-policies.html">安全策略</a>
+<a href="./dictionaries.html">数据字典</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>公司列表</div><div><button class="btn" id="btnNew">新建公司</button></div></div>
+<div id="tbl"></div></div>
+</main>
+</div>
+<div class="drawer"><div class="head"><div>入驻审批</div><div><button class="btn" onclick="closeDrawer()">关闭</button></div></div>
+<div class="body" id="drawerBody"></div></div>
+<script type="module">
+import { $, openDrawer, closeDrawer, toast } from '../assets/app.js';
+let companies=[
+{id:'CMP-1001', name:'广州某品牌', uscc:'9144*********', industry:'电信', status:'approved', contact:'Alice', accounts:8, balance:120000},
+{id:'CMP-1002', name:'深圳某品牌', uscc:'9144*********', industry:'零售', status:'pending', contact:'Bob', accounts:3, balance:56000},
+];
+function tag(s){const map={approved:'已通过',pending:'待审核',rejected:'已驳回'};const cls={approved:'confirmed',pending:'pending',rejected:'failed'};return `<span class='tag ${cls[s]}'>${map[s]}</span>`}
+function render(){ $('#tbl').innerHTML=`<table><thead><tr>
+<th>公司ID</th><th>名称</th><th>统一社会信用代码</th><th>行业</th><th>状态</th><th>联系人</th><th>账号数</th><th>余额</th><th>操作</th>
+</tr></thead><tbody>${companies.map(c=>`<tr>
+<td>${c.id}</td><td>${c.name}</td><td>${c.uscc}</td><td>${c.industry}</td><td>${tag(c.status)}</td>
+<td>${c.contact}</td><td>${c.accounts}</td><td class='right'>¥ ${c.balance.toLocaleString('zh-CN')}</td>
+<td><button class='btn' onclick='approve("${c.id}")'>审批</button></td>
+</tr>`).join('')}</tbody></table>` }
+window.approve=(id)=>{ const c=companies.find(x=>x.id===id); openDrawer(); $('#drawerBody').innerHTML=`
+<div class='desc'>
+<div class='row'><div class='label'>公司</div><div class='value'>${c.name}</div></div>
+<div class='row'><div class='label'>信用代码</div><div class='value'>${c.uscc}</div></div>
+<div class='row'><div class='label'>合同签署</div><div class='value'><span class='tag confirmed'>signed</span></div></div>
+</div>
+<div style='margin-top:12px'><button class='btn primary' onclick='ok()'>通过</button> <button class='btn danger' onclick='rej()'>驳回</button></div>`;
+window.ok=()=>{ c.status='approved'; toast('已通过','success'); render(); closeDrawer(); }
+window.rej=()=>{ c.status='rejected'; toast('已驳回','error'); render(); closeDrawer(); }
+}
+$('#btnNew').onclick=()=>{ companies.unshift({id:'CMP-'+Math.floor(Math.random()*1e5),name:'新公司',uscc:'9144*********',industry:'其他',status:'pending',contact:'—',accounts:0,balance:0}); render(); }
+render();
+</script>
+</body></html>

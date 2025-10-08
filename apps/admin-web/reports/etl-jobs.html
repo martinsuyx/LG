@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>数据源管理</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">数据源管理</div></header>
+<aside><nav class="menu">
+<h4>报表与总览</h4>
+<a href="./etl-jobs.html" class="active">数据源管理</a>
+<a href="./dashboards.html">总览看板</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>ETL 任务</div></div>
+<div id="tbl" style="padding:12px"></div>
+</div>
+</main></div>
+<script type="module">import { $ , toast } from '../assets/app.js';
+const jobs=[{id:'ETL-1', type:'订单聚合', delay:12, state:'running'},{id:'ETL-2', type:'资金聚合', delay:30, state:'failed'}];
+function tag(s){return `<span class='tag ${s==='running'?'confirmed':s==='failed'?'failed':'pending'}'>${s}</span>`}
+function render(){ document.querySelector('#tbl').innerHTML=`<table><thead><tr><th>任务ID</th><th>类型</th><th>延迟(s)</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>${jobs.map(j=>`<tr><td>${j.id}</td><td>${j.type}</td><td>${j.delay}</td><td>${tag(j.state)}</td>
+<td>${j.state!=='running'?`<button class='btn' onclick='retry("${j.id}")'>重算</button>`:''} <button class='btn' onclick='stop("${j.id}")'>停用</button></td></tr>`).join('')}</tbody></table>` }
+window.retry=(id)=>{ toast('已触发重算 · '+id,'success') }
+window.stop=(id)=>{ toast('已停用 · '+id,'success') }
+render();
+</script>
+</body></html>

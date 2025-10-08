@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>黑白名单</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">黑白名单 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>风控与合规</h4>
+<a href="./risk-rules.html">规则库</a>
+<a href="./risk-lists.html" class="active">黑白名单</a>
+<a href="./risk-devices.html">设备画像</a>
+<a href="./risk-geofence.html">地理围栏</a>
+<a href="./risk-monitor.html">监控看板</a>
+<a href="./risk-tickets.html">命中工单</a>
+<a href="./appeals.html">申诉与复核</a>
+<a href="./kyc-review.html">KYC 审核</a>
+<a href="./esign.html">电子签约</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>名单列表</div><div><button class="btn" id="btnNew">新增</button> <button class="btn" id="btnImport">批量导入</button></div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<div class="drawer"><div class="head"><div>名单编辑</div><div><button class="btn" onclick="closeDrawer()">关闭</button></div></div><div class="body" id="drawerBody"></div></div>
+<script type="module">
+import { $, openDrawer, closeDrawer, toast } from '../assets/app.js';
+let items=[
+{id:'L-1', list_type:'black', subject:'mobile', value:'1380000****', source:'ops', expire_at:'—'},
+{id:'L-2', list_type:'white', subject:'store', value:'门店A', source:'ops', expire_at:'—'},
+];
+function tag(type){ return `<span class='tag ${type==='black'?'failed':'confirmed'}'>${type}</span>` }
+function render(){
+$('#tbl').innerHTML=`<table><thead><tr><th>ID</th><th>类型</th><th>对象</th><th>值</th><th>来源</th><th>有效期</th><th>操作</th></tr></thead>
+<tbody>${items.map(x=>`<tr><td>${x.id}</td><td>${tag(x.list_type)}</td><td>${x.subject}</td><td>${x.value}</td><td>${x.source}</td><td>${x.expire_at}</td>
+<td><button class='btn' onclick='edit("${x.id}")'>编辑</button> <button class='btn danger' onclick='del("${x.id}")'>删除</button></td></tr>`).join('')}</tbody></table>`
+}
+window.edit=(id)=>{ const x=items.find(i=>i.id===id); openDrawer(); $('#drawerBody').innerHTML=`
+<div class='desc'>
+<div class='row'><div class='label'>类型</div><div class='value'><select id='t'><option value='black' ${x.list_type==='black'?'selected':''}>black</option><option value='white' ${x.list_type==='white'?'selected':''}>white</option></select></div></div>
+<div class='row'><div class='label'>对象</div><div class='value'><select id='s'><option>mobile</option><option>idcard</option><option>bankcard</option><option>device</option><option>store</option><option>user</option></select></div></div>
+<div class='row'><div class='label'>值</div><div class='value'><input id='v' value='${x.value}' style='height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px'></div></div>
+</div>
+<div style='margin-top:12px'><button class='btn primary' id='ok'>保存</button></div>`;
+$('#ok').onclick=()=>{ x.list_type=$('#t').value; x.subject=$('#s').value; x.value=$('#v').value; toast('已保存','success'); render(); closeDrawer(); }
+}
+window.del=(id)=>{ items=items.filter(i=>i.id!==id); toast('已删除','success'); render(); }
+$('#btnNew').onclick=()=>{ items.unshift({id:'L-'+Math.floor(Math.random()*1e5),list_type:'black',subject:'mobile',value:'138****8888',source:'ops',expire_at:'—'}); render(); }
+$('#btnImport').onclick=()=>toast('导入功能占位（CSV 校验→入库）','info')
+render();
+</script>
+</body></html>

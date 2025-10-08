@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>导出中心</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">导出中心</div></header>
+<aside><nav class="menu">
+<h4>报表与总览</h4>
+<a href="./export-center.html" class="active">导出中心</a>
+<a href="./dashboards.html">总览看板</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>导出任务</div></div>
+<div id="tbl" style="padding:12px"></div>
+</div>
+</main></div>
+<script type="module">import { $ } from '../assets/app.js';
+const jobs=[{id:'X-1', name:'对账差异', status:'done', created:'2025-09-20 12:00', downloads:2, url:'#'}];
+function render(){ document.querySelector('#tbl').innerHTML=`<table><thead><tr><th>任务ID</th><th>名称</th><th>状态</th><th>创建时间</th><th>下载次数</th><th>操作</th></tr></thead>
+<tbody>${jobs.map(j=>`<tr><td>${j.id}</td><td>${j.name}</td><td><span class='tag ${j.status==='done'?'confirmed':'pending'}'>${j.status}</span></td><td>${j.created}</td><td>${j.downloads}</td><td><a class='btn' href='${j.url}'>下载</a></td></tr>`).join('')}</tbody></table>` }
+render();
+</script>
+</body></html>

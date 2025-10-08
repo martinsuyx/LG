@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>安全策略</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">SSO & 安全策略</div></header>
+<aside><nav class="menu">
+<h4>组织与用户</h4>
+<a href="./security-policies.html" class="active">安全策略</a>
+<a href="./roles-permissions.html">角色权限</a>
+<a href="./users.html">用户</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>SSO 配置</div></div>
+<div class="desc" style="margin:12px 12px 0">
+<div class="row"><div class="label">SSO 类型</div><div class="value"><select><option>企业微信</option><option>飞书</option><option>Azure AD</option></select></div></div>
+<div class="row"><div class="label">AppId</div><div class="value"><input style="height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px"/></div></div>
+<div class="row"><div class="label">Secret</div><div class="value"><input style="height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px"/></div></div>
+<div class="row"><div class="label">回调地址</div><div class="value"><input style="height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px"/></div></div>
+</div>
+</div>
+<div class="card" style="margin-top:16px"><div class="toolbar"><div>登录策略</div></div>
+<div class="desc" style="margin:12px">
+<div class="row"><div class="label">IP 白名单</div><div class="value"><input placeholder="1.2.3.4, 5.6.7.8/24" style="height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px"/></div></div>
+<div class="row"><div class="label">异常登录提醒</div><div class="value"><input type="checkbox" checked/> 开启</div></div>
+<div class="row"><div class="label">强制 2FA</div><div class="value"><input type="checkbox"/> 开启</div></div>
+</div>
+</div>
+</main></div>
+</body></html>

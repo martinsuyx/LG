@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>客户充值管理</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">纯前端静态预览</div></header>
+<aside>
+<nav class="menu">
+<h4>资金与账户</h4>
+<a href="./finance-recharge.html" class="active">客户充值管理</a>
+<a href="./finance-company-account.html">公司账户</a>
+<a href="./finance-platform-account.html">平台账户</a>
+<a href="./finance-settlement-center.html">结算中心</a>
+<a href="./finance-withdraw.html">提现管理</a>
+<a href="./finance-recon-reports.html">对账报表</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar">
+<div class="filters">
+<input type="text" id="kw" placeholder="搜索公司…"/>
+<select id="state">
+<option value="">全部状态</option><option value="pending">待确认</option>
+<option value="confirmed">已确认</option><option value="failed">失败</option>
+</select>
+<button class="btn ghost" id="btnFilter">筛选</button>
+</div>
+<div class="actions"><button class="btn" id="btnCreate">新建充值记录</button></div>
+</div>
+<div id="tableWrap"></div>
+</div>
+<div class="footer-note">仅前端内存模拟，不会持久化。</div>
+</main>
+</div>
+<div class="drawer"><div class="head"><div>充值详情</div><div><button class="btn" onclick="closeDrawer()">关闭</button></div></div><div class="body" id="drawerBody"></div></div>
+<script src="../assets/app.js"></script>
+<script>
+const db = { recharges:[
+{ id:'rcg_1001', company:'广州某品牌', amount:52000, channel:'bank', voucher:'', state:'pending', created:'2025-09-20 10:00' },
+{ id:'rcg_1002', company:'深圳某品牌', amount:30000, channel:'alipay', voucher:'', state:'confirmed', created:'2025-09-19 12:00' },
+{ id:'rcg_1003', company:'广州某品牌', amount:18888, channel:'wechat', voucher:'', state:'failed', created:'2025-09-18 09:30' },
+]};
+function tag(s){const m={pending:'待确认',confirmed:'已确认',failed:'失败'};return `<span class="tag ${s}">${m[s]||s}</span>`}
+function fmt(n){return Number(n).toLocaleString('zh-CN')}
+function render(){
+const kw=$('#kw').value.trim().toLowerCase(); const st=$('#state').value;
+let list=[...db.recharges]; if(kw) list=list.filter(r=>r.company.toLowerCase().includes(kw)||r.id.toLowerCase().includes(kw)); if(st) list=list.filter(r=>r.state===st);
+const rows=list.map(r=>`<tr>
+<td><a href="javascript:void(0)" data-id="${r.id}" class="link-detail">${r.id}</a></td>
+<td>${r.company}</td><td class="amount">¥ ${fmt(r.amount)}</td>
+<td><span class="pill">${r.channel}</span></td><td><span class="muted">—</span></td>
+<td>${tag(r.state)}</td><td>${r.created}</td>
+<td><button class="btn" data-op="view" data-id="${r.id}">查看</button>
+<button class="btn primary" data-op="confirm" data-id="${r.id}" ${r.state!=='pending'?'disabled':''}>确认到账</button>
+<button class="btn danger" data-op="fail" data-id="${r.id}" ${r.state!=='pending'?'disabled':''}>标记失败</button></td>
+</tr>`).join('');
+$('#tableWrap').innerHTML = `<table><thead><tr><th>充值ID</th><th>公司</th><th>金额</th><th>渠道</th><th>凭证</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead><tbody>${rows||`<tr><td colspan=8 class='empty'>暂无数据</td></tr>`}</tbody></table>`;
+document.querySelectorAll('[data-op="view"],.link-detail').forEach(el=>el.onclick=(e)=>openDetail(e.currentTarget.getAttribute('data-id')||e.currentTarget.textContent));
+document.querySelectorAll('[data-op="confirm"]').forEach(el=>el.onclick=(e)=>changeState(e.currentTarget.getAttribute('data-id'),'confirmed'));
+document.querySelectorAll('[data-op="fail"]').forEach(el=>el.onclick=(e)=>changeState(e.currentTarget.getAttribute('data-id'),'failed'));
+}
+function openDetail(id){
+const r=db.recharges.find(x=>x.id===id); if(!r) return;
+$('#drawerBody').innerHTML = `<div class="desc">
+<div class="row"><div class="label">充值ID</div><div class="value">${r.id}</div></div>
+<div class="row"><div class="label">公司</div><div class="value">${r.company}</div></div>
+<div class="row"><div class="label">金额</div><div class="value">¥ ${fmt(r.amount)}</div></div>
+<div class="row"><div class="label">渠道</div><div class="value"><span class="badge">${r.channel}</span></div></div>
+<div class="row"><div class="label">状态</div><div class="value">${tag(r.state)}</div></div>
+<div class="row"><div class="label">创建时间</div><div class="value">${r.created}</div></div>
+</div>
+<div style="margin-top:12px;display:flex;gap:8px">
+<button class="btn primary" ${r.state!=='pending'?'disabled':''} onclick="changeState('${r.id}','confirmed')">确认到账</button>
+</body></html>

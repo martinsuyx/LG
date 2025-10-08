@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>设备画像</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">设备画像 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>风控与合规</h4>
+<a href="./risk-rules.html">规则库</a>
+<a href="./risk-lists.html">黑白名单</a>
+<a href="./risk-devices.html" class="active">设备画像</a>
+<a href="./risk-geofence.html">地理围栏</a>
+<a href="./risk-monitor.html">监控看板</a>
+<a href="./risk-tickets.html">命中工单</a>
+<a href="./appeals.html">申诉与复核</a>
+<a href="./kyc-review.html">KYC 审核</a>
+<a href="./esign.html">电子签约</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>设备列表</div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<script type="module">
+import { $, toast } from '../assets/app.js';
+const devices=[
+{id:'dev_abc', users:['U1','U2','U3'], tags:['high_freq'], last_seen:'2025-09-20 09:00'},
+{id:'dev_xyz', users:['U9'], tags:['proxy_suspect'], last_seen:'2025-09-20 08:00'},
+];
+function render(){ $('#tbl').innerHTML=`<table><thead><tr>
+<th>设备ID</th><th>关联用户数</th><th>标签</th><th>最近活跃</th><th>操作</th>
+</tr></thead><tbody>${devices.map(d=>`<tr><td>${d.id}</td><td>${d.users.length}</td><td>${d.tags.join(', ')}</td><td>${d.last_seen}</td>
+<td><button class='btn danger' onclick='blk("${d.id}")'>加入黑名单</button></td></tr>`).join('')}</tbody></table>` }
+window.blk=(id)=>{ toast('已加入黑名单 · '+id,'error') }
+render();
+</script>
+</body></html>

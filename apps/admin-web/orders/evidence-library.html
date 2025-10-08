@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>证据库</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+<style>
+.grid{columns:3 220px;column-gap:12px;padding:12px}
+.card-img{break-inside:avoid;background:#fff;border:1px solid var(--line);border-radius:10px;margin:0 0 12px;overflow:hidden}
+.card-img .meta{padding:8px 10px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">证据库 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>订单与审核</h4>
+<a href="./orders.html">订单列表（初审）</a>
+<a href="./review-second.html">复审列表</a>
+<a href="./evidence-library.html" class="active">证据库</a>
+<a href="./supplement-withdraw.html">补件&撤回</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="toolbar" style="border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;background:#fff"><div class="filters" style="padding:8px 12px">
+<input type="text" id="kw" placeholder="按订单ID/活动搜索…"/>
+<button class="btn" id="btnFilter">筛选</button>
+</div></div>
+<div class="grid" id="grid"></div>
+</main>
+</div>
+<script src="../assets/app.js"></script>
+<script>
+const imgs = Array.from({length:12}).map((_,i)=>({
+id:'O-'+(2000+i), h: 160 + (i%5)*20, act: i%2? '广州移动':'广州电信'
+}));
+function render(){
+const kw=$('#kw').value.trim();
+const list=imgs.filter(x=>!kw||String(x.id).includes(kw)||x.act.includes(kw));
+$('#grid').innerHTML=list.map(x=>`<div class='card-img'>
+<div style='height:${x.h}px;background:#f4f4f5'></div>
+<div class='meta'>订单 ${x.id} · ${x.act}</div>
+</div>`).join('');
+}
+$('#btnFilter').onclick=render; render();
+</script>
+</body></html>

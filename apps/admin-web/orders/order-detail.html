@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>订单详情</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">订单详情 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>订单与审核</h4>
+<a href="./orders.html">订单列表（初审）</a>
+<a href="./review-second.html">复审列表</a>
+<a href="./evidence-library.html">证据库</a>
+<a href="./supplement-withdraw.html">补件&撤回</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div id="titleBar">订单详情</div>
+<div>
+<button class="btn primary" id="btnPass">通过</button>
+<button class="btn danger" id="btnReject" style="margin-left:8px">拒绝</button>
+<button class="btn" id="btnClone" style="margin-left:8px">复制为新单</button>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 320px;gap:16px;padding:16px">
+<section>
+<div class="desc">
+<div class="row"><div class="label">订单ID</div><div class="value" id="oId"></div></div>
+<div class="row"><div class="label">活动</div><div class="value">广州移动</div></div>
+<div class="row"><div class="label">门店</div><div class="value">门店A</div></div>
+<div class="row"><div class="label">提交人</div><div class="value">队员B</div></div>
+<div class="row"><div class="label">金额</div><div class="value">¥ 199</div></div>
+</div>
+<h4 style="margin:12px 0 8px">证据</h4>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+<div class="thumb" style="height:100px"></div>
+<div class="thumb" style="height:100px"></div>
+<div class="thumb" style="height:100px"></div>
+</div>
+<h4 style="margin:12px 0 8px">定位</h4>
+<div class="thumb" style="height:140px">地图占位</div>
+</section>
+<aside>
+<div class="card" style="padding:12px">
+<h4>风控命中</h4>
+<div><span class="tag failed">geo_out_of_fence</span></div>
+<h4 style="margin-top:12px">审核时间线</h4>
+<ul>
+<li>2025-09-20 11:02 自动规则通过</li>
+<li>2025-09-20 12:10 提交订单</li>
+</ul>
+<h4>结算拆分预览</h4>
+<table class="table"><tr><th>对象</th><th>金额</th></tr>
+<tr><td>门店A</td><td class="right">¥ 180</td></tr>
+<tr><td>队员B</td><td class="right">¥ 20</td></tr>
+<tr><td>队长</td><td class="right">¥ 10</td></tr>
+</table>
+</div>
+</aside>
+</div>
+</div>
+</main>
+</div>
+<script type="module">
+import { $, toast } from '../assets/app.js';
+const params=new URLSearchParams(location.search); const id=params.get('id')||'O-2001';
+$('#oId').textContent=id; $('#titleBar').textContent=`订单详情 · ${id}`;
+$('#btnPass').onclick=()=>toast('已通过','success');
+$('#btnReject').onclick=()=>toast('已拒绝','error');
+$('#btnClone').onclick=()=>toast('已复制为草稿 O-NEW','success');
+</script>
+</body></html>

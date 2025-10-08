@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>报表订阅</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">报表订阅</div></header>
+<aside><nav class="menu">
+<h4>报表与总览</h4>
+<a href="./subscriptions.html" class="active">报表订阅</a>
+<a href="./dashboards.html">总览看板</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>订阅列表</div><div><button class="btn" id="btnNew">新建订阅</button></div></div>
+<div id="tbl" style="padding:12px"></div>
+</div>
+</main></div>
+<script type="module">import { $ , openDrawer, closeDrawer, toast } from '../assets/app.js';
+let subs=[{id:'S-1', name:'财务日报', freq:'daily', to:'ops@example.com', state:'enabled'}];
+function tag(s){return `<span class='tag ${s==='enabled'?'confirmed':'failed'}'>${s}</span>`}
+function render(){ document.querySelector('#tbl').innerHTML=`<table><thead><tr><th>订阅ID</th><th>名称</th><th>频率</th><th>收件人</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>${subs.map(s=>`<tr><td>${s.id}</td><td>${s.name}</td><td>${s.freq}</td><td>${s.to}</td><td>${tag(s.state)}</td><td><button class='btn' onclick='disable("${s.id}")'>停用</button></td></tr>`).join('')}</tbody></table>` }
+window.disable=(id)=>{ const s=subs.find(x=>x.id===id); s.state='disabled'; toast('已停用','success'); render(); }
+render();
+</script>
+</body></html>

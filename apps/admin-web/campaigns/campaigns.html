@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>活动列表</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">活动列表 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>资金与账户</h4>
+<a href="../finance/finance-recharge.html">客户充值管理</a>
+<h4>活动与任务</h4>
+<a href="./campaigns.html" class="active">活动列表</a>
+<a href="./campaign-new.html">新建活动</a>
+<a href="./dsl-manager.html">表单 DSL</a>
+<a href="./task-assign.html">任务分配</a>
+<a href="./campaign-dashboard.html">活动看板</a>
+<a href="./campaign-report.html">复盘报表</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>活动列表</div><div><button class="btn primary">新建活动</button></div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<script src="../assets/app.js"></script>
+<script>
+const campaigns=[
+{id:'C-1001', name:'广州移动拉新', type:'拉新', city:'广州', status:'active', quota:1000, used:600},
+{id:'C-1002', name:'深圳电信宽带', type:'宽带', city:'深圳', status:'paused', quota:500, used:120},
+];
+function render(){
+$('#tbl').innerHTML=`<table><thead><tr><th>ID</th><th>活动名</th><th>类型</th><th>城市</th><th>配额</th><th>状态</th><th>操作</th></tr></thead><tbody>
+${campaigns.map(c=>`<tr><td>${c.id}</td><td>${c.name}</td><td>${c.type}</td><td>${c.city}</td>
+<td>${c.used}/${c.quota}</td>
+<td><span class='tag ${c.status==='active'?'confirmed':c.status==='paused'?'pending':'failed'}'>${c.status}</span></td>
+<td><button class='btn'>查看</button> <button class='btn'>编辑</button></td></tr>`).join('')}
+</tbody></table>`;
+}
+render();
+</script>
+</body></html>

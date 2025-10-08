@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>对账差异</title><link rel="stylesheet" href="../assets/app.css"/></head>
+<body><div class="layout">
+<header><div class="brand">🔶 后台 <span class="env">Demo</span></div><div class="hint">对账差异</div></header>
+<aside><nav class="menu">
+<h4>报表与总览</h4>
+<a href="./report-recon-diff.html" class="active">对账差异</a>
+<a href="./export-center.html">导出中心</a>
+<h4>导航</h4><a href="../index.html">返回首页</a>
+</nav></aside>
+<main>
+<div class="card"><div class="toolbar"><div>差异明细</div><div><button class="btn">导出</button></div></div>
+<div id="tbl"></div></div>
+</main></div>
+<script type="module">import { $ } from '../assets/app.js';
+const diffs=[{id:'D-1', type:'brand_only', mine:'—', brand:'¥ 199 · 有效', note:'对方有我方无'}];
+function render(){ document.querySelector('#tbl').innerHTML=`<table><thead><tr><th>ID</th><th>类型</th><th>我方</th><th>对方</th><th>备注</th></tr></thead>
+<tbody>${diffs.map(d=>`<tr><td>${d.id}</td><td>${d.type}</td><td>${d.mine}</td><td>${d.brand}</td><td>${d.note}</td></tr>`).join('')}</tbody></table>` }
+render();
+</script>
+</body></html>

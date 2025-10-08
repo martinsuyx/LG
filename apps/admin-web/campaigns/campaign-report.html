@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>复盘报表</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">复盘报表 Demo</div></header>
+<aside>
+<nav class="menu">
+<h4>活动与任务</h4>
+<a href="./campaigns.html">活动列表</a>
+<a href="./campaign-new.html">新建活动</a>
+<a href="./dsl-manager.html">表单 DSL</a>
+<a href="./task-assign.html">任务分配</a>
+<a href="./campaign-dashboard.html">活动看板</a>
+<a href="./campaign-report.html" class="active">复盘报表</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="card">
+<div class="toolbar"><div>复盘报表</div><div><button class="btn">导出 CSV</button></div></div>
+<div style="padding:16px">
+<p>此处可扩展为 Pivot 拖拽分析。</p>
+<table><thead><tr><th>活动</th><th>城市</th><th>提交数</th><th>通过数</th><th>佣金</th></tr></thead>
+<tbody><tr><td>广州移动拉新</td><td>广州</td><td>200</td><td>180</td><td>¥ 3600</td></tr></tbody></table>
+</div>
+</div>
+</main>
+</div>
+</body></html>

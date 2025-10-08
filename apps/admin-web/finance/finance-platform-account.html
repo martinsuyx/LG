@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>平台账户</title>
+<link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body>
+<div class="layout">
+<header><div class="brand">🔶 后台管理平台 <span class="env">Demo</span></div><div class="hint">纯前端静态预览</div></header>
+<aside>
+<nav class="menu">
+<h4>资金与账户</h4>
+<a href="./finance-recharge.html">客户充值管理</a>
+<a href="./finance-company-account.html">公司账户</a>
+<a href="./finance-platform-account.html" class="active">平台账户</a>
+<a href="./finance-settlement-center.html">结算中心</a>
+<a href="./finance-withdraw.html">提现管理</a>
+<a href="./finance-recon-reports.html">对账报表</a>
+<h4>导航</h4>
+<a href="../index.html">返回首页</a>
+</nav>
+</aside>
+<main>
+<div class="kpis">
+<div class="kpi"><div class="title">平台总余额</div><div class="num">¥ 18,200,000</div></div>
+<div class="kpi"><div class="title">银行子账户</div><div class="num">¥ 12,000,000</div></div>
+<div class="kpi"><div class="title">第三方代付池</div><div class="num">¥ 2,200,000</div></div>
+</div>
+<div class="card">
+<div class="toolbar"><div>支付通道</div><div><button class="btn" id="btnAdd">新增通道</button></div></div>
+<div id="tbl"></div>
+</div>
+</main>
+</div>
+<div class="drawer"><div class="head"><div>通道配置</div><div><button class="btn" onclick="closeDrawer()">关闭</button></div></div><div class="body" id="drawerBody"></div></div>
+<script src="../assets/app.js"></script>
+<script>
+const chans=[
+{name:'银行对公', appid:'ICBC-***', limit:500000, status:'enabled'},
+{name:'支付宝', appid:'ALIPAY-***', limit:200000, status:'enabled'},
+{name:'微信支付', appid:'WECHAT-***', limit:150000, status:'disabled'},
+];
+function render(){ $('#tbl').innerHTML = `<table><thead><tr><th>名称</th><th>AppId</th><th>单笔限额</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>${chans.map(c=>`<tr><td>${c.name}</td><td>${c.appid}</td><td class='right'>¥ ${c.limit.toLocaleString()}</td>
+<td><span class='tag ${c.status==='enabled'?'confirmed':'failed'}'>${c.status}</span></td>
+<td><button class='btn' onclick='edit("${c.name}")'>编辑</button></td></tr>`).join('')}</tbody></table>` }
+window.edit=(name)=>{ const c=chans.find(x=>x.name===name); if(!c) return; openDrawer(); $('#drawerBody').innerHTML=`
+<div class='desc'><div class='row'><div class='label'>名称</div><div class='value'>${c.name}</div></div>
+<div class='row'><div class='label'>限额</div><div class='value'><input id='limit' style='height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px' value='${c.limit}'/></div></div>
+<div class='row'><div class='label'>状态</div><div class='value'><select id='st'><option value='enabled' ${c.status==='enabled'?'selected':''}>启用</option><option value='disabled' ${c.status!=='enabled'?'selected':''}>停用</option></select></div></div></div>
+<div style='margin-top:12px'><button class='btn primary' id='ok'>保存</button> <button class='btn' onclick='closeDrawer()'>取消</button></div>`;
+$('#ok').onclick=()=>{ c.limit = Number($('#limit').value||c.limit); c.status=$('#st').value; toast('已保存','success'); render(); closeDrawer(); }
+}
+$('#btnAdd').onclick=()=>{ toast('示例：可扩展新增表单','info') }
+render();
+</script>
+</body></html>
