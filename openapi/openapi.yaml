@@ -1,76 +1,107 @@
 openapi: 3.0.3
-/api/v1/orders/batch_review:
-$ref: ./paths/orders/batch_review.yaml
-/api/v1/orders/ai-intake:
-$ref: ./paths/orders/create.yaml#/ai_intake
+info:
+  $ref: ./info.yaml
+servers:
+  - url: http://localhost:4010
+    description: Local Mock (Prism)
+  - url: https://api.example.com
+    description: Staging/Prod (placeholder)
+components:
+  schemas:
+    $ref: ./components/schemas/common.yaml
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - BearerAuth: []
+paths:
+  # Dashboard
+  /api/v1/dashboard/overview:
+    $ref: ./paths/dashboard.yaml#/overview
+  /api/v1/dashboard/series:
+    $ref: ./paths/dashboard.yaml#/series
+  /api/v1/dashboard/top:
+    $ref: ./paths/dashboard.yaml#/top
+  /api/v1/dashboard/funnel:
+    $ref: ./paths/dashboard.yaml#/funnel
+  /api/v1/dashboard/alerts:
+    $ref: ./paths/dashboard.yaml#/alerts
 
+  # Orders
+  /api/v1/orders:
+    $ref: ./paths/orders/list.yaml
+  /api/v1/orders/{id}:
+    $ref: ./paths/orders/detail.yaml
+  /api/v1/orders/{id}/review:
+    $ref: ./paths/orders/review.yaml
+  /api/v1/orders/batch_review:
+    $ref: ./paths/orders/batch_review.yaml
+  /api/v1/orders/ai-intake:
+    $ref: ./paths/orders/create.yaml#/ai_intake
 
-# Uploads
-/api/v1/uploads/policy:
-$ref: ./paths/uploads/policy.yaml
+  # Uploads
+  /api/v1/uploads/policy:
+    $ref: ./paths/uploads/policy.yaml
 
+  # Wallet & Payouts
+  /api/v1/wallet/summary/overview:
+    $ref: ./paths/wallet/summary.overview.yaml
+  /api/v1/wallet/summary/series:
+    $ref: ./paths/wallet/summary.series.yaml
+  /api/v1/wallet/summary/list:
+    $ref: ./paths/wallet/summary.list.yaml
+  /api/v1/wallet/ledger:
+    $ref: ./paths/wallet/ledger.list.yaml
+  /api/v1/withdraws:
+    $ref: ./paths/payouts/withdraws.yaml
 
-# Wallet & Payouts
-/api/v1/wallet/summary/overview:
-$ref: ./paths/wallet/summary.overview.yaml
-/api/v1/wallet/summary/series:
-$ref: ./paths/wallet/summary.series.yaml
-/api/v1/wallet/summary/list:
-$ref: ./paths/wallet/summary.list.yaml
-/api/v1/wallet/ledger:
-$ref: ./paths/wallet/ledger.list.yaml
-/api/v1/withdraws:
-$ref: ./paths/payouts/withdraws.yaml
+  # Campaigns & Tasks
+  /api/v1/campaigns:
+    $ref: ./paths/campaigns/list.yaml
+  /api/v1/campaigns/{id}:
+    $ref: ./paths/campaigns/detail.yaml
+  /api/v1/campaigns/{id}/publish:
+    $ref: ./paths/campaigns/publish.yaml
+  /api/v1/campaigns/{id}/clone:
+    $ref: ./paths/campaigns/clone.yaml
 
+  /api/v1/tasks:
+    $ref: ./paths/tasks/list.yaml
+  /api/v1/tasks/{id}:
+    $ref: ./paths/tasks/detail.yaml
+  /api/v1/tasks/{id}/validate:
+    $ref: ./paths/tasks/validate.yaml
+  /api/v1/tasks/{id}/publish:
+    $ref: ./paths/tasks/publish.yaml
 
-# Campaigns & Tasks
-/api/v1/campaigns:
-$ref: ./paths/campaigns/list.yaml
-/api/v1/campaigns/{id}:
-$ref: ./paths/campaigns/detail.yaml
-/api/v1/campaigns/{id}/publish:
-$ref: ./paths/campaigns/publish.yaml
-/api/v1/campaigns/{id}/clone:
-$ref: ./paths/campaigns/clone.yaml
+  # Teams & Users
+  /api/v1/teams/tree:
+    $ref: ./paths/teams/tree.yaml
+  /api/v1/teams/{id}/members:
+    $ref: ./paths/teams/members.yaml
+  /api/v1/users:
+    $ref: ./paths/users/list.yaml
+  /api/v1/roles:
+    $ref: ./paths/users/roles.yaml
 
-
-/api/v1/tasks:
-$ref: ./paths/tasks/list.yaml
-/api/v1/tasks/{id}:
-$ref: ./paths/tasks/detail.yaml
-/api/v1/tasks/{id}/validate:
-$ref: ./paths/tasks/validate.yaml
-/api/v1/tasks/{id}/publish:
-$ref: ./paths/tasks/publish.yaml
-
-
-# Teams & Users
-/api/v1/teams/tree:
-$ref: ./paths/teams/tree.yaml
-/api/v1/teams/{id}/members:
-$ref: ./paths/teams/members.yaml
-/api/v1/users:
-$ref: ./paths/users/list.yaml
-/api/v1/roles:
-$ref: ./paths/users/roles.yaml
-
-
-# Risk & KYC
-/api/v1/risk/hits:
-$ref: ./paths/risk/hits.list.yaml
-/api/v1/risk/hits/{id}:
-$ref: ./paths/risk/hits.detail.yaml
-/api/v1/risk/tickets:
-$ref: ./paths/risk/tickets.list.yaml
-/api/v1/risk/tickets/{id}:
-$ref: ./paths/risk/tickets.detail.yaml
-/api/v1/risk/lists:
-$ref: ./paths/risk/lists.yaml
-/api/v1/risk/rules:
-$ref: ./paths/risk/rules.yaml
-/api/v1/kyc/cases:
-$ref: ./paths/kyc/cases.list.yaml
-/api/v1/kyc/cases/{id}:
-$ref: ./paths/kyc/cases.detail.yaml
-/api/v1/kyc/callbacks/{provider}:
-$ref: ./paths/kyc/callbacks.provider.yaml
+  # Risk & KYC
+  /api/v1/risk/hits:
+    $ref: ./paths/risk/hits.list.yaml
+  /api/v1/risk/hits/{id}:
+    $ref: ./paths/risk/hits.detail.yaml
+  /api/v1/risk/tickets:
+    $ref: ./paths/risk/tickets.list.yaml
+  /api/v1/risk/tickets/{id}:
+    $ref: ./paths/risk/tickets.detail.yaml
+  /api/v1/risk/lists:
+    $ref: ./paths/risk/lists.yaml
+  /api/v1/risk/rules:
+    $ref: ./paths/risk/rules.yaml
+  /api/v1/kyc/cases:
+    $ref: ./paths/kyc/cases.list.yaml
+  /api/v1/kyc/cases/{id}:
+    $ref: ./paths/kyc/cases.detail.yaml
+  /api/v1/kyc/callbacks/{provider}:
+    $ref: ./paths/kyc/callbacks.provider.yaml
