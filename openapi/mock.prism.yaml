@@ -1,0 +1,252 @@
+# ===========================================
+# Prism Mock Server Configuration
+# Joincom Admin Demo (P0–P3)
+# ===========================================
+
+# 服务器配置
+http:
+  port: 4010               # Mock 服务端口
+  host: 0.0.0.0
+
+# Mock 生成逻辑
+mock:
+  dynamic: true            # 无 example 时按 schema 动态生成
+  errors:
+    random: false
+  partial: true            # 若 example 缺少字段则自动补充
+  config:
+    allowFileReferences: true
+
+# 日志输出
+log:
+  level: info
+  format: pretty
+
+# 指定 OpenAPI 文件路径
+# Prism 将自动解析 openapi.yaml 中的 paths
+upstream:
+  file: ./openapi/openapi.yaml
+
+# 统一响应覆盖（routes）
+routes:
+  # Dashboard
+  - method: get
+    path: /api/v1/dashboard/overview
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/dashboard/overview.json
+
+  - method: get
+    path: /api/v1/dashboard/series
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/dashboard/series.orders.json
+
+  # Orders
+  - method: get
+    path: /api/v1/orders
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/orders/list.page1.json
+
+  - method: get
+    path: /api/v1/orders/{id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/orders/detail.success.json
+
+  - method: post
+    path: /api/v1/orders/{id}/review
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/orders/review.approve.json
+
+  # Wallet
+  - method: get
+    path: /api/v1/wallet/summary/overview
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/wallet/summary.overview.json
+
+  - method: get
+    path: /api/v1/wallet/summary/series
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/wallet/summary.series.json
+
+  - method: get
+    path: /api/v1/wallet/ledger
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/wallet/ledger.page1.json
+
+  # Withdraws
+  - method: get
+    path: /api/v1/withdraws
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/withdraws/list.page1.json
+
+  - method: post
+    path: /api/v1/withdraws/{id}/approve
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/withdraws/approve.success.json
+
+  # Campaigns
+  - method: get
+    path: /api/v1/campaigns
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/list.page1.json
+
+  - method: get
+    path: /api/v1/campaigns/{id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/detail.json
+
+  # Tasks
+  - method: get
+    path: /api/v1/tasks
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/list.page1.json
+
+  - method: get
+    path: /api/v1/tasks/{id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/detail.json
+
+  # Teams & Users
+  - method: get
+    path: /api/v1/teams/tree
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/tree.json
+
+  - method: get
+    path: /api/v1/teams/{id}/members
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/members.page1.json
+
+  - method: get
+    path: /api/v1/users
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/users/list.page1.json
+
+  - method: get
+    path: /api/v1/roles
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/roles/list.page1.json
+
+  # Risk
+  - method: get
+    path: /api/v1/risk/hits
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-hits/list.page1.json
+
+  - method: get
+    path: /api/v1/risk/tickets
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/list.page1.json
+
+  - method: get
+    path: /api/v1/risk/lists
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-lists/list.page1.json
+
+  - method: get
+    path: /api/v1/risk/rules
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-rules/list.page1.json
+
+  # KYC
+  - method: get
+    path: /api/v1/kyc/cases
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/list.page1.json
+
+  - method: get
+    path: /api/v1/kyc/cases/{id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/detail.json
+
+  # Reports
+  - method: get
+    path: /api/v1/reports/overview
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/overview.json
+
+  - method: get
+    path: /api/v1/reports/series
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/series.json
+
+  - method: get
+    path: /api/v1/reports/compare
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/compare.campaign.json
+
+  # Audit Logs
+  - method: get
+    path: /api/v1/audit/events
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/audit/events.page1.json
+
+  - method: get
+    path: /api/v1/audit/events/{id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/audit/event.detail.json
+
+  # Settings
+  - method: get
+    path: /api/v1/settings
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/settings/all.json
