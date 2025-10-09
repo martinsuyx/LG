@@ -1,21 +1,21 @@
 Order:
-type: object
-properties:
-order_id: {type: string}
-created_at: {type: string, format: date-time}
-status: {type: string, enum: [pending, under_review, approved, rejected, settled]}
-amount: {type: number, format: double}
-channel: {type: string}
-required: [order_id, created_at, status, amount]
-
+  type: object
+  properties:
+    order_id: {type: string}
+    created_at: {type: string, format: date-time}
+    status: {type: string, enum: [pending, under_review, approved, rejected, settled]}
+    amount: {type: number, format: double}
+    channel: {type: string}
+  required: [order_id, created_at, status, amount]
 
 PagedOrders:
-type: object
-properties:
-total: {type: integer}
-page: {type: integer}
-page_size: {type: integer}
-items:
-type: array
-items:
-$ref: '#/Order'
+  type: object
+  properties:
+    total: {type: integer}
+    page: {type: integer}
+    page_size: {type: integer}
+    items:
+      type: array
+      items:
+        $ref: '#/Order'
+
