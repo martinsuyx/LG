@@ -1,0 +1,71 @@
+paths:
+  /api/v1/uploads:
+    post:
+      summary: Request upload credentials for AI intake images
+      tags: [Uploads]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadRequest'
+      responses:
+        '200':
+          description: Upload credentials and URLs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          description: Invalid filename or content type.
+
+components:
+  schemas:
+    UploadRequest:
+      type: object
+      required:
+        - files
+      properties:
+        files:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: object
+            required:
+              - filename
+              - content_type
+              - size
+            properties:
+              filename:
+                type: string
+              content_type:
+                type: string
+              size:
+                type: integer
+                description: File size in bytes.
+    UploadResponse:
+      type: object
+      required:
+        - uploads
+      properties:
+        uploads:
+          type: array
+          items:
+            type: object
+            required:
+              - file_id
+              - upload_url
+            properties:
+              file_id:
+                type: string
+              upload_url:
+                type: string
+                format: uri
+              headers:
+                type: object
+                additionalProperties: true
+                description: Headers required when uploading to object storage.
+              expires_in:
+                type: integer
+                description: Expiration duration in seconds for the upload URL.

@@ -1,0 +1,117 @@
+paths:
+  /api/v1/orders/ai-intake:
+    post:
+      summary: Start AI intake parsing job
+      description: >
+        Upload references to already stored images and trigger an AI OCR job that
+        extracts order fields.
+      tags: [AI Intake]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIIntakeStartRequest'
+      responses:
+        '202':
+          description: Parsing job accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIIntakeStartResponse'
+        '400':
+          description: Invalid payload or unsupported images.
+  /api/v1/orders/ai-intake/{job_id}:
+    get:
+      summary: Get AI intake parsing status
+      tags: [AI Intake]
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Current status of the AI intake job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIIntakeStatusResponse'
+        '404':
+          description: Job not found.
+
+components:
+  schemas:
+    AIIntakeStartRequest:
+      type: object
+      required:
+        - images
+      properties:
+        images:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+            format: uri
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Optional contextual information such as operator_id or store hints.
+    AIIntakeStartResponse:
+      type: object
+      required:
+        - job_id
+        - status
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum: [uploaded, parsing, parsed, failed]
+    AIIntakeStatusResponse:
+      type: object
+      required:
+        - job_id
+        - status
+        - fields
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - uploaded
+            - parsing
+            - parsed
+            - failed
+            - submitted
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AIIntakeField'
+        errors:
+          type: array
+          description: Optional error messages when status is failed.
+          items:
+            type: string
+    AIIntakeField:
+      type: object
+      required:
+        - key
+        - value
+        - confidence
+        - editable
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        editable:
+          type: boolean

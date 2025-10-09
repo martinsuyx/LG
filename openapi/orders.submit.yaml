@@ -1,0 +1,58 @@
+paths:
+  /api/v1/orders:
+    post:
+      summary: Submit an order confirmed from AI intake
+      description: >
+        Persist an order after operators review and confirm AI parsed fields.
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderSubmitRequest'
+      responses:
+        '201':
+          description: Order created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSubmitResponse'
+        '400':
+          description: Validation error on submitted fields.
+        '409':
+          description: Duplicate submission detected.
+
+components:
+  schemas:
+    OrderSubmitRequest:
+      type: object
+      required:
+        - fields
+      properties:
+        job_id:
+          type: string
+          description: AI intake job identifier associated with this submission.
+        fields:
+          type: object
+          additionalProperties:
+            type: string
+          description: Confirmed order field values keyed by field identifiers.
+        confirm_flag:
+          type: boolean
+          description: Operator confirmation checkbox state.
+    OrderSubmitResponse:
+      type: object
+      required:
+        - order_id
+        - status
+      properties:
+        order_id:
+          type: string
+        status:
+          type: string
+          enum: [submitted, under_review]
+        redirect_url:
+          type: string
+          format: uri
+          description: Optional URL to navigate after submission (e.g., order detail page).

@@ -1,0 +1,24 @@
+{
+  "job_id": "J20251003001",
+  "status": "parsed",
+  "fields": [
+    {
+      "key": "name",
+      "value": "张三",
+      "confidence": 0.95,
+      "editable": true
+    },
+    {
+      "key": "id_number",
+      "value": "4401********1234",
+      "confidence": 0.9,
+      "editable": true
+    },
+    {
+      "key": "phone",
+      "value": "13800000000",
+      "confidence": 0.88,
+      "editable": true
+    }
+  ]
+}
