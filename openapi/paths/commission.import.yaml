@@ -1,0 +1,94 @@
+openapi: 3.0.3
+info:
+  title: Commission Import Task API
+  version: '1.0.0'
+
+paths:
+  /api/v1/commission/import:
+    post:
+      tags: [Commission]
+      summary: Upload Excel to import commissions (team-scoped)
+      operationId: commissionImportCreate
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                campaign_id: { type: string }
+                plan_id: { type: string }
+                entity_type:
+                  type: string
+                  enum: [promoter, store, team]
+                team_id:
+                  type: string
+                  description: Required when entity_type=promoter for scope check
+            encoding:
+              file: { contentType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet }
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionImportAccepted'
+              examples:
+                accepted:
+                  value: { task_id: T20251015001, status: accepted }
+
+  /api/v1/commission/import/{task_id}:
+    get:
+      tags: [Commission]
+      summary: Get import task status and result
+      operationId: commissionImportStatus
+      parameters:
+        - in: path
+          name: task_id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionImportStatus'
+              examples:
+                processing:
+                  value:
+                    task_id: T20251015001
+                    status: processing
+                    progress: 65
+                done:
+                  value:
+                    task_id: T20251015001
+                    status: succeeded
+                    total_rows: 1000
+                    succeeded: 980
+                    failed: 20
+                    result_url: https://mock/commission/import/T20251015001/result.csv
+
+components:
+  schemas:
+    CommissionImportAccepted:
+      type: object
+      properties:
+        task_id: { type: string }
+        status: { type: string, enum: [accepted] }
+      required: [task_id, status]
+
+    CommissionImportStatus:
+      type: object
+      properties:
+        task_id: { type: string }
+        status: { type: string, enum: [accepted, processing, succeeded, failed] }
+        progress: { type: integer, minimum: 0, maximum: 100 }
+        total_rows: { type: integer }
+        succeeded: { type: integer }
+        failed: { type: integer }
+        result_url: { type: string }
+      required: [task_id, status]
