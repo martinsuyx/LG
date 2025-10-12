@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: Team Members Commissions API
+  version: '1.0.0'
+
+paths:
+  /api/v1/teams/{team_id}/commissions:
+    get:
+      tags: [Teams]
+      summary: List team members with default/effective commissions for a given campaign & plan
+      operationId: teamMembersCommissionsList
+      parameters:
+        - in: path
+          name: team_id
+          required: true
+          schema: { type: string }
+        - in: query
+          name: campaign_id
+          required: true
+          schema: { type: string }
+        - in: query
+          name: plan_id
+          required: true
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: page_size
+          schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+        - in: query
+          name: q
+          description: Keyword filter for member name/id/phone
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembersCommissionsPage'
+              examples:
+                page1:
+                  value:
+                    total: 148
+                    page: 1
+                    page_size: 50
+                    items:
+                      - member_id: U1001
+                        member_name: 张三
+                        role: promoter
+                        commission_default: { type: percent, value: 10 }
+                        commission_effective: { type: percent, value: 9 }
+                        override_source: team
+                      - member_id: U1002
+                        member_name: 李四
+                        role: promoter
+                        commission_default: { type: percent, value: 10 }
+                        commission_effective: { type: percent, value: 12 }
+                        override_source: promoter
+
+components:
+  schemas:
+    CommissionFixed:
+      type: object
+      properties:
+        type: { type: string, enum: [fixed] }
+        value: { type: number, format: double, minimum: 0 }
+      required: [type, value]
+    CommissionPercent:
+      type: object
+      properties:
+        type: { type: string, enum: [percent] }
+        value: { type: number, format: double, minimum: 0, maximum: 100 }
+      required: [type, value]
+    CommissionTierItem:
+      type: object
+      properties:
+        threshold: { type: number, format: double, minimum: 0 }
+        value: { type: number, format: double, minimum: 0 }
+        kind: { type: string, enum: [yuan, percent] }
+      required: [threshold, value, kind]
+    CommissionTier:
+      type: object
+      properties:
+        type: { type: string, enum: [tier] }
+        metric: { type: string, enum: [amount, count, activate], default: amount }
+        unit: { type: string, enum: [yuan, pcs], default: yuan }
+        tiers:
+          type: array
+          items: { $ref: '#/components/schemas/CommissionTierItem' }
+      required: [type, metric, unit, tiers]
+    Commission:
+      oneOf:
+        - $ref: '#/components/schemas/CommissionFixed'
+        - $ref: '#/components/schemas/CommissionPercent'
+        - $ref: '#/components/schemas/CommissionTier'
+      discriminator:
+        propertyName: type
+        mapping:
+          fixed: '#/components/schemas/CommissionFixed'
+          percent: '#/components/schemas/CommissionPercent'
+          tier: '#/components/schemas/CommissionTier'
+
+    TeamMemberCommissionItem:
+      type: object
+      properties:
+        member_id: { type: string }
+        member_name: { type: string }
+        role: { type: string }
+        commission_default: { $ref: '#/components/schemas/Commission' }
+        commission_effective: { $ref: '#/components/schemas/Commission' }
+        override_source:
+          type: string
+          enum: [promoter, store, team, city, company, default]
+      required: [member_id, commission_default, commission_effective]
+
+    TeamMembersCommissionsPage:
+      type: object
+      properties:
+        total: { type: integer }
+        page: { type: integer }
+        page_size: { type: integer }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/TeamMemberCommissionItem' }
+      required: [total, page, page_size, items]
