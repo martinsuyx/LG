@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: Commission Batch Override API
+  version: '1.0.0'
+
+paths:
+  /api/v1/commission/batch_override:
+    post:
+      tags: [Commission]
+      summary: Apply commission overrides in batch for a set of entities
+      operationId: commissionBatchOverride
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommissionBatchOverrideRequest'
+            examples:
+              batch_demo:
+                value:
+                  campaign_id: C1
+                  plan_id: P1
+                  entity_type: promoter
+                  items:
+                    - entity_id: U1
+                      commission: { type: percent, value: 10 }
+                    - entity_id: U2
+                      commission: { type: percent, value: 9 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionBatchOverrideResult'
+              examples:
+                success:
+                  value:
+                    ok: true
+                    total: 2
+                    succeeded: 2
+                    failed: 0
+                    conflicts: []
+
+components:
+  schemas:
+    CommissionFixed:
+      type: object
+      properties:
+        type: { type: string, enum: [fixed] }
+        value: { type: number, format: double, minimum: 0 }
+      required: [type, value]
+    CommissionPercent:
+      type: object
+      properties:
+        type: { type: string, enum: [percent] }
+        value: { type: number, format: double, minimum: 0, maximum: 100 }
+      required: [type, value]
+    CommissionTierItem:
+      type: object
+      properties:
+        threshold: { type: number, format: double, minimum: 0 }
+        value: { type: number, format: double, minimum: 0 }
+        kind: { type: string, enum: [yuan, percent] }
+      required: [threshold, value, kind]
+    CommissionTier:
+      type: object
+      properties:
+        type: { type: string, enum: [tier] }
+        metric: { type: string, enum: [amount, count, activate], default: amount }
+        unit: { type: string, enum: [yuan, pcs], default: yuan }
+        tiers:
+          type: array
+          items: { $ref: '#/components/schemas/CommissionTierItem' }
+      required: [type, metric, unit, tiers]
+    Commission:
+      oneOf:
+        - $ref: '#/components/schemas/CommissionFixed'
+        - $ref: '#/components/schemas/CommissionPercent'
+        - $ref: '#/components/schemas/CommissionTier'
+      discriminator:
+        propertyName: type
+        mapping:
+          fixed: '#/components/schemas/CommissionFixed'
+          percent: '#/components/schemas/CommissionPercent'
+          tier: '#/components/schemas/CommissionTier'
+
+    CommissionBatchOverrideItem:
+      type: object
+      properties:
+        entity_id: { type: string }
+        commission: { $ref: '#/components/schemas/Commission' }
+      required: [entity_id, commission]
+
+    CommissionBatchOverrideRequest:
+      type: object
+      properties:
+        campaign_id: { type: string }
+        plan_id: { type: string }
+        entity_type:
+          type: string
+          enum: [company, city, store, team, promoter]
+        items:
+          type: array
+          minItems: 1
+          items: { $ref: '#/components/schemas/CommissionBatchOverrideItem' }
+      required: [campaign_id, plan_id, entity_type, items]
+
+    CommissionBatchOverrideResult:
+      type: object
+      properties:
+        ok: { type: boolean }
+        total: { type: integer }
+        succeeded: { type: integer }
+        failed: { type: integer }
+        conflicts:
+          type: array
+          items:
+            type: object
+            properties:
+              entity_id: { type: string }
+              reason: { type: string }
+      required: [ok, total, succeeded, failed]
