@@ -1,0 +1,27 @@
+{
+  "parent_id": "T002",
+  "teams": [
+    {
+      "team_id": "T002A",
+      "name": "上海旗舰队",
+      "parent_id": "T002",
+      "has_children": false,
+      "members_count": 94,
+      "lead_user_name": "唐悦",
+      "lead_user_id": "U4101",
+      "company_bindings": ["C03"],
+      "tags": ["上海", "旗舰"]
+    },
+    {
+      "team_id": "T002B",
+      "name": "杭州创新队",
+      "parent_id": "T002",
+      "has_children": false,
+      "members_count": 76,
+      "lead_user_name": "谢杭",
+      "lead_user_id": "U4105",
+      "company_bindings": ["C03", "C06"],
+      "tags": ["杭州", "创新"]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "task_id": "IMPORT-20251011001",
+  "status": "processing",
+  "processed": 80,
+  "total": 120,
+  "error_rows": [],
+  "updated_at": "2025-10-11T10:05:00+08:00"
+}

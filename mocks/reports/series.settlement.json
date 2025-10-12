@@ -1,0 +1,12 @@
+{
+  "metric": "settlement",
+  "points": [
+    { "ts": "2025-09-25", "value": 68230.12, "baseline_yesterday": 70410.32, "baseline_lastweek": 65500.98 },
+    { "ts": "2025-09-26", "value": 71540.02, "baseline_yesterday": 68230.12, "baseline_lastweek": 64820.31 },
+    { "ts": "2025-09-27", "value": 73525.55, "baseline_yesterday": 71540.02, "baseline_lastweek": 66014.28 },
+    { "ts": "2025-09-28", "value": 70118.43, "baseline_yesterday": 73525.55, "baseline_lastweek": 67240.03 },
+    { "ts": "2025-09-29", "value": 74890.88, "baseline_yesterday": 70118.43, "baseline_lastweek": 68110.52 },
+    { "ts": "2025-09-30", "value": 78214.63, "baseline_yesterday": 74890.88, "baseline_lastweek": 69420.37 },
+    { "ts": "2025-10-01", "value": 82540.97, "baseline_yesterday": 78214.63, "baseline_lastweek": 71204.66 }
+  ]
+}

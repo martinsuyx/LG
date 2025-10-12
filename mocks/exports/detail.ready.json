@@ -1,0 +1,31 @@
+{
+  "job_id": "E20251003002",
+  "type": "wallet_ledger",
+  "status": "ready",
+  "progress": 100,
+  "file_name": "wallet_ledger_202509.csv",
+  "file_type": "csv",
+  "file_size": 10485760,
+  "download_url": "https://mock/exports/E20251003002?sig=ready",
+  "expires_at": "2025-10-04T10:00:00+08:00",
+  "params": {
+    "start": "2025-09-01",
+    "end": "2025-09-30",
+    "dimension": "store"
+  },
+  "created_by": "U2001",
+  "created_at": "2025-10-03T09:30:00+08:00",
+  "finished_at": "2025-10-03T09:45:12+08:00",
+  "source": "/wallet/ledger",
+  "retry_of": null,
+  "error": null,
+  "logs_tail": "2025-10-03 09:30:01 queued\n2025-10-03 09:30:05 pulling data...\n2025-10-03 09:36:12 writing csv chunk 5/5\n2025-10-03 09:37:01 uploading to storage\n2025-10-03 09:45:12 job completed.",
+  "downloads": [
+    {
+      "time": "2025-10-03T09:50:00+08:00",
+      "actor": "U2001",
+      "channel": "web",
+      "ip": "10.10.1.8"
+    }
+  ]
+}

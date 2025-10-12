@@ -1,0 +1,34 @@
+{
+  "total": 3,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "id": "S001",
+      "name": "广州天河一店",
+      "orders": 420,
+      "gmv": 228540.34,
+      "settlement": 182340.12,
+      "withdraw": 80210.77,
+      "approval_rate": 0.88
+    },
+    {
+      "id": "S002",
+      "name": "深圳福田旗舰店",
+      "orders": 386,
+      "gmv": 205110.55,
+      "settlement": 169450.88,
+      "withdraw": 75640.22,
+      "approval_rate": 0.91
+    },
+    {
+      "id": "S003",
+      "name": "上海陆家嘴中心店",
+      "orders": 362,
+      "gmv": 196530.21,
+      "settlement": 158460.43,
+      "withdraw": 70215.33,
+      "approval_rate": 0.87
+    }
+  ]
+}

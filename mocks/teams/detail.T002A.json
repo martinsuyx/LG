@@ -1,0 +1,14 @@
+{
+  "team_id": "T002A",
+  "name": "上海旗舰队",
+  "parent_id": "T002",
+  "lead_user_id": "U4101",
+  "lead_user_name": "唐悦",
+  "tags": ["上海", "旗舰"],
+  "company_bindings": ["C03"],
+  "status": "active",
+  "created_at": "2024-02-20T10:00:00+08:00",
+  "members_count": 94,
+  "stores_count": 41,
+  "desc": "负责上海核心商圈旗舰店运营。"
+}

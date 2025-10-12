@@ -1,0 +1,14 @@
+{
+  "role_id": "R03",
+  "name": "访客",
+  "desc": "只读权限",
+  "status": "active",
+  "created_at": "2024-05-01T09:00:00+08:00",
+  "updated_at": "2025-09-01T08:00:00+08:00",
+  "bound_users": 12,
+  "permissions": [
+    "menu:dashboard",
+    "menu:reports",
+    "api:/api/v1/reports/overview"
+  ]
+}

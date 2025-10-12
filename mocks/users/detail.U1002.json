@@ -1,0 +1,15 @@
+{
+  "user_id": "U1002",
+  "name": "李四",
+  "phone": "13800000002",
+  "email": "lisi@example.com",
+  "role_ids": ["R03"],
+  "status": "frozen",
+  "last_login_at": "2025-09-25T09:15:00+08:00",
+  "teams": ["华东大区"],
+  "created_at": "2024-03-18T10:00:00+08:00",
+  "updated_at": "2025-08-19T10:30:00+08:00",
+  "recent_actions": [
+    { "ts": "2025-08-01T18:22:00+08:00", "action": "导出活动报表" }
+  ]
+}

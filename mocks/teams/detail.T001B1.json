@@ -1,0 +1,14 @@
+{
+  "team_id": "T001B1",
+  "name": "南山大客户组",
+  "parent_id": "T001B",
+  "lead_user_id": "U3301",
+  "lead_user_name": "许诺",
+  "tags": ["南山", "B2B"],
+  "company_bindings": ["C05"],
+  "status": "active",
+  "created_at": "2024-04-02T09:45:00+08:00",
+  "members_count": 64,
+  "stores_count": 15,
+  "desc": "对接南山科技企业的企业购与员工福利项目。"
+}

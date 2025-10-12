@@ -1,0 +1,14 @@
+{
+  "team_id": "T002B",
+  "name": "杭州创新队",
+  "parent_id": "T002",
+  "lead_user_id": "U4105",
+  "lead_user_name": "谢杭",
+  "tags": ["杭州", "创新业务"],
+  "company_bindings": ["C03", "C06"],
+  "status": "active",
+  "created_at": "2024-03-05T13:45:00+08:00",
+  "members_count": 76,
+  "stores_count": 27,
+  "desc": "负责杭州创新业态与线上线下融合项目。"
+}

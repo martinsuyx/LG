@@ -1,0 +1,26 @@
+{
+  "job_id": "E20251003003",
+  "type": "risk_hits",
+  "status": "failed",
+  "progress": 80,
+  "file_name": null,
+  "file_type": "csv",
+  "file_size": null,
+  "download_url": null,
+  "expires_at": null,
+  "params": {
+    "start": "2025-09-28",
+    "end": "2025-10-03"
+  },
+  "created_by": "U3001",
+  "created_at": "2025-10-03T08:00:00+08:00",
+  "finished_at": "2025-10-03T08:20:00+08:00",
+  "source": "/risk/hits",
+  "retry_of": null,
+  "error": {
+    "code": "EXPORT_TIMEOUT",
+    "message": "Job exceeded 20m limit"
+  },
+  "logs_tail": "2025-10-03 08:00:00 queued\n2025-10-03 08:02:12 processing rules hit data…\n2025-10-03 08:16:40 uploading chunk 7/10\n2025-10-03 08:20:00 timeout reached, aborting job\n2025-10-03 08:20:01 job marked as failed",
+  "downloads": []
+}

@@ -1,0 +1,52 @@
+{
+  "total": 3,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "ticket_id": "K20251003001",
+      "created_at": "2025-10-03T09:10:00+08:00",
+      "priority": "high",
+      "status": "investigating",
+      "severity": "high",
+      "assignee_id": "U2001",
+      "assignee_name": "林杉",
+      "source": "hit",
+      "rule_id": "GEOFENCE_OUT",
+      "title": "越界地理围栏(高) O20251003001",
+      "due_at": "2025-10-03T10:10:00+08:00",
+      "sla_minutes": 60,
+      "tags": ["地理围栏", "高风险"]
+    },
+    {
+      "ticket_id": "K20251003005",
+      "created_at": "2025-10-03T08:45:00+08:00",
+      "priority": "normal",
+      "status": "assigned",
+      "severity": "medium",
+      "assignee_id": "U2002",
+      "assignee_name": "朱敏",
+      "source": "hit",
+      "rule_id": "FREQ_APPLY",
+      "title": "短期高频提交 O20251002999",
+      "due_at": "2025-10-03T11:45:00+08:00",
+      "sla_minutes": 180,
+      "tags": ["频率", "人工"]
+    },
+    {
+      "ticket_id": "K20251002021",
+      "created_at": "2025-10-02T14:20:00+08:00",
+      "priority": "critical",
+      "status": "pending_info",
+      "severity": "critical",
+      "assignee_id": "U2003",
+      "assignee_name": "周洁",
+      "source": "manual",
+      "rule_id": "DEVICE_BLACK",
+      "title": "设备黑名单复核 DEV-BLK-888",
+      "due_at": "2025-10-02T15:50:00+08:00",
+      "sla_minutes": 90,
+      "tags": ["黑名单", "高优先"]
+    }
+  ]
+}

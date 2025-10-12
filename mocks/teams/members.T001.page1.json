@@ -1,0 +1,58 @@
+{
+  "team_id": "T001",
+  "total": 5,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "user_id": "U0001",
+      "name": "李南",
+      "phone": "13800138000",
+      "email": "linan@example.com",
+      "role": "lead",
+      "status": "active",
+      "joined_at": "2023-12-10T09:00:00+08:00",
+      "team_path": ["华南大区"],
+      "tags": ["负责人"]
+    },
+    {
+      "user_id": "U1050",
+      "name": "周蕾",
+      "phone": "13800138011",
+      "email": "zhoulei@example.com",
+      "role": "staff",
+      "status": "active",
+      "joined_at": "2024-02-18T09:30:00+08:00",
+      "team_path": ["华南大区"],
+      "tags": ["商务"]
+    },
+    {
+      "user_id": "U1188",
+      "name": "陈宇",
+      "phone": "13800138032",
+      "role": "promoter",
+      "status": "active",
+      "joined_at": "2024-04-22T11:00:00+08:00",
+      "team_path": ["华南大区"]
+    },
+    {
+      "user_id": "U1203",
+      "name": "马欣",
+      "phone": "13800138045",
+      "role": "staff",
+      "status": "frozen",
+      "joined_at": "2024-05-08T10:15:00+08:00",
+      "team_path": ["华南大区"],
+      "frozen_reason": "账号异常登录"
+    },
+    {
+      "user_id": "U1301",
+      "name": "王勋",
+      "phone": "13800138066",
+      "role": "viewer",
+      "status": "active",
+      "joined_at": "2024-06-01T14:00:00+08:00",
+      "team_path": ["华南大区"]
+    }
+  ]
+}

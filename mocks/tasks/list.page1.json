@@ -1,0 +1,58 @@
+{
+  "total": 3,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "task_id": "T20251003001",
+      "name": "实名开户提交",
+      "code": "OPENKYC",
+      "status": "draft",
+      "version": 1,
+      "start_time": "2025-10-05T00:00:00+08:00",
+      "end_time": "2025-12-31T23:59:59+08:00",
+      "form_dsl_id": "F123",
+      "risk_policy_id": "R001",
+      "visible_to_roles": ["operator", "reviewer"],
+      "scope": {
+        "cities": ["GZ"],
+        "stores": [],
+        "companies": ["华南事业部"]
+      }
+    },
+    {
+      "task_id": "T20250915005",
+      "name": "门店回访抽审",
+      "code": "STORECHK",
+      "status": "published",
+      "version": 4,
+      "start_time": "2025-09-15T00:00:00+08:00",
+      "end_time": "2025-11-30T23:59:59+08:00",
+      "form_dsl_id": "F208",
+      "risk_policy_id": "R006",
+      "visible_to_roles": ["reviewer"],
+      "scope": {
+        "cities": ["SZ", "FS"],
+        "stores": ["SZ101", "FS002"],
+        "companies": []
+      }
+    },
+    {
+      "task_id": "T20240801004",
+      "name": "补充材料复核",
+      "code": "SUPDOC",
+      "status": "offline",
+      "version": 2,
+      "start_time": "2025-08-01T00:00:00+08:00",
+      "end_time": "2025-09-15T23:59:59+08:00",
+      "form_dsl_id": "F099",
+      "risk_policy_id": null,
+      "visible_to_roles": ["operator", "reviewer"],
+      "scope": {
+        "cities": ["DG"],
+        "stores": [],
+        "companies": []
+      }
+    }
+  ]
+}

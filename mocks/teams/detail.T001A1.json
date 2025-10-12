@@ -1,0 +1,14 @@
+{
+  "team_id": "T001A1",
+  "name": "天河商圈小队",
+  "parent_id": "T001A",
+  "lead_user_id": "U3101",
+  "lead_user_name": "黄天",
+  "tags": ["天河城", "旗舰店"],
+  "company_bindings": ["C01"],
+  "status": "active",
+  "created_at": "2024-07-18T11:20:00+08:00",
+  "members_count": 58,
+  "stores_count": 18,
+  "desc": "专注天河商圈旗舰店的重点活动落地。"
+}

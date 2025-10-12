@@ -1,0 +1,43 @@
+{
+  "total": 3,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "case_id": "KYC20251003001",
+      "created_at": "2025-10-03T09:30:00+08:00",
+      "status": "pending",
+      "risk_level": "high",
+      "channel": "wechat",
+      "source": "auto",
+      "id_type": "cn_id",
+      "order_id": "O20251002001",
+      "user_id": "U138000",
+      "assignee_id": null
+    },
+    {
+      "case_id": "KYC20251002008",
+      "created_at": "2025-10-02T14:12:00+08:00",
+      "status": "need_more",
+      "risk_level": "medium",
+      "channel": "h5",
+      "source": "manual",
+      "id_type": "passport",
+      "order_id": "O20251001088",
+      "user_id": "U556677",
+      "assignee_id": "U2005"
+    },
+    {
+      "case_id": "KYC20250930015",
+      "created_at": "2025-09-30T11:05:00+08:00",
+      "status": "callback_error",
+      "risk_level": "critical",
+      "channel": "api",
+      "source": "auto",
+      "id_type": "cn_id",
+      "order_id": "O20250928022",
+      "user_id": "U998800",
+      "assignee_id": "U2002"
+    }
+  ]
+}

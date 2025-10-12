@@ -1,6 +1,7 @@
 paths:
   /api/v1/uploads:
     post:
+      operationId: createUploadPolicy
       summary: Request upload credentials for AI intake images
       tags: [Uploads]
       requestBody:

@@ -1,0 +1,9 @@
+{
+  "task_id": "IMPORT-20251003001",
+  "file_name": "blacklist_20251003.csv",
+  "rows_total": 5000,
+  "rows_valid": 4800,
+  "rows_invalid": 200,
+  "status": "succeeded",
+  "error_file": "/mock/import-errors.csv"
+}

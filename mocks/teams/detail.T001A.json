@@ -1,0 +1,14 @@
+{
+  "team_id": "T001A",
+  "name": "广州一区",
+  "parent_id": "T001",
+  "lead_user_id": "U2001",
+  "lead_user_name": "赵晨",
+  "tags": ["广州", "线下门店"],
+  "company_bindings": ["C01"],
+  "status": "active",
+  "created_at": "2024-05-01T10:00:00+08:00",
+  "members_count": 128,
+  "stores_count": 52,
+  "desc": "覆盖广州核心商圈与合作营业厅。"
+}

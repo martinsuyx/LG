@@ -1,0 +1,50 @@
+{
+  "campaign_id": "C20250915018",
+  "name": "国庆焕新 99 元流量卡",
+  "code": "NATDAY99",
+  "status": "published",
+  "start_time": "2025-09-15T00:00:00+08:00",
+  "end_time": "2025-10-08T23:59:59+08:00",
+  "channels": ["wechat", "h5", "api"],
+  "plans": [
+    {
+      "plan_id": "P11",
+      "name": "99 元合约包",
+      "price": 99.0,
+      "commission_scheme": {
+        "type": "percent",
+        "value": 12
+      },
+      "constraints": {
+        "new_user_only": false
+      }
+    },
+    {
+      "plan_id": "P12",
+      "name": "129 元合约包",
+      "price": 129.0,
+      "commission_scheme": {
+        "type": "tier",
+        "tiers": [
+          { "threshold": 50, "value": 15 },
+          { "threshold": 100, "value": 18 }
+        ]
+      }
+    }
+  ],
+  "scope": {
+    "cities": ["GZ", "SZ"],
+    "companies": ["华南事业部"],
+    "stores": []
+  },
+  "form_dsl_id": "F201",
+  "risk_policy_id": "R008",
+  "visible_to_roles": ["operator", "promoter", "store_owner"],
+  "require_invite": false,
+  "metrics": {
+    "impressions": 35600,
+    "submitted": 1890,
+    "approved": 1612,
+    "settled": 1544
+  }
+}

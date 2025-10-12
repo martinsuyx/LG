@@ -44,6 +44,164 @@ routes:
       examples:
         application/json: !include ./mocks/dashboard/series.orders.json
 
+  - method: get
+    path: /api/v1/dashboard/compare
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/dashboard/compare.json
+
+  # Reports Overview
+  - method: get
+    path: /api/v1/reports/overview
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/overview.json
+
+  - method: get
+    path: /api/v1/reports/series
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/series.settlement.json
+
+  - method: get
+    path: /api/v1/reports/compare
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/compare.campaign.json
+
+  - method: get
+    path: /api/v1/reports/table
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/table.settlement.json
+
+  - method: post
+    path: /api/v1/reports/export
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/export.success.json
+
+  # Exports Center
+  - method: get
+    path: /api/v1/exports
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/exports/list.page1.json
+
+  - method: get
+    path: /api/v1/exports/{job_id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/exports/detail.ready.json
+
+  - method: post
+    path: /api/v1/exports/{job_id}/retry
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/exports/retry.success.json
+
+  - method: post
+    path: /api/v1/exports/{job_id}/cancel
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/exports/cancel.success.json
+
+  - method: post
+    path: /api/v1/exports/batch_delete_expired
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/exports/delete_expired.success.json
+
+  # Audit Logs
+  - method: get
+    path: /api/v1/audit/events
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/audit/events.page1.json
+
+  - method: get
+    path: /api/v1/audit/events/{event_id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/audit/event.A202510030001.json
+
+  - method: get
+    path: /api/v1/audit/verify
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/audit/verify.ok.json
+
+  - method: post
+    path: /api/v1/audit/evidence
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/audit/evidence.success.json
+
+  # System Settings
+  - method: get
+    path: /api/v1/settings
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/settings/all.json
+
+  - method: put
+    path: /api/v1/settings/{group}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/settings/save.success.json
+
+  - method: post
+    path: /api/v1/settings/{group}/submit
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/settings/submit.success.json
+
+  - method: post
+    path: /api/v1/settings/{group}/approve
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/settings/approve.success.json
+
+  - method: post
+    path: /api/v1/settings/{group}/test
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/settings/test.success.json
+
+  - method: get
+    path: /api/v1/reports/table
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/table.settlement.json
+
+  - method: post
+    path: /api/v1/reports/export
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/reports/export.success.json
+
   # Orders
   - method: get
     path: /api/v1/orders
@@ -60,11 +218,247 @@ routes:
         application/json: !include ./mocks/orders/detail.success.json
 
   - method: post
-    path: /api/v1/orders/{id}/review
+    path: /api/v1/orders/{id}/actions/review
     response:
       status: 200
       examples:
         application/json: !include ./mocks/orders/review.approve.json
+
+  - method: post
+    path: /api/v1/orders/batch_review
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/orders/review.batch.json
+
+  - method: get
+    path: /api/v1/review/orders
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/review/orders.list.json
+
+  - method: get
+    path: /api/v1/review/stats
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/review/stats.json
+
+  # Wallet Summary
+  - method: get
+    path: /api/v1/wallet/summary/overview
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/wallet-summary/overview.json
+
+  - method: get
+    path: /api/v1/wallet/summary/series
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/wallet-summary/series.balance.json
+
+  - method: get
+    path: /api/v1/wallet/summary/list
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/wallet-summary/list.store.json
+
+  # Wallet Ledger
+  - method: get
+    path: /api/v1/wallet/ledger
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/wallet-ledger/list.page1.json
+
+  - method: get
+    path: /api/v1/wallet/ledger/stats
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/wallet-ledger/stats.json
+
+  # Withdraws
+  - method: get
+    path: /api/v1/withdraws
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/withdraws/list.page1.json
+
+  - method: get
+    path: /api/v1/withdraws/stats
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/withdraws/stats.json
+
+  - method: post
+    path: /api/v1/withdraws/{id}/approve
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/withdraws/approve.json
+
+  - method: post
+    path: /api/v1/withdraws/{id}/reject
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/withdraws/reject.json
+
+  # Campaigns
+  - method: get
+    path: /api/v1/campaigns
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/list.page1.json
+
+  - method: get
+    path: /api/v1/campaigns/{campaign_id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/detail.json
+
+  - method: post
+    path: /api/v1/campaigns
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/create.success.json
+
+  - method: put
+    path: /api/v1/campaigns/{campaign_id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/update.success.json
+
+  - method: post
+    path: /api/v1/campaigns/{campaign_id}/publish
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/publish.success.json
+
+  - method: post
+    path: /api/v1/campaigns/{campaign_id}/offline
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/offline.success.json
+
+  - method: post
+    path: /api/v1/campaigns/{campaign_id}/clone
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/clone.success.json
+
+  - method: post
+    path: /api/v1/exports/campaigns
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/export.enqueue.json
+
+  # Tasks
+  - method: get
+    path: /api/v1/tasks
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/list.page1.json
+
+  - method: get
+    path: /api/v1/tasks/{task_id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/detail.json
+
+  - method: post
+    path: /api/v1/tasks
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/create.success.json
+
+  - method: put
+    path: /api/v1/tasks/{task_id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/update.success.json
+
+  - method: post
+    path: /api/v1/tasks/{task_id}/validate
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/validate.success.json
+
+  - method: post
+    path: /api/v1/tasks/{task_id}/publish
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/publish.success.json
+
+  - method: post
+    path: /api/v1/tasks/{task_id}/offline
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/offline.success.json
+
+  - method: post
+    path: /api/v1/tasks/{task_id}/clone
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/clone.success.json
+
+  - method: get
+    path: /api/v1/tasks/{task_id}/versions
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/versions.list.json
+
+  - method: post
+    path: /api/v1/exports/tasks
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/tasks/export.enqueue.json
+
+  - method: post
+    path: /api/v1/exports/wallet-summary
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/exports/wallet-summary.json
+
+  - method: post
+    path: /api/v1/exports/wallet-ledger
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/exports/wallet-ledger.json
+
+  - method: post
+    path: /api/v1/exports/withdraws
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/exports/withdraws.json
 
   # Wallet
   - method: get
@@ -135,18 +529,186 @@ routes:
 
   # Teams & Users
   - method: get
-    path: /api/v1/teams/tree
+    path: /api/v1/teams
     response:
       status: 200
       examples:
-        application/json: !include ./mocks/teams/tree.json
+        application/json: !include ./mocks/teams/tree.root.json
 
   - method: get
-    path: /api/v1/teams/{id}/members
+    path: /api/v1/teams/T001/children
     response:
       status: 200
       examples:
-        application/json: !include ./mocks/teams/members.page1.json
+        application/json: !include ./mocks/teams/tree.T001.json
+
+  - method: get
+    path: /api/v1/teams/T001A/children
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/tree.T001A.json
+
+  - method: get
+    path: /api/v1/teams/T001B/children
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/tree.T001B.json
+
+  - method: get
+    path: /api/v1/teams/T002/children
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/tree.T002.json
+
+  - method: get
+    path: /api/v1/teams/T001
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T001.json
+
+  - method: get
+    path: /api/v1/teams/T001A
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T001A.json
+
+  - method: get
+    path: /api/v1/teams/T001B
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T001B.json
+
+  - method: get
+    path: /api/v1/teams/T001A1
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T001A1.json
+
+  - method: get
+    path: /api/v1/teams/T001A2
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T001A2.json
+
+  - method: get
+    path: /api/v1/teams/T001B1
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T001B1.json
+
+  - method: get
+    path: /api/v1/teams/T002A
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T002A.json
+
+  - method: get
+    path: /api/v1/teams/T002B
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T002B.json
+
+  - method: get
+    path: /api/v1/teams/T003
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/detail.T003.json
+
+  - method: get
+    path: /api/v1/teams/T001/members
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/members.T001.page1.json
+
+  - method: get
+    path: /api/v1/teams/T001A/members
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/members.T001A.page1.json
+
+  - method: get
+    path: /api/v1/teams/T001A1/members
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/members.T001A1.page1.json
+
+  - method: get
+    path: /api/v1/teams/T002A/members
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/members.T002A.page1.json
+
+  - method: post
+    path: /api/v1/teams/{id}/move
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/move.success.json
+
+  - method: post
+    path: /api/v1/members/batch_move
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/batch_move.success.json
+
+  - method: post
+    path: /api/v1/invites
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/invite.create.json
+
+  - method: post
+    path: /api/v1/members/import
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/import.accepted.json
+
+  - method: get
+    path: /api/v1/members/import/IMPORT-20251011001
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/import.status.done.json
+
+  - method: post
+    path: /api/v1/teams/{id}/grant
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/grant.success.json
+
+  - method: post
+    path: /api/v1/exports/members
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/export.enqueue.json
+
+  - method: post
+    path: /api/v1/exports/teams
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/export.enqueue.json
 
   - method: get
     path: /api/v1/users
@@ -156,11 +718,102 @@ routes:
         application/json: !include ./mocks/users/list.page1.json
 
   - method: get
+    path: /api/v1/users/{id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/users/detail.json
+
+  - method: post
+    path: /api/v1/users
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/users/create.success.json
+
+  - method: post
+    path: /api/v1/users/{id}/roles
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/users/assign.success.json
+
+  - method: post
+    path: /api/v1/users/{id}/reset_password
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/users/reset.success.json
+
+  - method: post
+    path: /api/v1/users/{id}/freeze
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/users/freeze.success.json
+
+  - method: post
+    path: /api/v1/users/{id}/activate
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/users/activate.success.json
+
+  - method: post
+    path: /api/v1/exports/users
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/users/export.enqueue.json
+
+  - method: get
     path: /api/v1/roles
     response:
       status: 200
       examples:
         application/json: !include ./mocks/roles/list.page1.json
+
+  - method: get
+    path: /api/v1/roles/R01
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/roles/detail.R01.json
+
+  - method: get
+    path: /api/v1/roles/R02
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/roles/detail.R02.json
+
+  - method: get
+    path: /api/v1/roles/R03
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/roles/detail.R03.json
+
+  - method: get
+    path: /api/v1/roles/R04
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/roles/detail.R04.json
+
+  - method: post
+    path: /api/v1/exports/roles
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/roles/export.enqueue.json
+
+  - method: get
+    path: /api/v1/permissions/tree
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/permissions/tree.json
 
   # Risk
   - method: get
@@ -169,6 +822,223 @@ routes:
       status: 200
       examples:
         application/json: !include ./mocks/risk-hits/list.page1.json
+
+  - method: get
+    path: /api/v1/risk/hits/H202510030001
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-hits/detail.H202510030001.json
+
+  - method: get
+    path: /api/v1/risk/hits/H202510030014
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-hits/detail.H202510030014.json
+
+  - method: get
+    path: /api/v1/risk/hits/H202510021208
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-hits/detail.H202510021208.json
+
+  - method: post
+    path: /api/v1/risk/hits/batch_ignore
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-hits/batch_ignore.success.json
+
+  - method: post
+    path: /api/v1/risk/tickets
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-hits/ticket.create.json
+
+  - method: post
+    path: /api/v1/exports/risk-hits
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-hits/export.enqueue.json
+
+  - method: get
+    path: /api/v1/risk/tickets
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/list.page1.json
+
+  - method: get
+    path: /api/v1/risk/tickets/K20251003001
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/detail.K20251003001.json
+
+  - method: post
+    path: /api/v1/risk/tickets/{id}/assign
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/assign.success.json
+
+  - method: post
+    path: /api/v1/risk/tickets/{id}/start
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/start.success.json
+
+  - method: post
+    path: /api/v1/risk/tickets/{id}/pend
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/pend.success.json
+
+  - method: post
+    path: /api/v1/risk/tickets/{id}/resolve
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/resolve.success.json
+
+  - method: post
+    path: /api/v1/risk/tickets/{id}/reject
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/reject.success.json
+
+  - method: post
+    path: /api/v1/risk/tickets/{id}/close
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-tickets/close.success.json
+
+  - method: get
+    path: /api/v1/risk/lists
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-lists/list.page1.json
+
+  - method: get
+    path: /api/v1/risk/lists/L202510030001
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-lists/detail.L202510030001.json
+
+  - method: post
+    path: /api/v1/risk/lists/import
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-lists/import.queue.json
+
+  - method: get
+    path: /api/v1/risk/lists/import/IMPORT-20251003001
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-lists/import.done.json
+
+  - method: post
+    path: /api/v1/risk/lists/dedup_preview
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-lists/dedup.preview.json
+
+  - method: get
+    path: /api/v1/risk/rules
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-rules/list.page1.json
+
+  - method: get
+    path: /api/v1/risk/rules/R2025100301
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-rules/detail.R2025100301.json
+
+  - method: post
+    path: /api/v1/risk/rules/R2025100301/simulate
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-rules/simulate.success.json
+
+  - method: post
+    path: /api/v1/risk/rules/R2025100301/publish
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-rules/publish.success.json
+
+  - method: post
+    path: /api/v1/risk/rules/R2025100301/replay
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/risk-rules/replay.success.json
+
+  - method: get
+    path: /api/v1/kyc/cases
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/list.page1.json
+
+  - method: get
+    path: /api/v1/kyc/cases/KYC20251003001
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/detail.KYC20251003001.json
+
+  - method: post
+    path: /api/v1/kyc/cases/{id}/assign
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/assign.success.json
+
+  - method: post
+    path: /api/v1/kyc/cases/{id}/approve
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/approve.success.json
+
+  - method: post
+    path: /api/v1/kyc/cases/{id}/reject
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/reject.success.json
+
+  - method: post
+    path: /api/v1/kyc/cases/{id}/request_more
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/request_more.success.json
+
+  - method: post
+    path: /api/v1/kyc/cases/{id}/sync_callback
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/kyc-cases/sync.success.json
 
   - method: get
     path: /api/v1/risk/tickets
@@ -219,7 +1089,7 @@ routes:
     response:
       status: 200
       examples:
-        application/json: !include ./mocks/reports/series.json
+        application/json: !include ./mocks/reports/series.settlement.json
 
   - method: get
     path: /api/v1/reports/compare

@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELED
+  COMPLETED
+}
+
+enum AuditStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum WalletEntryType {
+  CREDIT
+  DEBIT
+  ADJUSTMENT
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum RiskSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum KycStatus {
+  PENDING
+  REVIEW
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String
+  phone         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  orders        Order[]
+  walletEntries WalletLedger[]
+  payouts       Payout[]
+  kycCases      KycCase[]
+  audits        OrderAudit[]   @relation("AuditReviewer")
+}
+
+model Order {
+  id          String       @id @default(cuid())
+  orderNumber String       @unique
+  status      OrderStatus  @default(PENDING)
+  amount      Decimal      @db.Decimal(12, 2)
+  currency    String       @default("CNY")
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  audits      OrderAudit[]
+  riskHits    RiskHit[]
+}
+
+model OrderAudit {
+  id         String      @id @default(cuid())
+  orderId    String
+  order      Order       @relation(fields: [orderId], references: [id])
+  reviewerId String?
+  reviewer   User?       @relation("AuditReviewer", fields: [reviewerId], references: [id])
+  status     AuditStatus @default(PENDING)
+  note       String?
+  createdAt  DateTime    @default(now())
+}
+
+model WalletLedger {
+  id           String          @id @default(cuid())
+  userId       String
+  user         User            @relation(fields: [userId], references: [id])
+  type         WalletEntryType
+  amount       Decimal         @db.Decimal(12, 2)
+  balanceAfter Decimal?        @db.Decimal(12, 2)
+  reference    String?
+  createdAt    DateTime        @default(now())
+}
+
+model Payout {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  amount      Decimal      @db.Decimal(12, 2)
+  status      PayoutStatus @default(PENDING)
+  requestedAt DateTime     @default(now())
+  processedAt DateTime?
+}
+
+model RiskHit {
+  id        String       @id @default(cuid())
+  orderId   String
+  order     Order        @relation(fields: [orderId], references: [id])
+  ruleCode  String
+  severity  RiskSeverity @default(MEDIUM)
+  message   String?
+  createdAt DateTime     @default(now())
+}
+
+model KycCase {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  status      KycStatus @default(PENDING)
+  riskScore   Int       @default(0)
+  submittedAt DateTime  @default(now())
+  resolvedAt  DateTime?
+}

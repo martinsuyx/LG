@@ -1,0 +1,5 @@
+{
+  "ok": true,
+  "team_id": "T001A",
+  "granted_roles": ["team_lead", "org_admin"]
+}

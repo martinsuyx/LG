@@ -1,0 +1,45 @@
+{
+  "case_id": "KYC20251003001",
+  "created_at": "2025-10-03T09:30:00+08:00",
+  "status": "pending",
+  "risk_level": "high",
+  "channel": "wechat",
+  "source": "auto",
+  "id_type": "cn_id",
+  "order_id": "O20251002001",
+  "user_id": "U138000",
+  "assignee_id": null,
+  "double_review": true,
+  "materials": {
+    "id_front_url": "/mock/images/id_front.jpg",
+    "id_back_url": "/mock/images/id_back.jpg",
+    "selfie_url": "/mock/images/selfie.jpg",
+    "liveness_score": 0.92,
+    "psl_similarity": 0.88
+  },
+  "ocr": {
+    "name": "张三",
+    "id_number": "4401********1234",
+    "birth_date": "1995-06-18",
+    "gender": "M",
+    "address": "广东省广州市天河区体育西路 1 号",
+    "valid_from": "2021-01-01",
+    "valid_to": "2031-01-01",
+    "confidence": 0.94
+  },
+  "form": {
+    "name": "张三",
+    "id_number": "4401********1234",
+    "birth_date": "1995-06-18",
+    "gender": "M",
+    "address": "广东省广州市天河区体育西路 1 号"
+  },
+  "diffs": [
+    { "key": "name", "ocr_value": "张三", "form_value": "张三", "confidence": 0.94, "mismatch": false },
+    { "key": "id_number", "ocr_value": "4401********1234", "form_value": "4401********1234", "confidence": 0.92, "mismatch": false },
+    { "key": "address", "ocr_value": "广东省广州市天河区体育西路一号", "form_value": "广东省广州市天河区体育西路 1 号", "confidence": 0.76, "mismatch": true }
+  ],
+  "actions": [
+    { "time": "2025-10-03T09:31:00+08:00", "actor": "系统", "action": "auto_review", "note": "触发人工复核" }
+  ]
+}

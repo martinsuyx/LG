@@ -1,0 +1,51 @@
+{
+  "total": 4,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "list_id": "L202510030001",
+      "type": "blacklist",
+      "entity_type": "phone",
+      "entity_value": "13800000000",
+      "status": "active",
+      "source": "import",
+      "hit_count": 42,
+      "expire_at": "2026-10-03T00:00:00+08:00",
+      "note": "高风险号码"
+    },
+    {
+      "list_id": "L202510030002",
+      "type": "whitelist",
+      "entity_type": "store",
+      "entity_value": "STORE-001",
+      "status": "active",
+      "source": "manual",
+      "hit_count": 3,
+      "expire_at": null,
+      "note": "合作门店"
+    },
+    {
+      "list_id": "L202510020001",
+      "type": "greylist",
+      "entity_type": "device",
+      "entity_value": "DEV-9A7",
+      "status": "active",
+      "source": "api",
+      "hit_count": 15,
+      "expire_at": "2025-12-31T00:00:00+08:00",
+      "note": "待观察设备"
+    },
+    {
+      "list_id": "L202509300001",
+      "type": "blacklist",
+      "entity_type": "id_number",
+      "entity_value": "4401***********1234",
+      "status": "archived",
+      "source": "import",
+      "hit_count": 8,
+      "expire_at": null,
+      "note": "人工审核归档"
+    }
+  ]
+}

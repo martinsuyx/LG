@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "missing_fields": ["id_number"],
+  "invalid_rules": [
+    {
+      "key": "amount",
+      "reason": "op not allowed for text"
+    }
+  ],
+  "warnings": []
+}

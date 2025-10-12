@@ -13,16 +13,60 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ page:number; pages:number; pageSize:number; sizes?: number[] }>()
-withDefaults(props, { sizes: () => [20, 50, 100, 200] })
+const props = withDefaults(
+  defineProps<{ page: number; pages: number; pageSize: number; sizes?: number[] }>(),
+  { sizes: () => [20, 50, 100, 200] }
+);
 </script>
 
 <style scoped lang="scss">
 @use '@/styles/variables.scss' as *;
-.jg-pager{ display:flex; align-items:center; gap:$spacing-12; padding:$spacing-12; }
-.jg-pager__btn{ @extend .jg-btn; height:$control-sm-h; padding:0 $spacing-12; border-radius:$radius-8; background:$surface-100; border:$border-1 solid $surface-300; }
-.jg-pager__info{ color:$text-subtle; }
-.jg-pager__size{ height:$control-sm-h; border:$border-1 solid $surface-300; border-radius:$radius-8; background:$surface-0; color:$text-strong; padding:0 $spacing-12; }
+
+$control-height: calc(#{$spacing-16} * 2.25);
+
+.jg-pager {
+  display: flex;
+  align-items: center;
+  gap: $spacing-12;
+  padding: $spacing-12;
+}
+
+.jg-pager__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: $control-height;
+  padding: 0 $spacing-12;
+  border-radius: $radius-8;
+  border: $border-width-1 solid $color-surface-200;
+  background: $color-surface-100;
+  color: $color-text-strong;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.jg-pager__btn:hover:not(:disabled) {
+  background: $color-surface-200;
+}
+
+.jg-pager__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.jg-pager__info {
+  color: $color-surface-500;
+  font-size: $font-size-12;
+}
+
+.jg-pager__size {
+  height: $control-height;
+  border: $border-width-1 solid $color-surface-200;
+  border-radius: $radius-8;
+  background: $color-surface-0;
+  color: $color-text-strong;
+  padding: 0 $spacing-12;
+  font: inherit;
+}
 </style>
-
-

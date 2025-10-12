@@ -1,0 +1,46 @@
+{
+  "event_id": "A202510030001",
+  "ts": "2025-10-03T10:00:12+08:00",
+  "level": "security",
+  "type": "export_download",
+  "actor": { "user_id": "U1001", "name": "李想", "roles": ["finance"], "org_id": "ORG-01" },
+  "source": "web",
+  "resource": { "type": "export", "id": "E20251003002" },
+  "action": "download",
+  "result": "fail",
+  "reason": "signature expired",
+  "ip": "203.0.113.10",
+  "ua": "Chrome/140",
+  "trace_id": "tr-9abcde",
+  "signature": {
+    "algo": "SHA256",
+    "hash": "abc123",
+    "prev_hash": "def456",
+    "chain_ok": true
+  },
+  "redactions": ["extra.token"],
+  "extra": {
+    "params_hash": "9f178d",
+    "download_url": "https://mock/exports/E20251003002?sig=expired",
+    "token": "***"
+  },
+  "chain": {
+    "prev": {
+      "event_id": "A202510030000",
+      "ts": "2025-10-03T09:58:00+08:00",
+      "hash": "def456"
+    },
+    "next": {
+      "event_id": "A202510030002",
+      "ts": "2025-10-03T10:05:00+08:00",
+      "hash": "ghi789"
+    }
+  },
+  "context": {
+    "http": {
+      "method": "GET",
+      "path": "/api/v1/exports/E20251003002/download",
+      "query": "expires=1696300000&signature=***"
+    }
+  }
+}

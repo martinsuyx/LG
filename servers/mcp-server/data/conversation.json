@@ -49,6 +49,21 @@
       "role": "assistant",
       "content": "完成 AI Intake 页面交付物：设计稿占位 `specs/pages/ai-intake/ai-intake.fig`，验收清单 `specs/pages/ai-intake/acceptance/ai-intake-checklist.md`，OpenAPI 片段 `openapi/orders.ai-intake.yaml` / `openapi/orders.submit.yaml` / `openapi/uploads.yaml`，Mock 数据 `mocks/ai-intake.json`，E2E 骨架 `tests/e2e/ai-intake.spec.ts`。",
       "timestamp": "2025-10-09T09:04:28.000Z"
+    },
+    {
+      "role": "assistant",
+      "content": "新增导航配置 `apps/admin-web/src/config/nav.ts`，定义多级菜单及顶栏/页脚常量；同步 i18n 词条到 `apps/admin-web/src/i18n/zh-CN.json` 以支撑导航文案。",
+      "timestamp": "2025-10-11T05:46:20.000Z"
+    },
+    {
+      "role": "assistant",
+      "content": "新增页面框架组件：`apps/admin-web/src/layout/AppLayout.vue` 组织侧边栏+顶栏+内容区；`Sidebar.vue` 和 `Topbar.vue`、`Footer.vue` 负责导航渲染与版本展示，均使用 design tokens。",
+      "timestamp": "2025-10-11T06:10:50.606Z"
+    },
+    {
+      "role": "assistant",
+      "content": "更新契约工具链：调整 `openapi/openapi.yaml` 及相关片段，通过 `pnpm run check` 生成 `openapi/bundle.yaml`；将 `pnpm run mock` 脚本改为显式传参（但受沙箱限制无法监听端口）；`pnpm run sdk:ts` 因无法访问 repo1.maven.org 下载生成器失败；`pnpm run tokens:build` 成功生成 `apps/admin-web/src/styles/variables.scss` / `tokens.css` / `tokens.ts`。",
+      "timestamp": "2025-10-11T07:57:44.208Z"
     }
   ]
 }

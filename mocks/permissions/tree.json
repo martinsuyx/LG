@@ -1,0 +1,63 @@
+{
+  "items": [
+    {
+      "perm_id": "menu:dashboard",
+      "name": "仪表盘",
+      "type": "menu",
+      "children": [
+        {
+          "perm_id": "menu:dashboard:overview",
+          "name": "概览",
+          "type": "menu",
+          "children": [
+            { "perm_id": "api:/api/v1/dashboard/overview", "name": "Dashboard 概览接口", "type": "api", "children": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "perm_id": "menu:orders",
+      "name": "订单与审核",
+      "type": "menu",
+      "children": [
+        { "perm_id": "menu:orders:list", "name": "订单列表", "type": "menu", "children": [] },
+        { "perm_id": "menu:orders:review", "name": "审核工作台", "type": "menu", "children": [] },
+        { "perm_id": "api:/api/v1/orders/review", "name": "订单审核接口", "type": "api", "children": [] },
+        { "perm_id": "api:/api/v1/orders/export", "name": "订单导出接口", "type": "api", "children": [] }
+      ]
+    },
+    {
+      "perm_id": "menu:wallet",
+      "name": "资金与账户",
+      "type": "menu",
+      "children": [
+        { "perm_id": "menu:wallet:summary", "name": "钱包摘要", "type": "menu", "children": [] },
+        { "perm_id": "menu:wallet:ledger", "name": "钱包流水", "type": "menu", "children": [] },
+        { "perm_id": "api:/api/v1/wallet/summary", "name": "钱包摘要接口", "type": "api", "children": [] },
+        { "perm_id": "api:/api/v1/withdraws/audit", "name": "提现审核接口", "type": "api", "children": [] }
+      ]
+    },
+    {
+      "perm_id": "menu:org",
+      "name": "组织与用户",
+      "type": "menu",
+      "children": [
+        { "perm_id": "menu:org:teams", "name": "团队与人员", "type": "menu", "children": [] },
+        { "perm_id": "menu:org:users", "name": "用户与角色", "type": "menu", "children": [] },
+        { "perm_id": "api:/api/v1/users", "name": "用户管理接口", "type": "api", "children": [] },
+        { "perm_id": "api:/api/v1/roles", "name": "角色管理接口", "type": "api", "children": [] }
+      ]
+    },
+    {
+      "perm_id": "menu:reports",
+      "name": "报表与导出",
+      "type": "menu",
+      "children": [
+        { "perm_id": "menu:reports:overview", "name": "报表总览", "type": "menu", "children": [] },
+        { "perm_id": "menu:reports:exports", "name": "导出中心", "type": "menu", "children": [] },
+        { "perm_id": "api:/api/v1/reports/overview", "name": "报表接口", "type": "api", "children": [] },
+        { "perm_id": "api:/api/v1/exports", "name": "导出接口", "type": "api", "children": [] }
+      ]
+    }
+  ]
+}

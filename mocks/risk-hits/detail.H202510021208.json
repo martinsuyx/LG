@@ -1,0 +1,31 @@
+{
+  "hit_id": "H202510021208",
+  "context": {
+    "device": {
+      "device_id": "DEV-BLK-888",
+      "blacklist_source": "国家名单库",
+      "first_seen": "2024-05-12T08:00:00+08:00",
+      "recent_channels": ["wechat", "api"],
+      "related_users": 12
+    },
+    "account": {
+      "promoter_id": "P0021",
+      "promoter_name": "渠道-深圳A组",
+      "previous_risk_hits": 5
+    },
+    "timeline": {
+      "last_order": null,
+      "last_login": "2025-10-02T21:58:12+08:00"
+    }
+  },
+  "evidences": [
+    { "type": "text", "content": "设备指纹命中高危黑名单库" },
+    { "type": "stat", "content": "该设备近 24 小时发起 12 次请求" },
+    { "type": "text", "content": "Promoter 渠道已有多次风险提示" }
+  ],
+  "similar_hits": [
+    { "hit_id": "H202510021045", "time": "2025-10-02T20:14:00+08:00", "rule_code": "DEVICE_BLACK", "score": 94.5 },
+    { "hit_id": "H202509300301", "time": "2025-09-30T22:11:00+08:00", "rule_code": "DEVICE_BLACK", "score": 93.8 },
+    { "hit_id": "H202509280001", "time": "2025-09-28T08:05:00+08:00", "rule_code": "DEVICE_BLACK", "score": 92.0 }
+  ]
+}

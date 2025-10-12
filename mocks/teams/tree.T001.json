@@ -1,0 +1,38 @@
+{
+  "parent_id": "T001",
+  "teams": [
+    {
+      "team_id": "T001A",
+      "name": "广州一区",
+      "parent_id": "T001",
+      "has_children": true,
+      "members_count": 128,
+      "lead_user_name": "赵晨",
+      "lead_user_id": "U2001",
+      "company_bindings": ["C01"],
+      "tags": ["广州", "线下门店"]
+    },
+    {
+      "team_id": "T001B",
+      "name": "深圳一区",
+      "parent_id": "T001",
+      "has_children": true,
+      "members_count": 112,
+      "lead_user_name": "程敏",
+      "lead_user_id": "U2005",
+      "company_bindings": ["C01", "C05"],
+      "tags": ["深圳", "企业合作"]
+    },
+    {
+      "team_id": "T001C",
+      "name": "珠海巡检队",
+      "parent_id": "T001",
+      "has_children": false,
+      "members_count": 40,
+      "lead_user_name": "龚越",
+      "lead_user_id": "U2015",
+      "company_bindings": ["C02"],
+      "tags": ["珠海", "巡检"]
+    }
+  ]
+}

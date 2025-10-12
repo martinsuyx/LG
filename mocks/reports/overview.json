@@ -1,0 +1,126 @@
+{
+  "kpis": [
+    {
+      "key": "orders",
+      "group": "biz",
+      "label": "订单数",
+      "value": 1680,
+      "delta": 8.5,
+      "trend": "up",
+      "unit": "笔",
+      "drill_link": "/orders?status=approved"
+    },
+    {
+      "key": "gmv",
+      "group": "biz",
+      "label": "GMV",
+      "value": 985430.65,
+      "delta": 5.2,
+      "trend": "up",
+      "unit": "元",
+      "drill_link": "/reports/exports?type=gmv"
+    },
+    {
+      "key": "settlement",
+      "group": "biz",
+      "label": "结算金额",
+      "value": 725840.48,
+      "delta": -2.8,
+      "trend": "down",
+      "unit": "元",
+      "drill_link": "/wallet/summary"
+    },
+    {
+      "key": "withdraw",
+      "group": "biz",
+      "label": "提现金额",
+      "value": 254360.1,
+      "delta": 3.1,
+      "trend": "up",
+      "unit": "元",
+      "drill_link": "/withdraws"
+    },
+    {
+      "key": "avg_order_value",
+      "group": "biz",
+      "label": "客单价",
+      "value": 587.12,
+      "delta": -1.4,
+      "trend": "down",
+      "unit": "元",
+      "drill_link": "/reports/detail/avg-order"
+    },
+    {
+      "key": "approval_rate",
+      "group": "biz",
+      "label": "通过率",
+      "value": 0.863,
+      "delta": 2.1,
+      "trend": "up",
+      "unit": "%",
+      "drill_link": "/review"
+    },
+    {
+      "key": "risk_hits",
+      "group": "compliance",
+      "label": "风控命中",
+      "value": 324,
+      "delta": -6.2,
+      "trend": "down",
+      "unit": "笔",
+      "drill_link": "/risk/hits"
+    },
+    {
+      "key": "ticket_close_rate",
+      "group": "compliance",
+      "label": "工单关闭率",
+      "value": 0.782,
+      "delta": 4.6,
+      "trend": "up",
+      "unit": "%",
+      "drill_link": "/risk/tickets"
+    },
+    {
+      "key": "kyc_pass_rate",
+      "group": "compliance",
+      "label": "KYC 通过率",
+      "value": 0.912,
+      "delta": 1.8,
+      "trend": "up",
+      "unit": "%",
+      "drill_link": "/risk/kyc"
+    }
+  ],
+  "reports": [
+    {
+      "report_key": "sales_daily",
+      "title": "销售日报",
+      "desc": "按门店/渠道拆分的销售与结算明细。",
+      "route": "/exports?type=sales-daily"
+    },
+    {
+      "report_key": "channel_weekly",
+      "title": "渠道周报",
+      "desc": "渠道转化、GMV、成本与ROI周度表现。",
+      "route": "/reports/channel-weekly"
+    },
+    {
+      "report_key": "activity_monthly",
+      "title": "活动效果月报",
+      "desc": "活动曝光、下单与转化漏斗。",
+      "route": "/reports/activity-monthly"
+    },
+    {
+      "report_key": "risk_weekly",
+      "title": "风控周报",
+      "desc": "命中、工单与处置效率，支持周对周对比。",
+      "route": "/risk/hits"
+    },
+    {
+      "report_key": "finance_reconcile",
+      "title": "财务对账报表",
+      "desc": "订单、提现、分账与平台佣金对账。",
+      "route": "/wallet/ledger"
+    }
+  ]
+}

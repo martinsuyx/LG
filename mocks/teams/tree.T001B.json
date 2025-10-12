@@ -1,0 +1,27 @@
+{
+  "parent_id": "T001B",
+  "teams": [
+    {
+      "team_id": "T001B1",
+      "name": "南山大客户组",
+      "parent_id": "T001B",
+      "has_children": false,
+      "members_count": 64,
+      "lead_user_name": "许诺",
+      "lead_user_id": "U3301",
+      "company_bindings": ["C05"],
+      "tags": ["南山", "B2B"]
+    },
+    {
+      "team_id": "T001B2",
+      "name": "福田渠道组",
+      "parent_id": "T001B",
+      "has_children": false,
+      "members_count": 48,
+      "lead_user_name": "廖可",
+      "lead_user_id": "U3310",
+      "company_bindings": ["C05"],
+      "tags": ["福田", "渠道"]
+    }
+  ]
+}

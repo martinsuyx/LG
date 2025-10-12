@@ -1,0 +1,55 @@
+{
+  "total": 3,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "rule_id": "R2025100301",
+      "code": "GEOFENCE_OUT",
+      "name": "越界地理围栏",
+      "level": "high",
+      "status": "published",
+      "version": 12,
+      "weight": 1.2,
+      "threshold": 80,
+      "package": "geo",
+      "hit_7d": 128,
+      "updated_by": "林杉",
+      "updated_at": "2025-10-03T09:20:00+08:00"
+    },
+    {
+      "rule_id": "R2025100201",
+      "code": "FREQ_APPLY",
+      "name": "短期高频提交",
+      "level": "medium",
+      "status": "draft",
+      "version": 3,
+      "weight": 1.0,
+      "threshold": 65,
+      "package": "behavior",
+      "hit_7d": 76,
+      "updated_by": "朱敏",
+      "updated_at": "2025-10-02T18:00:00+08:00"
+    },
+    {
+      "rule_id": "R2025093002",
+      "code": "DEVICE_BLACK",
+      "name": "设备黑名单"
+}
+    ,
+    {
+      "rule_id": "R2025093002",
+      "code": "DEVICE_BLACK",
+      "name": "设备黑名单",
+      "level": "critical",
+      "status": "offline",
+      "version": 8,
+      "weight": 1.5,
+      "threshold": 90,
+      "package": "device",
+      "hit_7d": 210,
+      "updated_by": "周洁",
+      "updated_at": "2025-09-30T20:10:00+08:00"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "total": 5,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "hit_id": "H202510030001",
+      "hit_time": "2025-10-03T10:12:30+08:00",
+      "rule_code": "GEOFENCE_OUT",
+      "rule_name": "越界地理围栏",
+      "severity": "high",
+      "order_id": "O20251003001",
+      "entity": {
+        "phone": "138****0000",
+        "device_id": "DEV-9A7",
+        "store_id": "S001"
+      },
+      "channel": "wechat",
+      "score": 87.5,
+      "status": "new",
+      "ticket_id": null,
+      "operator": null,
+      "note": ""
+    },
+    {
+      "hit_id": "H202510030014",
+      "hit_time": "2025-10-03T09:48:21+08:00",
+      "rule_code": "FREQ_APPLY",
+      "rule_name": "短期高频提交",
+      "severity": "medium",
+      "order_id": "O20251002999",
+      "entity": {
+        "id_number": "4401***********1234",
+        "device_id": "DEV-42C",
+        "ip": "183.23.12.9"
+      },
+      "channel": "h5",
+      "score": 74.2,
+      "status": "processing",
+      "ticket_id": "RTK-2025100008",
+      "operator": "林杉",
+      "note": "工单处理中"
+    },
+    {
+      "hit_id": "H202510021208",
+      "hit_time": "2025-10-02T22:05:18+08:00",
+      "rule_code": "DEVICE_BLACK",
+      "rule_name": "设备命中黑名单",
+      "severity": "critical",
+      "order_id": null,
+      "entity": {
+        "device_id": "DEV-BLK-888",
+        "promoter_id": "P0021"
+      },
+      "channel": "api",
+      "score": 95.0,
+      "status": "new",
+      "ticket_id": null,
+      "operator": null,
+      "note": ""
+    },
+    {
+      "hit_id": "H202510020076",
+      "hit_time": "2025-10-02T14:32:05+08:00",
+      "rule_code": "ID_GEO_MISMATCH",
+      "rule_name": "证件地址与定位不一致",
+      "severity": "medium",
+      "order_id": "O20251002045",
+      "entity": {
+        "name": "王某",
+        "id_number": "3201***********5678",
+        "lat": 34.23,
+        "lng": 108.95
+      },
+      "channel": "scan",
+      "score": 69.3,
+      "status": "resolved",
+      "ticket_id": "RTK-2025100004",
+      "operator": "刘源",
+      "note": "确认正常变更"
+    },
+    {
+      "hit_id": "H202510010312",
+      "hit_time": "2025-10-01T08:43:42+08:00",
+      "rule_code": "MULTI_STORE_RADIUS",
+      "rule_name": "同设备多门店半径命中",
+      "severity": "low",
+      "order_id": "O20251001022",
+      "entity": {
+        "device_id": "DEV-22A",
+        "store_id": "S008",
+        "count_24h": 4
+      },
+      "channel": "wechat",
+      "score": 48.1,
+      "status": "ignored",
+      "ticket_id": null,
+      "operator": "周洁",
+      "note": "门店活动导致"
+    }
+  ]
+}

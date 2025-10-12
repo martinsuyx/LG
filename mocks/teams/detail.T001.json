@@ -1,0 +1,14 @@
+{
+  "team_id": "T001",
+  "name": "华南大区",
+  "parent_id": null,
+  "lead_user_id": "U0001",
+  "lead_user_name": "李南",
+  "tags": ["华南", "战略"],
+  "company_bindings": ["C01", "C02"],
+  "status": "active",
+  "created_at": "2024-01-10T09:00:00+08:00",
+  "members_count": 320,
+  "stores_count": 128,
+  "desc": "负责华南地区的渠道拓展与重点城市运营。"
+}

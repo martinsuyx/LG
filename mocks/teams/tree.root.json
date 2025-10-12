@@ -1,0 +1,37 @@
+{
+  "teams": [
+    {
+      "team_id": "T001",
+      "name": "华南大区",
+      "parent_id": null,
+      "has_children": true,
+      "members_count": 320,
+      "lead_user_name": "李南",
+      "lead_user_id": "U0001",
+      "company_bindings": ["C01", "C02"],
+      "tags": ["华南", "战略"]
+    },
+    {
+      "team_id": "T002",
+      "name": "华东大区",
+      "parent_id": null,
+      "has_children": true,
+      "members_count": 210,
+      "lead_user_name": "顾晨",
+      "lead_user_id": "U4001",
+      "company_bindings": ["C03"],
+      "tags": ["华东", "旗舰"]
+    },
+    {
+      "team_id": "T003",
+      "name": "中西运营中心",
+      "parent_id": null,
+      "has_children": false,
+      "members_count": 86,
+      "lead_user_name": "王群",
+      "lead_user_id": "U5001",
+      "company_bindings": ["C04"],
+      "tags": ["西南", "成渝"]
+    }
+  ]
+}

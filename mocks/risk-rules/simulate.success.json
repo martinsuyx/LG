@@ -1,0 +1,15 @@
+{
+  "simulation_id": "SIM-20251003-02",
+  "dataset": "last_30d",
+  "status": "succeeded",
+  "metrics": {
+    "precision": 0.88,
+    "recall": 0.74,
+    "fpr": 0.09,
+    "tpr": 0.74,
+    "auc": 0.83,
+    "coverage": 0.4,
+    "hit_count": 352
+  },
+  "result_url": "/mock/simulation-report.html"
+}

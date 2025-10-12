@@ -1,0 +1,38 @@
+{
+  "total": 3,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "version": 3,
+      "operator": "alice",
+      "time": "2025-10-08T08:30:00+08:00",
+      "changelog": "开启灰度 30%，上调 SLA 至 90 分钟",
+      "diff": {
+        "review_rules": {
+          "sla": { "from": 60, "to": 90 }
+        },
+        "release": {
+          "gray_percent": { "from": 0, "to": 30 }
+        }
+      }
+    },
+    {
+      "version": 2,
+      "operator": "bob",
+      "time": "2025-10-07T09:15:00+08:00",
+      "changelog": "增加金额阈值",
+      "diff": {
+        "review_rules": {
+          "thresholds": "amount >= 59 -> amount >= 99"
+        }
+      }
+    },
+    {
+      "version": 1,
+      "operator": "system",
+      "time": "2025-10-05T10:00:00+08:00",
+      "changelog": "初始发布"
+    }
+  ]
+}

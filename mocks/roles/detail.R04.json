@@ -1,0 +1,16 @@
+{
+  "role_id": "R04",
+  "name": "财务专员",
+  "desc": "查看钱包与财务报表",
+  "status": "active",
+  "created_at": "2024-03-05T09:00:00+08:00",
+  "updated_at": "2025-09-25T15:12:00+08:00",
+  "bound_users": 9,
+  "permissions": [
+    "menu:wallet",
+    "menu:reports",
+    "api:/api/v1/wallet/summary",
+    "api:/api/v1/reports/overview",
+    "api:/api/v1/exports"
+  ]
+}

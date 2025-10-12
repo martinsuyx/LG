@@ -1,0 +1,38 @@
+{
+  "hit_id": "H202510030001",
+  "context": {
+    "location": {
+      "lat": 23.129,
+      "lng": 113.264,
+      "distance_to_store_km": 12.7,
+      "store_lat": 23.105,
+      "store_lng": 113.316
+    },
+    "form": {
+      "name": "张三",
+      "id_number": "4401***********1234",
+      "order_amount": 2680,
+      "campaign_id": "CAMP-202510-01"
+    },
+    "device": {
+      "device_id": "DEV-9A7",
+      "fingerprint": "fp-a19c9e31",
+      "recent_orders_24h": 5
+    },
+    "network": {
+      "ip": "113.23.45.67",
+      "city": "深圳",
+      "ip_change_1h": 2
+    }
+  },
+  "evidences": [
+    { "type": "text", "content": "定位距离门店超过 10km" },
+    { "type": "stat", "content": "同设备 24 小时内触发该规则 3 次" },
+    { "type": "stat", "content": "同身份证最近 7 天命中风险 2 次" }
+  ],
+  "similar_hits": [
+    { "hit_id": "H202510020123", "time": "2025-10-02T11:20:00+08:00", "rule_code": "GEOFENCE_OUT", "score": 83.2 },
+    { "hit_id": "H202510010456", "time": "2025-10-01T15:02:00+08:00", "rule_code": "GEOFENCE_OUT", "score": 80.1 },
+    { "hit_id": "H202509280212", "time": "2025-09-28T19:45:00+08:00", "rule_code": "GEOFENCE_OUT", "score": 78.6 }
+  ]
+}

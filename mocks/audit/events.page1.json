@@ -1,0 +1,68 @@
+{
+  "total": 4,
+  "page": 1,
+  "page_size": 50,
+  "items": [
+    {
+      "event_id": "A202510030001",
+      "ts": "2025-10-03T10:00:12+08:00",
+      "level": "security",
+      "type": "export_download",
+      "actor": { "user_id": "U1001", "name": "李想", "roles": ["finance"], "org_id": "ORG-01" },
+      "source": "web",
+      "resource": { "type": "export", "id": "E20251003002" },
+      "action": "download",
+      "result": "fail",
+      "reason": "signature expired",
+      "ip": "203.0.113.10",
+      "ua": "Chrome/140",
+      "trace_id": "tr-9abcde",
+      "signature": { "algo": "SHA256", "hash": "abc123", "prev_hash": "def456", "chain_ok": true }
+    },
+    {
+      "event_id": "A202510030002",
+      "ts": "2025-10-03T09:45:33+08:00",
+      "level": "info",
+      "type": "login_success",
+      "actor": { "user_id": "U2002", "name": "王晴", "roles": ["security_admin"] },
+      "source": "web",
+      "resource": { "type": "user", "id": "U2002" },
+      "action": "login",
+      "result": "success",
+      "ip": "198.51.100.24",
+      "ua": "Safari/17",
+      "trace_id": "tr-abcdef",
+      "signature": { "algo": "SHA256", "hash": "ghi789", "prev_hash": "jkl012", "chain_ok": true }
+    },
+    {
+      "event_id": "A202510030003",
+      "ts": "2025-10-03T09:32:05+08:00",
+      "level": "warn",
+      "type": "permission_change",
+      "actor": { "user_id": "U2001", "name": "陈惠", "roles": ["admin"] },
+      "source": "web",
+      "resource": { "type": "role", "id": "auditor" },
+      "action": "grant",
+      "result": "success",
+      "ip": "203.0.113.42",
+      "ua": "Edge/119",
+      "trace_id": "tr-77ab999",
+      "signature": { "algo": "SHA256", "hash": "mno345", "prev_hash": "pqr678", "chain_ok": true }
+    },
+    {
+      "event_id": "A202510030004",
+      "ts": "2025-10-03T09:15:20+08:00",
+      "level": "security",
+      "type": "wallet_export",
+      "actor": { "user_id": "U3001", "name": "赵越", "roles": ["finance"] },
+      "source": "api",
+      "resource": { "type": "wallet", "id": "WLT-8899" },
+      "action": "export",
+      "result": "success",
+      "ip": "192.0.2.20",
+      "ua": "API Client/2.5",
+      "trace_id": "tr-5566aa",
+      "signature": { "algo": "SHA256", "hash": "stu901", "prev_hash": "vwx234", "chain_ok": false }
+    }
+  ]
+}

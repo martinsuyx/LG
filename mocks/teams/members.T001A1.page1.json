@@ -1,0 +1,36 @@
+{
+  "team_id": "T001A1",
+  "total": 3,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "user_id": "U3101",
+      "name": "黄天",
+      "phone": "13806660001",
+      "role": "lead",
+      "status": "active",
+      "joined_at": "2024-07-18T11:20:00+08:00",
+      "team_path": ["华南大区", "广州一区", "天河商圈小队"]
+    },
+    {
+      "user_id": "U3105",
+      "name": "梁蓝",
+      "phone": "13806660005",
+      "role": "promoter",
+      "status": "active",
+      "joined_at": "2024-08-01T09:10:00+08:00",
+      "team_path": ["华南大区", "广州一区", "天河商圈小队"]
+    },
+    {
+      "user_id": "U3110",
+      "name": "谭义",
+      "phone": "13806660010",
+      "role": "staff",
+      "status": "frozen",
+      "joined_at": "2024-08-18T10:00:00+08:00",
+      "team_path": ["华南大区", "广州一区", "天河商圈小队"],
+      "frozen_reason": "长期未登录"
+    }
+  ]
+}

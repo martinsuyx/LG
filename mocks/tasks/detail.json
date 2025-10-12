@@ -1,0 +1,66 @@
+{
+  "task_id": "T20251003001",
+  "name": "实名开户提交",
+  "code": "OPENKYC",
+  "status": "draft",
+  "version": 1,
+  "desc": "实名开户流程任务，采集身份信息并自动校验。",
+  "start_time": "2025-10-05T00:00:00+08:00",
+  "end_time": "2025-12-31T23:59:59+08:00",
+  "visible_to_roles": ["operator", "reviewer"],
+  "scope": {
+    "companies": ["华南事业部"],
+    "cities": ["GZ"],
+    "stores": []
+  },
+  "form_dsl_id": "F123",
+  "form_dsl": {
+    "schema_version": "1.4.2",
+    "fields": [
+      { "key": "name", "type": "text", "required": true },
+      { "key": "id_number", "type": "text", "required": true },
+      { "key": "amount", "type": "number", "required": false }
+    ],
+    "fields_map": [
+      { "dsl_key": "name", "biz_key": "customer_name", "required": true },
+      { "dsl_key": "id_number", "biz_key": "customer_id", "required": true, "validation": { "type": "regex", "value": "^\\\d{17}[\\\dX]$" } },
+      { "dsl_key": "amount", "biz_key": "loan_amount", "required": false, "validation": { "type": "range", "min": 0, "max": 99999 } }
+    ]
+  },
+  "review_rules": {
+    "auto_checks": [
+      { "key": "id_number", "rule": "regex_cn_id", "level": "error", "message": "证件号格式错误" },
+      { "key": "name", "rule": "not_empty", "level": "error", "message": "姓名不能为空" }
+    ],
+    "thresholds": [
+      { "key": "amount", "op": ">=", "value": 59, "action": "manual_review" }
+    ],
+    "sampling": { "percent": 10, "seed": "202510" },
+    "double_review": false,
+    "sla": 60
+  },
+  "risk_policy_id": "R001",
+  "risk_action": "queue",
+  "release": {
+    "mode": "immediate",
+    "gray_percent": 0,
+    "rollback_to_version": null
+  },
+  "versions": {
+    "total": 2,
+    "items": [
+      {
+        "version": 1,
+        "operator": "alice",
+        "time": "2025-10-05T10:00:00+08:00",
+        "changelog": "创建任务草稿"
+      },
+      {
+        "version": 0,
+        "operator": "system",
+        "time": "2025-09-30T09:00:00+08:00",
+        "changelog": "初始化模板"
+      }
+    ]
+  }
+}

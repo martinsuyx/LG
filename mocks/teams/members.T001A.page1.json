@@ -1,0 +1,53 @@
+{
+  "team_id": "T001A",
+  "total": 4,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "user_id": "U2001",
+      "name": "赵晨",
+      "phone": "13800550001",
+      "role": "lead",
+      "status": "active",
+      "joined_at": "2024-05-01T10:00:00+08:00",
+      "team_path": ["华南大区", "广州一区"],
+      "metrics": {
+        "orders_30d": 220,
+        "gmv_30d": 187000
+      }
+    },
+    {
+      "user_id": "U2006",
+      "name": "高微",
+      "phone": "13800550006",
+      "role": "staff",
+      "status": "active",
+      "joined_at": "2024-05-12T09:30:00+08:00",
+      "team_path": ["华南大区", "广州一区"]
+    },
+    {
+      "user_id": "U2012",
+      "name": "梁婷",
+      "phone": "13800550012",
+      "role": "promoter",
+      "status": "active",
+      "joined_at": "2024-06-03T11:20:00+08:00",
+      "team_path": ["华南大区", "广州一区"],
+      "metrics": {
+        "orders_30d": 64,
+        "gmv_30d": 32800
+      }
+    },
+    {
+      "user_id": "U2030",
+      "name": "谢源",
+      "phone": "13800550030",
+      "role": "promoter",
+      "status": "left",
+      "joined_at": "2024-07-01T09:05:00+08:00",
+      "left_at": "2024-09-18T18:00:00+08:00",
+      "team_path": ["华南大区", "广州一区"]
+    }
+  ]
+}

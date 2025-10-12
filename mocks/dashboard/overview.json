@@ -1,0 +1,70 @@
+{
+  "kpis": [
+    {
+      "key": "orders_today",
+      "label": "今日订单数",
+      "value": 128,
+      "delta": 12,
+      "delta_rate": 0.103,
+      "trend": "up",
+      "unit": "笔",
+      "drill_link": "/orders?start=2025-09-28&end=2025-09-28"
+    },
+    {
+      "key": "settlement_today",
+      "label": "今日结算金额",
+      "value": 5234.9,
+      "delta": -120.5,
+      "delta_rate": -0.022,
+      "trend": "down",
+      "unit": "元",
+      "drill_link": "/wallet/ledger?date=2025-09-28"
+    },
+    {
+      "key": "pending_reviews",
+      "label": "待审核订单",
+      "value": 41,
+      "unit": "笔",
+      "drill_link": "/review"
+    },
+    {
+      "key": "risk_hits",
+      "label": "异常命中",
+      "value": 3,
+      "unit": "笔",
+      "drill_link": "/risk/hits"
+    },
+    {
+      "key": "payout_processing",
+      "label": "提现处理中",
+      "value": 5,
+      "unit": "笔",
+      "drill_link": "/withdraws?status=processing"
+    },
+    {
+      "key": "approval_rate",
+      "label": "通过率",
+      "value": 86.4,
+      "delta_rate": 0.018,
+      "trend": "up",
+      "unit": "%",
+      "drill_link": "/orders?status=approved"
+    }
+  ],
+  "alerts": [
+    {
+      "type": "risk",
+      "level": "warn",
+      "title": "风控命中上升",
+      "description": "近一小时+35%",
+      "action_link": "/risk/hits"
+    },
+    {
+      "type": "payout",
+      "level": "info",
+      "title": "提现处理中",
+      "description": "有 2 笔超过 SLA",
+      "action_link": "/withdraws?status=processing"
+    }
+  ]
+}

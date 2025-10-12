@@ -1,0 +1,10 @@
+{
+  "total": 5,
+  "duplicates": [
+    { "entity_value": "13800000000", "existing_list_id": "L202510030001", "type": "blacklist" },
+    { "entity_value": "DEV-9A7", "existing_list_id": "L202510020001", "type": "greylist" }
+  ],
+  "conflicts": [
+    { "entity_value": "STORE-001", "existing_type": "whitelist", "new_type": "blacklist" }
+  ]
+}

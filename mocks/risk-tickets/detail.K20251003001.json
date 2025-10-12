@@ -1,0 +1,34 @@
+{
+  "ticket_id": "K20251003001",
+  "created_at": "2025-10-03T09:10:00+08:00",
+  "updated_at": "2025-10-03T09:18:00+08:00",
+  "priority": "high",
+  "status": "investigating",
+  "severity": "high",
+  "assignee_id": "U2001",
+  "assignee_name": "林杉",
+  "creator_id": "U1900",
+  "creator_name": "风控机器人",
+  "source": "hit",
+  "rule_id": "GEOFENCE_OUT",
+  "title": "越界地理围栏(高) O20251003001",
+  "desc": "位置与门店距离超过 10km，疑似代办。",
+  "tags": ["地理围栏", "高风险"],
+  "hit_ids": ["H202510030001"],
+  "order_ids": ["O20251003001"],
+  "entities": [
+    {"type": "device", "id": "DEV-9A7", "label": "设备"},
+    {"type": "phone", "id": "138****0000", "label": "手机号"}
+  ],
+  "actions": [
+    {"time": "2025-10-03T09:11:00+08:00", "actor": "系统", "action": "create", "note": "命中 GEOFENCE_OUT 规则"},
+    {"time": "2025-10-03T09:12:00+08:00", "actor": "林杉", "action": "assign", "note": "指派给自己", "to_status": "assigned"},
+    {"time": "2025-10-03T09:13:30+08:00", "actor": "林杉", "action": "start", "note": "开始调查", "to_status": "investigating"}
+  ],
+  "attachments": [
+    {"name": "location-map.png", "url": "/mock/location-map.png", "uploaded_by": "林杉", "uploaded_at": "2025-10-03T09:14:00+08:00"}
+  ],
+  "due_at": "2025-10-03T10:10:00+08:00",
+  "sla_minutes": 60,
+  "overdue": false
+}

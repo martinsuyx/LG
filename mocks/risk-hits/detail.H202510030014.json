@@ -1,0 +1,35 @@
+{
+  "hit_id": "H202510030014",
+  "context": {
+    "submission": {
+      "count_1h": 6,
+      "count_24h": 15,
+      "channel": "h5",
+      "campaign_id": "CAMP-202509-07"
+    },
+    "user": {
+      "id_number": "4401***********1234",
+      "phone": "138****0001",
+      "city": "广州"
+    },
+    "device": {
+      "device_id": "DEV-42C",
+      "os": "iOS 17.0",
+      "app_version": "5.3.0"
+    },
+    "network": {
+      "ip": "183.23.12.9",
+      "asn": "AS4134",
+      "geo": "深圳"
+    }
+  },
+  "evidences": [
+    { "type": "stat", "content": "近 1 小时提交 6 笔，高于阈值 3" },
+    { "type": "stat", "content": "近 24 小时该身份证命中 3 次风险" },
+    { "type": "text", "content": "IP 与常驻城市不一致" }
+  ],
+  "similar_hits": [
+    { "hit_id": "H202510020201", "time": "2025-10-02T18:21:00+08:00", "rule_code": "FREQ_APPLY", "score": 76.4 },
+    { "hit_id": "H202509291122", "time": "2025-09-29T17:33:00+08:00", "rule_code": "FREQ_APPLY", "score": 72.9 }
+  ]
+}

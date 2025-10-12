@@ -1,0 +1,39 @@
+{
+  "campaign_id": "C20251003001",
+  "name": "5G 新装 59 元套餐",
+  "code": "5G59",
+  "status": "draft",
+  "start_time": "2025-10-05T00:00:00+08:00",
+  "end_time": "2025-11-05T23:59:59+08:00",
+  "channels": ["wechat", "scan"],
+  "plans": [
+    {
+      "plan_id": "P1",
+      "name": "59 元档",
+      "price": 59.0,
+      "commission_scheme": {
+        "type": "fixed",
+        "value": 10.0
+      },
+      "constraints": {
+        "new_user_only": true,
+        "limit_per_id": 1
+      }
+    }
+  ],
+  "scope": {
+    "cities": ["GZ"],
+    "stores": [],
+    "companies": ["华南事业部"]
+  },
+  "form_dsl_id": "F123",
+  "risk_policy_id": "R001",
+  "visible_to_roles": ["operator", "promoter"],
+  "require_invite": true,
+  "metrics": {
+    "impressions": 12800,
+    "submitted": 640,
+    "approved": 480,
+    "settled": 420
+  }
+}

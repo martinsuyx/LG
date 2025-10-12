@@ -1,6 +1,7 @@
 paths:
   /api/v1/orders/ai-intake:
     post:
+      operationId: startAiIntake
       summary: Start AI intake parsing job
       description: >
         Upload references to already stored images and trigger an AI OCR job that
@@ -23,6 +24,7 @@ paths:
           description: Invalid payload or unsupported images.
   /api/v1/orders/ai-intake/{job_id}:
     get:
+      operationId: getAiIntakeStatus
       summary: Get AI intake parsing status
       tags: [AI Intake]
       parameters:

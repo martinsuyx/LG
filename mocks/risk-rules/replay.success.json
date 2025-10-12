@@ -1,0 +1,17 @@
+{
+  "replay_id": "REPLAY-20251003-01",
+  "status": "succeeded",
+  "range": {
+    "start": "2025-09-20",
+    "end": "2025-09-30"
+  },
+  "before_rule_version": 11,
+  "after_rule_version": 12,
+  "delta_metrics": {
+    "hit_count": 42,
+    "precision": 0.03,
+    "recall": 0.05,
+    "coverage": 0.04
+  },
+  "report_url": "/mock/replay-report.html"
+}

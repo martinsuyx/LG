@@ -1,0 +1,45 @@
+{
+  "team_id": "T002A",
+  "total": 4,
+  "page": 1,
+  "page_size": 20,
+  "items": [
+    {
+      "user_id": "U4101",
+      "name": "唐悦",
+      "phone": "13807770001",
+      "role": "lead",
+      "status": "active",
+      "joined_at": "2024-02-20T10:00:00+08:00",
+      "team_path": ["华东大区", "上海旗舰队"]
+    },
+    {
+      "user_id": "U4120",
+      "name": "丁珊",
+      "phone": "13807770020",
+      "role": "staff",
+      "status": "active",
+      "joined_at": "2024-03-05T09:40:00+08:00",
+      "team_path": ["华东大区", "上海旗舰队"]
+    },
+    {
+      "user_id": "U4133",
+      "name": "曹嘉",
+      "phone": "13807770033",
+      "role": "promoter",
+      "status": "active",
+      "joined_at": "2024-04-14T10:20:00+08:00",
+      "team_path": ["华东大区", "上海旗舰队"]
+    },
+    {
+      "user_id": "U4148",
+      "name": "顾慎",
+      "phone": "13807770048",
+      "role": "staff",
+      "status": "left",
+      "joined_at": "2024-05-28T09:00:00+08:00",
+      "left_at": "2024-09-30T18:00:00+08:00",
+      "team_path": ["华东大区", "上海旗舰队"]
+    }
+  ]
+}

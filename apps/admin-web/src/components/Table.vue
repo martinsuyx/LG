@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 export interface Column {
   key: string
@@ -119,5 +119,4 @@ function toggleSort(key:string){
   .th-sort { display:inline-flex; align-items:center; gap:$spacing-8; background:transparent; border:0; color:inherit; cursor:pointer; }
 }
 </style>
-
 

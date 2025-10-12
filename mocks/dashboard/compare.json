@@ -1,0 +1,28 @@
+{
+  "metrics": [
+    {
+      "key": "orders",
+      "label": "订单量",
+      "current": 356,
+      "previous": 320,
+      "change": 36,
+      "change_rate": 0.1125
+    },
+    {
+      "key": "gmv",
+      "label": "结算金额",
+      "current": 15640.5,
+      "previous": 14980.2,
+      "change": 660.3,
+      "change_rate": 0.044
+    },
+    {
+      "key": "approval_rate",
+      "label": "通过率",
+      "current": 0.864,
+      "previous": 0.845,
+      "change": 0.019,
+      "change_rate": 0.0225
+    }
+  ]
+}

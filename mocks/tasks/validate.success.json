@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "missing_fields": [],
+  "invalid_rules": [],
+  "warnings": [
+    {
+      "message": "抽审比例设置为 10%，请确认容量"
+    }
+  ]
+}

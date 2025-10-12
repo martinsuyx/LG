@@ -1,6 +1,7 @@
 paths:
   /api/v1/orders:
     post:
+      operationId: submitOrder
       summary: Submit an order confirmed from AI intake
       description: >
         Persist an order after operators review and confirm AI parsed fields.

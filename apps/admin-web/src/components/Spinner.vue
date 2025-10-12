@@ -17,9 +17,8 @@ withDefaults(defineProps<Props>(), { size: 16 })
 @use '@/styles/variables.scss' as *;
 
 .jg-spin { display:block; }
-.track { stroke: $surface-300; opacity: .6; }
-.bar { stroke: $primary-600; stroke-dasharray: 80; stroke-dashoffset: 60; animation: spin 1s linear infinite; }
+.track { stroke: $color-surface-300; opacity: .6; }
+.bar { stroke: $color-primary-700; stroke-dasharray: 80; stroke-dashoffset: 60; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); stroke-dashoffset: 20; } }
 </style>
-
 

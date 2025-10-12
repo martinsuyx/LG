@@ -1,0 +1,6 @@
+mock:
+  dynamic: false
+  errors: false
+  cors: true
+  port: 4010
+  host: 0.0.0.0

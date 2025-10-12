@@ -1,0 +1,27 @@
+{
+  "parent_id": "T001A",
+  "teams": [
+    {
+      "team_id": "T001A1",
+      "name": "天河商圈小队",
+      "parent_id": "T001A",
+      "has_children": false,
+      "members_count": 58,
+      "lead_user_name": "黄天",
+      "lead_user_id": "U3101",
+      "company_bindings": ["C01"],
+      "tags": ["天河", "旗舰店"]
+    },
+    {
+      "team_id": "T001A2",
+      "name": "番禺校招小队",
+      "parent_id": "T001A",
+      "has_children": false,
+      "members_count": 46,
+      "lead_user_name": "刘琦",
+      "lead_user_id": "U3108",
+      "company_bindings": ["C01"],
+      "tags": ["校园", "校招"]
+    }
+  ]
+}

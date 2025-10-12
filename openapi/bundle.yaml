@@ -1,0 +1,4182 @@
+openapi: 3.0.3
+info:
+  title: Joincom Admin API
+  version: 0.1.0
+  description: Minimal API surface for Joincom Admin demo environments.
+  license:
+    name: Proprietary
+    url: https://joincom.example/legal
+servers:
+  - url: http://127.0.0.1:4010
+    description: Local Mock (Prism)
+  - url: https://api.joincom.example
+    description: Staging (placeholder)
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/dashboard/overview:
+    get:
+      summary: Dashboard overview metrics
+      operationId: getDashboardOverview
+      tags:
+        - Dashboard
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/Granularity'
+        - $ref: '#/components/parameters/CompanyId'
+        - $ref: '#/components/parameters/City'
+        - $ref: '#/components/parameters/Channel'
+        - $ref: '#/components/parameters/Timezone'
+      responses:
+        '200':
+          description: Overview metrics for dashboard cards.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardOverviewResponse'
+              examples:
+                default:
+                  value:
+                    kpis:
+                      - key: orders_today
+                        label: 今日订单数
+                        value: 128
+                        delta: 12
+                        delta_rate: 0.103
+                        trend: up
+                        unit: 笔
+                        drill_link: /orders?start=2025-09-28&end=2025-09-28
+                      - key: settlement_today
+                        label: 今日结算金额
+                        value: 5234.9
+                        delta: -120.5
+                        delta_rate: -0.022
+                        trend: down
+                        unit: 元
+                        drill_link: /wallet/ledger?date=2025-09-28
+                      - key: pending_reviews
+                        label: 待审核订单
+                        value: 41
+                        unit: 笔
+                        drill_link: /review
+                      - key: risk_hits
+                        label: 异常命中
+                        value: 3
+                        unit: 笔
+                        drill_link: /risk/hits
+                      - key: payout_processing
+                        label: 提现处理中
+                        value: 5
+                        unit: 笔
+                        drill_link: /withdraws?status=processing
+                      - key: approval_rate
+                        label: 通过率
+                        value: 86.4
+                        delta_rate: 0.018
+                        trend: up
+                        unit: '%'
+                        drill_link: /orders?status=approved
+                    alerts:
+                      - type: risk
+                        level: warn
+                        title: 风控命中上升
+                        description: 近一小时+35%
+                        action_link: /risk/hits
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /api/v1/dashboard/series:
+    get:
+      summary: Dashboard trend series
+      operationId: getDashboardSeries
+      tags:
+        - Dashboard
+      parameters:
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/Granularity'
+        - $ref: '#/components/parameters/CompanyId'
+        - $ref: '#/components/parameters/City'
+        - $ref: '#/components/parameters/Channel'
+        - $ref: '#/components/parameters/Timezone'
+      responses:
+        '200':
+          description: Trend data points for dashboard charts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardSeriesResponse'
+              examples:
+                orders:
+                  value:
+                    metric: orders
+                    points:
+                      - ts: '2025-09-26T00:00:00+08:00'
+                        value: 96
+                        baseline_yesterday: 92
+                        baseline_lastweek: 80
+                      - ts: '2025-09-27T00:00:00+08:00'
+                        value: 110
+                        baseline_yesterday: 96
+                        baseline_lastweek: 85
+                      - ts: '2025-09-28T00:00:00+08:00'
+                        value: 120
+                        baseline_yesterday: 110
+                        baseline_lastweek: 98
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /api/v1/dashboard/compare:
+    get:
+      summary: Dashboard compare snapshot
+      operationId: getDashboardCompare
+      tags:
+        - Dashboard
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/Granularity'
+        - $ref: '#/components/parameters/CompanyId'
+        - $ref: '#/components/parameters/City'
+        - $ref: '#/components/parameters/Channel'
+        - $ref: '#/components/parameters/Timezone'
+      responses:
+        '200':
+          description: Snapshot comparing current period with baseline.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardCompareResponse'
+              examples:
+                default:
+                  value:
+                    metrics:
+                      - key: orders
+                        label: 订单量
+                        current: 356
+                        previous: 320
+                        change: 36
+                        change_rate: 0.1125
+                      - key: gmv
+                        label: 结算金额
+                        current: 15640.5
+                        previous: 14980.2
+                        change: 660.3
+                        change_rate: 0.044
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /api/v1/orders/ai-intake:
+    post:
+      operationId: startAiIntake
+      summary: Start AI intake parsing job
+      description: |
+        Upload references to already stored images and trigger an AI OCR job that extracts order fields.
+      tags:
+        - AI Intake
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIIntakeStartRequest'
+      responses:
+        '202':
+          description: Parsing job accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIIntakeStartResponse'
+        '400':
+          description: Invalid payload or unsupported images.
+  /api/v1/orders/ai-intake/{job_id}:
+    get:
+      operationId: getAiIntakeStatus
+      summary: Get AI intake parsing status
+      tags:
+        - AI Intake
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Current status of the AI intake job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIIntakeStatusResponse'
+        '404':
+          description: Job not found.
+  /api/v1/orders:
+    get:
+      summary: List orders with filters
+      operationId: listOrders
+      tags:
+        - Orders
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/OrderStatuses'
+        - $ref: '#/components/parameters/Channel'
+        - $ref: '#/components/parameters/StoreCode'
+        - $ref: '#/components/parameters/PromoterId'
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/OrderPhone'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/OrderSortKey'
+        - $ref: '#/components/parameters/SortOrder'
+      responses:
+        '200':
+          description: Paginated list of orders.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListResponse'
+              examples:
+                default:
+                  value:
+                    total: 3
+                    page: 1
+                    page_size: 20
+                    items:
+                      - order_id: O20251001001
+                        created_at: '2025-10-01T09:20:00+08:00'
+                        status: under_review
+                        channel: wechat
+                        store_name: 天河一店
+                        promoter_name: 张三
+                        amount: 129.5
+                        settled_amount: null
+                      - order_id: O20251001002
+                        created_at: '2025-10-01T10:05:00+08:00'
+                        status: pending
+                        channel: h5
+                        store_name: 海珠二店
+                        promoter_name: 李四
+                        amount: 89
+                        settled_amount: null
+                      - order_id: O20250930098
+                        created_at: '2025-09-30T15:18:00+08:00'
+                        status: approved
+                        channel: scan
+                        store_name: 越秀三店
+                        promoter_name: 王五
+                        amount: 59
+                        settled_amount: 59
+        '400':
+          description: Invalid filters supplied.
+    post:
+      operationId: submitOrder
+      summary: Submit an order confirmed from AI intake
+      description: |
+        Persist an order after operators review and confirm AI parsed fields.
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderSubmitRequest'
+      responses:
+        '201':
+          description: Order created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSubmitResponse'
+        '400':
+          description: Validation error on submitted fields.
+        '409':
+          description: Duplicate submission detected.
+  /api/v1/orders/{order_id}:
+    get:
+      summary: Fetch order detail
+      operationId: getOrderDetail
+      tags:
+        - Orders
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^(?!ai-intake$).+
+      responses:
+        '200':
+          description: Order detail payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetailResponse'
+              examples:
+                default:
+                  value:
+                    order_id: O20251001001
+                    created_at: '2025-10-01T09:20:00+08:00'
+                    status: under_review
+                    amount: 129.5
+                    channel: wechat
+                    store_id: S001
+                    campaign_id: CAMP-01
+                    user:
+                      id: U1001
+                      name: 张三
+                      phone: '13800000000'
+                      id_number: '440100199001011234'
+                    materials:
+                      - url: https://cdn.example/mock/order/O20251001001-idcard.jpg
+                        type: idcard
+                        ocr:
+                          name: 张三
+                          id_number: 440100199001011260
+                        uploaded_at: '2025-10-01T09:21:00+08:00'
+                    commission: 18
+                    settled_amount: null
+                    frozen_amount: 18
+                    risk_hits:
+                      - rule_id: R001
+                        rule_name: 同证件多单
+                        level: warn
+                        desc: 同一证件 24 小时内下单 ≥ 3 笔
+                    audits:
+                      - time: '2025-10-01T09:20:00+08:00'
+                        actor: user:U1001
+                        action: submit
+                        note: 用户提交订单
+                      - time: '2025-10-01T09:21:30+08:00'
+                        actor: system
+                        action: ocr_parsed
+                        note: AI OCR 解析完成
+        '404':
+          description: Order not found.
+  /api/v1/orders/{order_id}/actions/review:
+    post:
+      summary: Review single order
+      operationId: reviewOrder
+      tags:
+        - Orders
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^(?!ai-intake$).+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderReviewRequest'
+      responses:
+        '200':
+          description: Order review result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderReviewResponse'
+        '400':
+          description: Invalid action or note.
+        '403':
+          description: Not allowed to review this order.
+  /api/v1/orders/batch_review:
+    post:
+      summary: Batch review orders
+      operationId: batchReviewOrders
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderBatchReviewRequest'
+      responses:
+        '200':
+          description: Batch review processed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderBatchReviewResponse'
+        '400':
+          description: Invalid batch payload.
+        '403':
+          description: Not allowed to perform batch review.
+  /api/v1/tasks:
+    get:
+      summary: List tasks
+      operationId: listTasks
+      tags:
+        - Tasks
+      parameters:
+        - name: status
+          in: query
+          description: Filter by task status.
+          schema:
+            $ref: '#/components/schemas/TaskStatus'
+        - name: form_dsl_id
+          in: query
+          description: Filter by bound form DSL identifier.
+          schema:
+            type: string
+        - name: risk_policy_id
+          in: query
+          description: Filter by risk policy identifier.
+          schema:
+            type: string
+        - name: role
+          in: query
+          description: Filter by visible role.
+          schema:
+            type: string
+            enum:
+              - operator
+              - promoter
+              - store_owner
+              - reviewer
+        - name: keyword
+          in: query
+          description: Search by task name or code.
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 20
+        - name: sort_key
+          in: query
+          schema:
+            type: string
+            enum:
+              - start_time
+              - end_time
+              - name
+              - version
+              - created_at
+            default: start_time
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Paginated task list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        '400':
+          description: Invalid filters supplied.
+    post:
+      summary: Create task draft
+      operationId: createTask
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpsertRequest'
+      responses:
+        '200':
+          description: Task draft created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskUpsertResponse'
+        '400':
+          description: Invalid payload.
+        '409':
+          description: Task code conflict detected.
+  /api/v1/tasks/{task_id}:
+    parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Fetch task detail
+      operationId: getTaskDetail
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: Task detail payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDetail'
+        '404':
+          description: Task not found.
+    put:
+      summary: Update task draft
+      operationId: updateTask
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpsertRequest'
+      responses:
+        '200':
+          description: Task draft updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskUpsertResponse'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Task not found.
+        '409':
+          description: Task code conflict detected.
+  /api/v1/tasks/{task_id}/validate:
+    post:
+      summary: Validate task configuration
+      operationId: validateTask
+      tags:
+        - Tasks
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Validation result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskValidateResponse'
+        '404':
+          description: Task not found.
+  /api/v1/tasks/{task_id}/publish:
+    post:
+      summary: Publish task
+      operationId: publishTask
+      tags:
+        - Tasks
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task published successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskActionResponse'
+        '400':
+          description: Task validation failed.
+        '404':
+          description: Task not found.
+  /api/v1/tasks/{task_id}/offline:
+    post:
+      summary: Offline task
+      operationId: offlineTask
+      tags:
+        - Tasks
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                  minLength: 5
+      responses:
+        '200':
+          description: Task moved offline.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskActionResponse'
+        '404':
+          description: Task not found.
+  /api/v1/tasks/{task_id}/clone:
+    post:
+      summary: Clone task as draft
+      operationId: cloneTask
+      tags:
+        - Tasks
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task cloned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskCloneResponse'
+        '404':
+          description: Task not found.
+  /api/v1/tasks/{task_id}/versions:
+    get:
+      summary: List task versions
+      operationId: listTaskVersions
+      tags:
+        - Tasks
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: Paginated version history.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskVersionListResponse'
+        '404':
+          description: Task not found.
+  /api/v1/teams:
+    get:
+      summary: List root teams
+      operationId: listTeams
+      tags:
+        - Teams
+      parameters:
+        - name: company_id
+          in: query
+          schema:
+            type: string
+          description: Filter root teams bound to company.
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: Search team name or lead.
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatus'
+          description: Filter by team status.
+      responses:
+        '200':
+          description: Root team forest.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamListResponse'
+              examples:
+                default:
+                  value:
+                    teams:
+                      - team_id: T001
+                        name: 华南大区
+                        parent_id: null
+                        has_children: true
+                        members_count: 320
+                        lead_user_name: 李南
+                        company_bindings:
+                          - C01
+                          - C02
+                        tags:
+                          - 华南
+                          - 战略
+                      - team_id: T002
+                        name: 华东大区
+                        parent_id: null
+                        has_children: true
+                        members_count: 210
+                        lead_user_name: 顾晨
+                        company_bindings:
+                          - C03
+                        tags:
+                          - 华东
+                          - 旗舰
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/teams/{team_id}:
+    get:
+      summary: Fetch team detail
+      operationId: getTeamDetail
+      tags:
+        - Teams
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Team detail payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamDetail'
+              examples:
+                default:
+                  value:
+                    team_id: T001A
+                    name: 广州一区
+                    parent_id: T001
+                    lead_user_id: U2001
+                    lead_user_name: 赵晨
+                    tags:
+                      - 广州
+                      - 线下门店
+                    company_bindings:
+                      - C01
+                    status: active
+                    members_count: 128
+                    stores_count: 52
+                    desc: 覆盖广州核心商圈与合作营业厅。
+        '404':
+          description: Team not found.
+  /api/v1/teams/{team_id}/children:
+    get:
+      summary: List immediate children under a team
+      operationId: listTeamChildren
+      tags:
+        - Teams
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Direct child teams.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamChildrenResponse'
+              examples:
+                default:
+                  value:
+                    parent_id: T001
+                    teams:
+                      - team_id: T001A
+                        name: 广州一区
+                        parent_id: T001
+                        has_children: true
+                        members_count: 128
+                        lead_user_name: 赵晨
+                        tags:
+                          - 广州
+                          - 线下门店
+                      - team_id: T001B
+                        name: 深圳一区
+                        parent_id: T001
+                        has_children: true
+                        members_count: 112
+                        lead_user_name: 程敏
+                        tags:
+                          - 深圳
+                          - 企业合作
+        '404':
+          description: Team not found.
+  /api/v1/teams/{team_id}/members:
+    get:
+      summary: List members under team
+      operationId: listTeamMembers
+      tags:
+        - Teams
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/MemberStatus'
+        - name: role
+          in: query
+          schema:
+            $ref: '#/components/schemas/MemberRole'
+        - name: keyword
+          in: query
+          schema:
+            type: string
+        - name: sort_key
+          in: query
+          schema:
+            type: string
+            enum:
+              - joined_at
+              - name
+              - role
+              - status
+            default: joined_at
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paginated team members.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembersResponse'
+              examples:
+                default:
+                  value:
+                    team_id: T001A
+                    total: 4
+                    page: 1
+                    page_size: 20
+                    items:
+                      - user_id: U2001
+                        name: 赵晨
+                        phone: '13800550001'
+                        role: lead
+                        status: active
+                        joined_at: '2024-05-01T10:00:00+08:00'
+                        team_path:
+                          - 华南大区
+                          - 广州一区
+                      - user_id: U2012
+                        name: 梁婷
+                        phone: '13800550012'
+                        role: promoter
+                        status: active
+                        joined_at: '2024-06-03T11:20:00+08:00'
+                        team_path:
+                          - 华南大区
+                          - 广州一区
+        '404':
+          description: Team not found.
+  /api/v1/teams/{team_id}/move:
+    post:
+      summary: Move team to new parent
+      operationId: moveTeam
+      tags:
+        - Teams
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMoveRequest'
+      responses:
+        '200':
+          description: Team moved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMoveResponse'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Team not found.
+        '409':
+          description: Loop detected or illegal parent.
+  /api/v1/teams/{team_id}/grant:
+    post:
+      summary: Grant team management roles
+      operationId: grantTeamRoles
+      tags:
+        - Teams
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamGrantRequest'
+      responses:
+        '200':
+          description: Team roles updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamGrantResponse'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Team not found.
+  /api/v1/members/batch_move:
+    post:
+      summary: Batch move members to target team
+      operationId: batchMoveMembers
+      tags:
+        - Teams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberBatchMoveRequest'
+      responses:
+        '200':
+          description: Members moved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberBatchMoveResponse'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Source or target team not found.
+  /api/v1/members/import:
+    post:
+      summary: Enqueue member import job
+      operationId: importMembers
+      tags:
+        - Teams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberImportRequest'
+      responses:
+        '200':
+          description: Import task accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberImportTask'
+        '400':
+          description: Invalid payload.
+        '422':
+          description: Validation error for import.
+  /api/v1/members/import/{task_id}:
+    get:
+      summary: Retrieve member import task status
+      operationId: getMemberImportTask
+      tags:
+        - Teams
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Import task status payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberImportTask'
+        '404':
+          description: Task not found.
+  /api/v1/invites:
+    post:
+      summary: Create team invite
+      operationId: createInvite
+      tags:
+        - Teams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteCreateRequest'
+      responses:
+        '200':
+          description: Invite created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InviteCreateResponse'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Target team not found.
+        '409':
+          description: Invite quota conflict.
+  /api/v1/campaigns:
+    get:
+      summary: List campaigns
+      operationId: listCampaigns
+      tags:
+        - Campaigns
+      parameters:
+        - name: status
+          in: query
+          required: false
+          description: Filter by campaign status.
+          schema:
+            $ref: '#/components/schemas/CampaignStatus'
+        - $ref: '#/components/parameters/City'
+        - $ref: '#/components/parameters/CompanyId'
+        - name: channel
+          in: query
+          required: false
+          description: Filter by primary acquisition channel.
+          schema:
+            type: string
+            enum:
+              - wechat
+              - h5
+              - scan
+              - api
+        - name: keyword
+          in: query
+          required: false
+          description: Search by campaign name or code.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: sort_key
+          in: query
+          required: false
+          description: Sort campaigns by field.
+          schema:
+            type: string
+            enum:
+              - start_time
+              - end_time
+              - created_at
+              - updated_at
+              - name
+              - status
+            default: updated_at
+        - name: sort_order
+          in: query
+          required: false
+          description: Sort order direction.
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Paginated campaign list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignListResponse'
+              examples:
+                default:
+                  value:
+                    total: 3
+                    page: 1
+                    page_size: 20
+                    items:
+                      - campaign_id: C20251003001
+                        name: 5G 新装 59 元套餐
+                        code: 5G59
+                        status: draft
+                        start_time: '2025-10-05T00:00:00+08:00'
+                        end_time: '2025-11-05T23:59:59+08:00'
+                        channels:
+                          - wechat
+                          - scan
+                        scope:
+                          cities:
+                            - GZ
+                          stores: []
+                          companies:
+                            - 华南事业部
+                        metrics:
+                          impressions: 12800
+                          submitted: 640
+                          approved: 480
+                          settled: 420
+        '400':
+          description: Invalid filters supplied.
+    post:
+      summary: Create campaign draft
+      operationId: createCampaign
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignUpsertRequest'
+      responses:
+        '200':
+          description: Campaign draft created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignUpsertResponse'
+              examples:
+                default:
+                  value:
+                    campaign_id: C20251009999
+                    status: draft
+        '400':
+          description: Invalid payload.
+        '409':
+          description: Campaign code conflict detected.
+        '422':
+          description: Campaign scope or plans invalid.
+  /api/v1/campaigns/{campaign_id}:
+    parameters:
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Fetch campaign detail
+      operationId: getCampaign
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: Campaign detail payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDetail'
+              examples:
+                default:
+                  value:
+                    campaign_id: C20251003001
+                    name: 5G 新装 59 元套餐
+                    code: 5G59
+                    status: draft
+                    start_time: '2025-10-05T00:00:00+08:00'
+                    end_time: '2025-11-05T23:59:59+08:00'
+                    channels:
+                      - wechat
+                      - scan
+                    plans:
+                      - plan_id: P1
+                        name: 59 元档
+                        price: 59
+                        commission_scheme:
+                          type: fixed
+                          value: 10
+                        constraints:
+                          new_user_only: true
+                          limit_per_id: 1
+                    scope:
+                      cities:
+                        - GZ
+                      stores: []
+                      companies:
+                        - 华南事业部
+                    form_dsl_id: F123
+                    risk_policy_id: R001
+                    visible_to_roles:
+                      - operator
+                      - promoter
+                    require_invite: true
+                    metrics:
+                      impressions: 12800
+                      submitted: 640
+                      approved: 480
+                      settled: 420
+        '404':
+          description: Campaign not found.
+    put:
+      summary: Update campaign draft
+      operationId: updateCampaign
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignUpsertRequest'
+      responses:
+        '200':
+          description: Campaign updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignUpsertResponse'
+              examples:
+                default:
+                  value:
+                    campaign_id: C20251003001
+                    status: draft
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Campaign not found.
+        '409':
+          description: Campaign code conflict detected.
+        '422':
+          description: Campaign scope or plans invalid.
+  /api/v1/campaigns/{campaign_id}/publish:
+    post:
+      summary: Publish campaign
+      operationId: publishCampaign
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign published successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignActionResponse'
+              examples:
+                default:
+                  value:
+                    ok: true
+                    new_status: published
+                    published_at: '2025-10-11T10:00:00+08:00'
+        '404':
+          description: Campaign not found.
+        '409':
+          description: Campaign state prevents publishing.
+        '422':
+          description: Campaign validation failed.
+  /api/v1/campaigns/{campaign_id}/offline:
+    post:
+      summary: Offline campaign
+      operationId: offlineCampaign
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignOfflineRequest'
+      responses:
+        '200':
+          description: Campaign taken offline.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignActionResponse'
+              examples:
+                default:
+                  value:
+                    ok: true
+                    new_status: offline
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Campaign not found.
+        '409':
+          description: Campaign state prevents offlining.
+  /api/v1/campaigns/{campaign_id}/clone:
+    post:
+      summary: Clone campaign to draft
+      operationId: cloneCampaign
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign cloned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignCloneResponse'
+              examples:
+                default:
+                  value:
+                    campaign_id: C20251013001
+                    status: draft
+                    source_campaign_id: C20251003001
+        '404':
+          description: Campaign not found.
+  /api/v1/exports/campaigns:
+    post:
+      summary: Enqueue campaign export task
+      operationId: exportCampaigns
+      tags:
+        - Campaigns
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignExportRequest'
+      responses:
+        '200':
+          description: Export task accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+              examples:
+                default:
+                  value:
+                    export_id: EXP-20251011001
+                    status: pending
+                    module: campaigns
+        '400':
+          description: Invalid export payload.
+  /api/v1/exports/tasks:
+    post:
+      summary: Enqueue task export task
+      operationId: exportTasks
+      tags:
+        - Tasks
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskExportRequest'
+      responses:
+        '200':
+          description: Export task accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '400':
+          description: Invalid export payload.
+  /api/v1/exports/members:
+    post:
+      summary: Enqueue member export
+      operationId: exportMembers
+      tags:
+        - Teams
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberExportRequest'
+      responses:
+        '200':
+          description: Export task accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+              examples:
+                default:
+                  value:
+                    export_id: EXP-TEAMS-20251011001
+                    status: pending
+                    module: members
+        '400':
+          description: Invalid export payload.
+  /api/v1/exports/teams:
+    post:
+      summary: Enqueue team export
+      operationId: exportTeams
+      tags:
+        - Teams
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamExportRequest'
+      responses:
+        '200':
+          description: Export task accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+              examples:
+                default:
+                  value:
+                    export_id: EXP-TEAMS-20251011001
+                    status: pending
+                    module: teams
+        '400':
+          description: Invalid export payload.
+  /api/v1/review/orders:
+    get:
+      summary: List orders awaiting review
+      operationId: listReviewOrders
+      tags:
+        - Review
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/OrderStatuses'
+        - $ref: '#/components/parameters/Channel'
+        - $ref: '#/components/parameters/StoreCode'
+        - $ref: '#/components/parameters/CampaignId'
+        - $ref: '#/components/parameters/RiskTags'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Review queue with pagination.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewOrdersResponse'
+              examples:
+                default:
+                  value:
+                    total: 2
+                    page: 1
+                    page_size: 20
+                    items:
+                      - order_id: O20251003001
+                        created_at: '2025-10-03T09:00:00+08:00'
+                        user_name: 张三
+                        phone: '13800000000'
+                        store_name: 天河一店
+                        campaign_name: 活动A
+                        amount: 59
+                        status: under_review
+                        risk_flag: true
+                      - order_id: O20251003002
+                        created_at: '2025-10-03T09:05:00+08:00'
+                        user_name: 李四
+                        phone: '13900000000'
+                        store_name: 海珠二店
+                        campaign_name: 活动B
+                        amount: 39
+                        status: pending
+                        risk_flag: false
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/review/stats:
+    get:
+      summary: Review workbench statistics
+      operationId: getReviewStats
+      tags:
+        - Review
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+      responses:
+        '200':
+          description: Aggregated review statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewStatsResponse'
+              examples:
+                default:
+                  value:
+                    pending_total: 120
+                    processed_today: 45
+                    avg_time_sec: 95
+        '400':
+          description: Invalid date range supplied.
+  /api/v1/wallet/summary/overview:
+    get:
+      summary: Wallet summary overview KPIs
+      operationId: getWalletSummaryOverview
+      tags:
+        - Wallet
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/WalletDimension'
+        - $ref: '#/components/parameters/CompanyId'
+        - $ref: '#/components/parameters/City'
+        - $ref: '#/components/parameters/WalletAccountStatus'
+      responses:
+        '200':
+          description: Wallet summary KPIs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletSummaryOverview'
+              examples:
+                default:
+                  value:
+                    total_balance: 1254321.55
+                    frozen: 23456.78
+                    available: 1230864.77
+                    withdrawable: 560000
+                    in_7d: 210345.66
+                    out_7d: 198765.43
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/wallet/summary/series:
+    get:
+      summary: Wallet summary series data
+      operationId: getWalletSummarySeries
+      tags:
+        - Wallet
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/WalletDimension'
+        - $ref: '#/components/parameters/WalletSummaryMetric'
+      responses:
+        '200':
+          description: Wallet summary trend points.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletSummarySeriesResponse'
+              examples:
+                balance:
+                  value:
+                    metric: balance
+                    points:
+                      - ts: '2025-09-27'
+                        balance: 1205000
+                      - ts: '2025-09-28'
+                        balance: 1210000
+                inOut:
+                  value:
+                    metric: in_out
+                    points:
+                      - ts: '2025-09-27'
+                        inflow: 32500
+                        outflow: 28000
+                      - ts: '2025-09-28'
+                        inflow: 41230
+                        outflow: 30500
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/wallet/summary/list:
+    get:
+      summary: Wallet summary dimension list
+      operationId: listWalletSummary
+      tags:
+        - Wallet
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/WalletDimension'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/WalletAccountStatus'
+      responses:
+        '200':
+          description: Paginated wallet summary rows.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletSummaryListResponse'
+              examples:
+                default:
+                  value:
+                    total: 2
+                    page: 1
+                    page_size: 20
+                    items:
+                      - entity_id: S001
+                        entity_name: 天河一店
+                        balance: 12500.5
+                        frozen: 500
+                        available: 12000.5
+                        withdrawable: 8000
+                        last_tx_time: '2025-10-02T20:18:00+08:00'
+                        status: normal
+                      - entity_id: S002
+                        entity_name: 海珠二店
+                        balance: 9900
+                        frozen: 100
+                        available: 9800
+                        withdrawable: 6000
+                        last_tx_time: '2025-10-02T20:05:00+08:00'
+                        status: normal
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/wallet/ledger:
+    get:
+      summary: Wallet ledger list
+      operationId: listWalletLedger
+      tags:
+        - Wallet
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/WalletDimension'
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/WalletTxType'
+        - $ref: '#/components/parameters/WalletTxStatus'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Wallet ledger page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletLedgerResponse'
+              examples:
+                default:
+                  value:
+                    total: 2350
+                    page: 1
+                    page_size: 20
+                    items:
+                      - tx_id: T20251003001
+                        created_at: '2025-10-03T10:00:00+08:00'
+                        entity_name: 天河一店
+                        tx_type: order_settlement
+                        order_id: O20251003001
+                        amount: 59
+                        balance_after: 12059
+                        status: success
+                        note: 订单佣金入账
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/wallet/ledger/stats:
+    get:
+      summary: Wallet ledger stats
+      operationId: getWalletLedgerStats
+      tags:
+        - Wallet
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/WalletDimension'
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200':
+          description: Ledger totals for current filters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletLedgerStatsResponse'
+              examples:
+                default:
+                  value:
+                    in_total: 52340
+                    out_total: 38900
+                    net: 13440
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/withdraws:
+    get:
+      summary: Withdraw request list
+      operationId: listWithdraws
+      tags:
+        - Withdraws
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+        - $ref: '#/components/parameters/WithdrawStatus'
+        - $ref: '#/components/parameters/WithdrawChannel'
+        - $ref: '#/components/parameters/WalletDimension'
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paginated withdraw requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawListResponse'
+              examples:
+                default:
+                  value:
+                    total: 3
+                    page: 1
+                    page_size: 20
+                    items:
+                      - withdraw_id: W20251003001
+                        created_at: '2025-10-03T09:00:00+08:00'
+                        entity_name: 天河一店
+                        amount: 5000
+                        channel: bank
+                        account_info: 中国银行(1234)
+                        status: pending
+                        note: ''
+                      - withdraw_id: W20251003002
+                        created_at: '2025-10-03T09:30:00+08:00'
+                        entity_name: 海珠二店
+                        amount: 3200
+                        channel: alipay
+                        account_info: 支付宝(***8888)
+                        status: processing
+                        note: 等待银行确认
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/withdraws/stats:
+    get:
+      summary: Withdraw dashboard statistics
+      operationId: getWithdrawStats
+      tags:
+        - Withdraws
+      parameters:
+        - $ref: '#/components/parameters/DateStart'
+        - $ref: '#/components/parameters/DateEnd'
+      responses:
+        '200':
+          description: Stats for withdraw filters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawStatsResponse'
+              examples:
+                default:
+                  value:
+                    pending_total: 100000
+                    paid_today: 50000
+                    failed_count: 2
+        '400':
+          description: Invalid filters supplied.
+  /api/v1/withdraws/{withdraw_id}/approve:
+    post:
+      summary: Approve withdraw request
+      operationId: approveWithdraw
+      tags:
+        - Withdraws
+      parameters:
+        - name: withdraw_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawActionRequest'
+      responses:
+        '200':
+          description: Withdraw approved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawActionResponse'
+              examples:
+                default:
+                  value:
+                    ok: true
+                    new_status: approved
+        '400':
+          description: Invalid request.
+  /api/v1/withdraws/{withdraw_id}/reject:
+    post:
+      summary: Reject withdraw request
+      operationId: rejectWithdraw
+      tags:
+        - Withdraws
+      parameters:
+        - name: withdraw_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawActionRequest'
+      responses:
+        '200':
+          description: Withdraw rejected.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawActionResponse'
+              examples:
+                default:
+                  value:
+                    ok: true
+                    new_status: rejected
+        '400':
+          description: Invalid request.
+  /api/v1/exports/wallet-summary:
+    post:
+      summary: Export wallet summary
+      operationId: exportWalletSummary
+      tags:
+        - Exports
+      responses:
+        '200':
+          description: Export task created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '400':
+          description: Invalid request.
+  /api/v1/exports/wallet-ledger:
+    post:
+      summary: Export wallet ledger
+      operationId: exportWalletLedger
+      tags:
+        - Exports
+      responses:
+        '200':
+          description: Export task created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '400':
+          description: Invalid request.
+  /api/v1/exports/withdraws:
+    post:
+      summary: Export withdraw list
+      operationId: exportWithdraws
+      tags:
+        - Exports
+      responses:
+        '200':
+          description: Export task created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '400':
+          description: Invalid request.
+  /api/v1/uploads:
+    post:
+      operationId: createUploadPolicy
+      summary: Request upload credentials for AI intake images
+      tags:
+        - Uploads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadRequest'
+      responses:
+        '200':
+          description: Upload credentials and URLs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          description: Invalid filename or content type.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    DateStart:
+      name: start
+      in: query
+      required: false
+      description: Start date (inclusive) in ISO format.
+      schema:
+        type: string
+        format: date
+    DateEnd:
+      name: end
+      in: query
+      required: false
+      description: End date (inclusive) in ISO format.
+      schema:
+        type: string
+        format: date
+    Granularity:
+      name: granularity
+      in: query
+      required: false
+      description: Aggregation granularity for metrics.
+      schema:
+        type: string
+        enum:
+          - d
+          - w
+          - m
+        default: d
+    CompanyId:
+      name: company_id
+      in: query
+      required: false
+      description: Company identifier filter.
+      schema:
+        type: string
+    City:
+      name: city
+      in: query
+      required: false
+      description: City code filter.
+      schema:
+        type: string
+    Channel:
+      name: channel
+      in: query
+      required: false
+      description: Channel multi-select filter.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - wechat
+            - h5
+            - scan
+            - api
+    Timezone:
+      name: tz
+      in: query
+      required: false
+      description: Timezone identifier in IANA format.
+      schema:
+        type: string
+        default: Asia/Shanghai
+    Metric:
+      name: metric
+      in: query
+      required: false
+      description: Which metric series to return.
+      schema:
+        type: string
+        enum:
+          - orders
+          - gmv
+          - approval_rate
+        default: orders
+    Page:
+      name: page
+      in: query
+      required: false
+      description: One-based page index.
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: page_size
+      in: query
+      required: false
+      description: Number of records per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 20
+    OrderStatuses:
+      name: status
+      in: query
+      required: false
+      description: Filter by one or more order statuses.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/OrderStatus'
+    StoreCode:
+      name: store_code
+      in: query
+      required: false
+      description: Filter by store code.
+      schema:
+        type: string
+    PromoterId:
+      name: promoter_id
+      in: query
+      required: false
+      description: Filter by promoter identifier.
+      schema:
+        type: string
+    OrderId:
+      name: order_id
+      in: query
+      required: false
+      description: Exact order identifier search.
+      schema:
+        type: string
+    OrderPhone:
+      name: phone
+      in: query
+      required: false
+      description: Contact phone number (supports partial match).
+      schema:
+        type: string
+    OrderSortKey:
+      name: sort
+      in: query
+      required: false
+      description: Sort key for the order list.
+      schema:
+        type: string
+        enum:
+          - created_at
+          - amount
+          - status
+        default: created_at
+    SortOrder:
+      name: order
+      in: query
+      required: false
+      description: Sort direction.
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: desc
+    WalletDimension:
+      name: dimension
+      in: query
+      required: false
+      description: Wallet aggregation dimension.
+      schema:
+        type: string
+        enum:
+          - platform
+          - company
+          - team
+          - store
+          - promoter
+          - individual
+        default: platform
+    WalletAccountStatus:
+      name: status
+      in: query
+      required: false
+      description: Wallet account status filter.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - normal
+            - frozen
+            - closed
+    WalletSummaryMetric:
+      name: metric
+      in: query
+      required: false
+      description: Wallet summary metric type.
+      schema:
+        type: string
+        enum:
+          - balance
+          - in_out
+        default: balance
+    EntityId:
+      name: entity_id
+      in: query
+      required: false
+      description: Entity identifier for wallet or withdraw filters.
+      schema:
+        type: string
+    WalletTxType:
+      name: tx_type
+      in: query
+      required: false
+      description: Wallet transaction type.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - order_settlement
+            - freeze
+            - unfreeze
+            - withdraw
+            - adjustment
+    WalletTxStatus:
+      name: tx_status
+      in: query
+      required: false
+      description: Wallet transaction status filter.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - success
+            - pending
+            - failed
+    WithdrawStatus:
+      name: status
+      in: query
+      required: false
+      description: Withdraw status filter.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - pending
+            - processing
+            - succeeded
+            - failed
+            - rejected
+    WithdrawChannel:
+      name: channel
+      in: query
+      required: false
+      description: Withdraw payout channel.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - bank
+            - alipay
+            - wechat
+    CampaignId:
+      name: campaign_id
+      in: query
+      required: false
+      description: Filter by campaign identifier.
+      schema:
+        type: string
+    RiskTags:
+      name: risk_tag
+      in: query
+      required: false
+      description: Filter review queue by risk tags.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+  schemas:
+    DashboardOverviewResponse:
+      type: object
+      required:
+        - kpis
+      properties:
+        kpis:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardKpi'
+        alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardAlert'
+    DashboardKpi:
+      type: object
+      required:
+        - key
+        - label
+        - value
+        - unit
+        - drill_link
+      properties:
+        key:
+          type: string
+          enum:
+            - orders_today
+            - settlement_today
+            - pending_reviews
+            - risk_hits
+            - payout_processing
+            - approval_rate
+        label:
+          type: string
+        value:
+          type: number
+        delta:
+          type: number
+          description: Absolute change versus comparison period.
+        delta_rate:
+          type: number
+          description: Relative change versus comparison period.
+        trend:
+          type: string
+          enum:
+            - up
+            - down
+            - flat
+        unit:
+          type: string
+        drill_link:
+          type: string
+    DashboardAlert:
+      type: object
+      required:
+        - type
+        - level
+        - title
+      properties:
+        type:
+          type: string
+          enum:
+            - risk
+            - callback
+            - export
+            - payout
+        level:
+          type: string
+          enum:
+            - info
+            - warn
+            - error
+        title:
+          type: string
+        description:
+          type: string
+        action_link:
+          type: string
+    DashboardSeriesResponse:
+      type: object
+      required:
+        - metric
+        - points
+      properties:
+        metric:
+          type: string
+          enum:
+            - orders
+            - gmv
+            - approval_rate
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardSeriesPoint'
+    DashboardSeriesPoint:
+      type: object
+      required:
+        - ts
+        - value
+      properties:
+        ts:
+          type: string
+          format: date-time
+        value:
+          type: number
+        baseline_yesterday:
+          type: number
+        baseline_lastweek:
+          type: number
+    DashboardCompareResponse:
+      type: object
+      required:
+        - metrics
+      properties:
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardCompareMetric'
+    DashboardCompareMetric:
+      type: object
+      required:
+        - key
+        - label
+        - current
+        - previous
+        - change
+        - change_rate
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        current:
+          type: number
+        previous:
+          type: number
+        change:
+          type: number
+        change_rate:
+          type: number
+    OrderStatus:
+      type: string
+      enum:
+        - pending
+        - auto_reject
+        - under_review
+        - approved
+        - rejected
+        - settled
+    OrderListItem:
+      type: object
+      required:
+        - order_id
+        - created_at
+        - status
+        - channel
+        - store_name
+        - promoter_name
+        - amount
+      properties:
+        order_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        channel:
+          type: string
+        store_name:
+          type: string
+        promoter_name:
+          type: string
+        amount:
+          type: number
+          format: float
+        settled_amount:
+          type: number
+          format: float
+          nullable: true
+    OrderListResponse:
+      type: object
+      required:
+        - total
+        - page
+        - page_size
+        - items
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderListItem'
+    OrderUser:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        id_number:
+          type: string
+    OrderMaterial:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        type:
+          type: string
+        ocr:
+          type: object
+          additionalProperties: true
+        uploaded_at:
+          type: string
+          format: date-time
+    OrderRiskHit:
+      type: object
+      properties:
+        rule_id:
+          type: string
+        rule_name:
+          type: string
+        level:
+          type: string
+        desc:
+          type: string
+    OrderAuditEntry:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+        actor:
+          type: string
+        action:
+          type: string
+        note:
+          type: string
+    OrderDetailResponse:
+      type: object
+      required:
+        - order_id
+        - created_at
+        - status
+        - amount
+        - channel
+        - store_id
+        - user
+        - materials
+        - audits
+      properties:
+        order_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        amount:
+          type: number
+          format: float
+        channel:
+          type: string
+        store_id:
+          type: string
+        campaign_id:
+          type: string
+        user:
+          $ref: '#/components/schemas/OrderUser'
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderMaterial'
+        commission:
+          type: number
+          format: float
+        settled_amount:
+          type: number
+          format: float
+          nullable: true
+        frozen_amount:
+          type: number
+          format: float
+        risk_hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderRiskHit'
+        audits:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderAuditEntry'
+    OrderReviewRequest:
+      type: object
+      required:
+        - action
+        - note
+      properties:
+        action:
+          type: string
+          enum:
+            - approve
+            - reject
+        reviewer_id:
+          type: string
+        note:
+          type: string
+          minLength: 1
+    OrderReviewResponse:
+      type: object
+      required:
+        - ok
+        - new_status
+      properties:
+        ok:
+          type: boolean
+        new_status:
+          $ref: '#/components/schemas/OrderStatus'
+        processed_ids:
+          type: array
+          items:
+            type: string
+    OrderBatchReviewRequest:
+      type: object
+      required:
+        - ids
+        - action
+        - note
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        action:
+          type: string
+          enum:
+            - approve
+            - reject
+        note:
+          type: string
+          minLength: 1
+    OrderBatchReviewResponse:
+      type: object
+      required:
+        - processed_ids
+        - action
+      properties:
+        processed_ids:
+          type: array
+          items:
+            type: string
+        action:
+          type: string
+          enum:
+            - approve
+            - reject
+        note:
+          type: string
+    ReviewOrderItem:
+      type: object
+      properties:
+        order_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        user_name:
+          type: string
+        phone:
+          type: string
+        store_name:
+          type: string
+        campaign_name:
+          type: string
+        amount:
+          type: number
+          format: float
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        risk_flag:
+          type: boolean
+    ReviewOrdersResponse:
+      type: object
+      required:
+        - total
+        - page
+        - page_size
+        - items
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewOrderItem'
+    ReviewStatsResponse:
+      type: object
+      properties:
+        pending_total:
+          type: integer
+        processed_today:
+          type: integer
+        avg_time_sec:
+          type: integer
+    WalletSummaryOverview:
+      type: object
+      required:
+        - total_balance
+        - frozen
+        - available
+        - withdrawable
+        - in_7d
+        - out_7d
+      properties:
+        total_balance:
+          type: number
+          format: float
+        frozen:
+          type: number
+          format: float
+        available:
+          type: number
+          format: float
+        withdrawable:
+          type: number
+          format: float
+        in_7d:
+          type: number
+          format: float
+        out_7d:
+          type: number
+          format: float
+    WalletSummarySeriesPoint:
+      type: object
+      required:
+        - ts
+      properties:
+        ts:
+          type: string
+        balance:
+          type: number
+          format: float
+        inflow:
+          type: number
+          format: float
+        outflow:
+          type: number
+          format: float
+    WalletSummarySeriesResponse:
+      type: object
+      required:
+        - metric
+        - points
+      properties:
+        metric:
+          type: string
+          enum:
+            - balance
+            - in_out
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/WalletSummarySeriesPoint'
+    WalletSummaryListItem:
+      type: object
+      required:
+        - entity_id
+        - entity_name
+        - balance
+        - frozen
+        - available
+        - withdrawable
+      properties:
+        entity_id:
+          type: string
+        entity_name:
+          type: string
+        balance:
+          type: number
+          format: float
+        frozen:
+          type: number
+          format: float
+        available:
+          type: number
+          format: float
+        withdrawable:
+          type: number
+          format: float
+        last_tx_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - normal
+            - frozen
+            - closed
+    WalletSummaryListResponse:
+      type: object
+      required:
+        - total
+        - page
+        - page_size
+        - items
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WalletSummaryListItem'
+    WalletLedgerItem:
+      type: object
+      required:
+        - tx_id
+        - created_at
+        - entity_name
+        - tx_type
+        - amount
+        - balance_after
+        - status
+      properties:
+        tx_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        entity_name:
+          type: string
+        tx_type:
+          type: string
+          enum:
+            - order_settlement
+            - freeze
+            - unfreeze
+            - withdraw
+            - adjustment
+        order_id:
+          type: string
+          nullable: true
+        amount:
+          type: number
+          format: float
+        balance_after:
+          type: number
+          format: float
+        status:
+          type: string
+          enum:
+            - success
+            - pending
+            - failed
+        note:
+          type: string
+    WalletLedgerResponse:
+      type: object
+      required:
+        - total
+        - page
+        - page_size
+        - items
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WalletLedgerItem'
+    WalletLedgerStatsResponse:
+      type: object
+      required:
+        - in_total
+        - out_total
+        - net
+      properties:
+        in_total:
+          type: number
+          format: float
+        out_total:
+          type: number
+          format: float
+        net:
+          type: number
+          format: float
+    WithdrawItem:
+      type: object
+      required:
+        - withdraw_id
+        - created_at
+        - entity_name
+        - amount
+        - channel
+        - account_info
+        - status
+      properties:
+        withdraw_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        entity_name:
+          type: string
+        amount:
+          type: number
+          format: float
+        channel:
+          type: string
+          enum:
+            - bank
+            - alipay
+            - wechat
+        account_info:
+          type: string
+        status:
+          type: string
+          enum:
+            - pending
+            - processing
+            - succeeded
+            - failed
+            - rejected
+        note:
+          type: string
+    WithdrawListResponse:
+      type: object
+      required:
+        - total
+        - page
+        - page_size
+        - items
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WithdrawItem'
+    WithdrawStatsResponse:
+      type: object
+      required:
+        - pending_total
+        - paid_today
+        - failed_count
+      properties:
+        pending_total:
+          type: number
+          format: float
+        paid_today:
+          type: number
+          format: float
+        failed_count:
+          type: integer
+    WithdrawActionRequest:
+      type: object
+      properties:
+        note:
+          type: string
+    WithdrawActionResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        new_status:
+          type: string
+    CampaignStatus:
+      type: string
+      enum:
+        - draft
+        - published
+        - offline
+        - ended
+    CampaignCommissionTier:
+      type: object
+      required:
+        - threshold
+        - value
+      properties:
+        threshold:
+          type: number
+        value:
+          type: number
+    CampaignCommissionScheme:
+      oneOf:
+        - type: object
+          required:
+            - type
+            - value
+          properties:
+            type:
+              type: string
+              enum:
+                - fixed
+            value:
+              type: number
+        - type: object
+          required:
+            - type
+            - value
+          properties:
+            type:
+              type: string
+              enum:
+                - percent
+            value:
+              type: number
+        - type: object
+          required:
+            - type
+            - tiers
+          properties:
+            type:
+              type: string
+              enum:
+                - tier
+            tiers:
+              type: array
+              minItems: 1
+              items:
+                $ref: '#/components/schemas/CampaignCommissionTier'
+    CampaignPlan:
+      type: object
+      required:
+        - name
+        - price
+        - commission_scheme
+      properties:
+        plan_id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        commission_scheme:
+          $ref: '#/components/schemas/CampaignCommissionScheme'
+        constraints:
+          type: object
+          additionalProperties: true
+    CampaignScope:
+      type: object
+      properties:
+        companies:
+          type: array
+          items:
+            type: string
+        cities:
+          type: array
+          items:
+            type: string
+        stores:
+          type: array
+          items:
+            type: string
+    CampaignMetrics:
+      type: object
+      properties:
+        impressions:
+          type: integer
+        submitted:
+          type: integer
+        approved:
+          type: integer
+        settled:
+          type: integer
+    CampaignListItem:
+      type: object
+      required:
+        - campaign_id
+        - name
+        - code
+        - status
+        - start_time
+        - end_time
+        - channels
+        - scope
+      properties:
+        campaign_id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+        status:
+          $ref: '#/components/schemas/CampaignStatus'
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        channels:
+          type: array
+          items:
+            type: string
+            enum:
+              - wechat
+              - h5
+              - scan
+              - api
+        scope:
+          $ref: '#/components/schemas/CampaignScope'
+        metrics:
+          $ref: '#/components/schemas/CampaignMetrics'
+    CampaignListResponse:
+      type: object
+      required:
+        - total
+        - page
+        - page_size
+        - items
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignListItem'
+    CampaignDetail:
+      allOf:
+        - $ref: '#/components/schemas/CampaignListItem'
+        - type: object
+          required:
+            - plans
+          properties:
+            desc:
+              type: string
+            plans:
+              type: array
+              minItems: 1
+              items:
+                $ref: '#/components/schemas/CampaignPlan'
+            form_dsl_id:
+              type: string
+            risk_policy_id:
+              type: string
+              nullable: true
+            visible_to_roles:
+              type: array
+              items:
+                type: string
+            require_invite:
+              type: boolean
+            offline_note:
+              type: string
+    CampaignUpsertRequest:
+      type: object
+      required:
+        - name
+        - code
+        - start_time
+        - end_time
+        - channels
+        - plans
+        - scope
+        - form_dsl_id
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 40
+        code:
+          type: string
+          pattern: ^[A-Z0-9]{3,16}$
+        desc:
+          type: string
+          maxLength: 200
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        channels:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum:
+              - wechat
+              - h5
+              - scan
+              - api
+        plans:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CampaignPlan'
+        scope:
+          $ref: '#/components/schemas/CampaignScope'
+        form_dsl_id:
+          type: string
+        risk_policy_id:
+          type: string
+          nullable: true
+        visible_to_roles:
+          type: array
+          items:
+            type: string
+        require_invite:
+          type: boolean
+    CampaignUpsertResponse:
+      type: object
+      required:
+        - campaign_id
+      properties:
+        campaign_id:
+          type: string
+        status:
+          $ref: '#/components/schemas/CampaignStatus'
+    CampaignActionResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        new_status:
+          $ref: '#/components/schemas/CampaignStatus'
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        offline_at:
+          type: string
+          format: date-time
+          nullable: true
+    CampaignOfflineRequest:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+          minLength: 1
+    CampaignCloneResponse:
+      type: object
+      required:
+        - campaign_id
+        - status
+      properties:
+        campaign_id:
+          type: string
+        status:
+          $ref: '#/components/schemas/CampaignStatus'
+        source_campaign_id:
+          type: string
+    CampaignExportRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/CampaignStatus'
+        city:
+          type: string
+        company_id:
+          type: string
+        channel:
+          type: string
+          enum:
+            - wechat
+            - h5
+            - scan
+            - api
+        keyword:
+          type: string
+        page:
+          type: integer
+          minimum: 1
+        page_size:
+          type: integer
+          minimum: 1
+          maximum: 200
+        sort_key:
+          type: string
+        sort_order:
+          type: string
+          enum:
+            - asc
+            - desc
+    TeamStatus:
+      type: string
+      enum:
+        - active
+        - archived
+    MemberStatus:
+      type: string
+      enum:
+        - active
+        - frozen
+        - left
+    MemberRole:
+      type: string
+      enum:
+        - promoter
+        - store_owner
+        - staff
+        - lead
+        - viewer
+    TeamNode:
+      type: object
+      required:
+        - team_id
+        - name
+        - has_children
+        - members_count
+      properties:
+        team_id:
+          type: string
+        name:
+          type: string
+        parent_id:
+          type: string
+          nullable: true
+        has_children:
+          type: boolean
+        members_count:
+          type: integer
+        lead_user_id:
+          type: string
+          nullable: true
+        lead_user_name:
+          type: string
+          nullable: true
+        company_bindings:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+    TeamListResponse:
+      type: object
+      required:
+        - teams
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamNode'
+    TeamChildrenResponse:
+      type: object
+      required:
+        - parent_id
+        - teams
+      properties:
+        parent_id:
+          type: string
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamNode'
+    TeamDetail:
+      type: object
+      required:
+        - team_id
+        - name
+        - status
+        - members_count
+        - stores_count
+      properties:
+        team_id:
+          type: string
+        name:
+          type: string
+        parent_id:
+          type: string
+          nullable: true
+        lead_user_id:
+          type: string
+          nullable: true
+        lead_user_name:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        company_bindings:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/TeamStatus'
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        members_count:
+          type: integer
+        stores_count:
+          type: integer
+        desc:
+          type: string
+          nullable: true
+    TeamMember:
+      type: object
+      required:
+        - user_id
+        - name
+        - role
+        - status
+        - joined_at
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          format: email
+          nullable: true
+        role:
+          $ref: '#/components/schemas/MemberRole'
+        status:
+          $ref: '#/components/schemas/MemberStatus'
+        joined_at:
+          type: string
+          format: date-time
+        left_at:
+          type: string
+          format: date-time
+          nullable: true
+        team_path:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        metrics:
+          type: object
+          additionalProperties: true
+        frozen_reason:
+          type: string
+          nullable: true
+    TeamMembersResponse:
+      type: object
+      required:
+        - team_id
+        - total
+        - page
+        - page_size
+        - items
+      properties:
+        team_id:
+          type: string
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMember'
+    TeamMoveRequest:
+      type: object
+      required:
+        - target_team_id
+      properties:
+        target_team_id:
+          type: string
+    TeamMoveResponse:
+      type: object
+      required:
+        - ok
+        - team_id
+        - new_parent_id
+      properties:
+        ok:
+          type: boolean
+        team_id:
+          type: string
+        previous_parent_id:
+          type: string
+          nullable: true
+        new_parent_id:
+          type: string
+    TeamGrantRequest:
+      type: object
+      required:
+        - roles
+      properties:
+        roles:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+    TeamGrantResponse:
+      type: object
+      required:
+        - ok
+        - team_id
+        - granted_roles
+      properties:
+        ok:
+          type: boolean
+        team_id:
+          type: string
+        granted_roles:
+          type: array
+          items:
+            type: string
+    MemberBatchMoveRequest:
+      type: object
+      required:
+        - user_ids
+        - target_team_id
+      properties:
+        user_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        target_team_id:
+          type: string
+    MemberBatchMoveResponse:
+      type: object
+      required:
+        - ok
+        - moved_count
+        - target_team_id
+      properties:
+        ok:
+          type: boolean
+        moved_count:
+          type: integer
+        target_team_id:
+          type: string
+    MemberImportRequest:
+      type: object
+      required:
+        - target_team_id
+        - upload_token
+      properties:
+        target_team_id:
+          type: string
+        upload_token:
+          type: string
+        dry_run:
+          type: boolean
+          default: false
+        notify_email:
+          type: string
+          format: email
+          nullable: true
+    MemberImportTask:
+      type: object
+      required:
+        - task_id
+        - status
+        - processed
+        - total
+      properties:
+        task_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - queued
+            - processing
+            - succeeded
+            - failed
+        processed:
+          type: integer
+        total:
+          type: integer
+        error_rows:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              message:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+    InviteCreateRequest:
+      type: object
+      required:
+        - target_team_id
+        - quota
+        - expires_at
+      properties:
+        target_team_id:
+          type: string
+        quota:
+          type: integer
+          minimum: 1
+        expires_at:
+          type: string
+          format: date-time
+    InviteCreateResponse:
+      type: object
+      required:
+        - invite_code
+        - target_team_id
+        - quota
+        - expires_at
+      properties:
+        invite_code:
+          type: string
+        target_team_id:
+          type: string
+        quota:
+          type: integer
+        expires_at:
+          type: string
+          format: date-time
+        link:
+          type: string
+          format: uri
+    MemberExportRequest:
+      type: object
+      properties:
+        team_id:
+          type: string
+        status:
+          $ref: '#/components/schemas/MemberStatus'
+        role:
+          $ref: '#/components/schemas/MemberRole'
+        keyword:
+          type: string
+    TeamExportRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/TeamStatus'
+        company_id:
+          type: string
+        keyword:
+          type: string
+    TaskStatus:
+      type: string
+      enum:
+        - draft
+        - published
+        - offline
+        - deprecated
+    TaskScope:
+      type: object
+      properties:
+        companies:
+          type: array
+          items:
+            type: string
+        cities:
+          type: array
+          items:
+            type: string
+        stores:
+          type: array
+          items:
+            type: string
+    TaskFormField:
+      type: object
+      required:
+        - key
+        - type
+      properties:
+        key:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+    TaskFieldValidation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - regex
+            - enum
+            - range
+        value:
+          type: string
+        min:
+          type: number
+        max:
+          type: number
+    TaskFieldMapping:
+      type: object
+      required:
+        - dsl_key
+        - biz_key
+        - required
+      properties:
+        dsl_key:
+          type: string
+        biz_key:
+          type: string
+        required:
+          type: boolean
+        validation:
+          $ref: '#/components/schemas/TaskFieldValidation'
+    TaskFormBinding:
+      type: object
+      properties:
+        schema_version:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskFormField'
+        fields_map:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskFieldMapping'
+    TaskAutoCheck:
+      type: object
+      required:
+        - key
+        - rule
+        - level
+        - message
+      properties:
+        key:
+          type: string
+        rule:
+          type: string
+        level:
+          type: string
+          enum:
+            - error
+            - warn
+        message:
+          type: string
+    TaskThreshold:
+      type: object
+      required:
+        - key
+        - op
+        - value
+        - action
+      properties:
+        key:
+          type: string
+        op:
+          type: string
+        value:
+          type: number
+        action:
+          type: string
+    TaskSampling:
+      type: object
+      properties:
+        percent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        seed:
+          type: string
+    TaskReviewRules:
+      type: object
+      properties:
+        auto_checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskAutoCheck'
+        thresholds:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskThreshold'
+        sampling:
+          $ref: '#/components/schemas/TaskSampling'
+        double_review:
+          type: boolean
+        sla:
+          type: integer
+          description: Review SLA in minutes.
+    TaskReleasePlan:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - immediate
+            - scheduled
+            - gray
+        schedule_time:
+          type: string
+          format: date-time
+        gray_percent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        rollback_to_version:
+          type: integer
+    TaskListItem:
+      type: object
+      required:
+        - task_id
+        - name
+        - code
+        - status
+        - version
+        - start_time
+        - end_time
+        - form_dsl_id
+        - visible_to_roles
+        - scope
+      properties:
+        task_id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        version:
+          type: integer
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        form_dsl_id:
+          type: string
+        risk_policy_id:
+          type: string
+          nullable: true
+        visible_to_roles:
+          type: array
+          items:
+            type: string
+        scope:
+          $ref: '#/components/schemas/TaskScope'
+    TaskListResponse:
+      type: object
+      required:
+        - total
+        - page
+        - page_size
+        - items
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskListItem'
+    TaskDetail:
+      allOf:
+        - $ref: '#/components/schemas/TaskListItem'
+        - type: object
+          properties:
+            desc:
+              type: string
+            form_dsl:
+              $ref: '#/components/schemas/TaskFormBinding'
+            review_rules:
+              $ref: '#/components/schemas/TaskReviewRules'
+            risk_action:
+              type: string
+              enum:
+                - block
+                - queue
+                - flag
+            release:
+              $ref: '#/components/schemas/TaskReleasePlan'
+            versions:
+              $ref: '#/components/schemas/TaskVersionListResponse'
+    TaskUpsertRequest:
+      type: object
+      required:
+        - name
+        - code
+        - start_time
+        - end_time
+        - visible_to_roles
+        - scope
+        - form_dsl_id
+        - form_dsl
+        - review_rules
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 40
+        code:
+          type: string
+          pattern: ^[A-Z0-9]{3,16}$
+        desc:
+          type: string
+          maxLength: 200
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        visible_to_roles:
+          type: array
+          items:
+            type: string
+        scope:
+          $ref: '#/components/schemas/TaskScope'
+        form_dsl_id:
+          type: string
+        form_dsl:
+          $ref: '#/components/schemas/TaskFormBinding'
+        review_rules:
+          $ref: '#/components/schemas/TaskReviewRules'
+        risk_policy_id:
+          type: string
+          nullable: true
+        risk_action:
+          type: string
+          enum:
+            - block
+            - queue
+            - flag
+        release:
+          $ref: '#/components/schemas/TaskReleasePlan'
+    TaskUpsertResponse:
+      type: object
+      required:
+        - task_id
+      properties:
+        task_id:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        version:
+          type: integer
+    TaskValidateResponse:
+      type: object
+      required:
+        - ok
+        - missing_fields
+        - invalid_rules
+        - warnings
+      properties:
+        ok:
+          type: boolean
+        missing_fields:
+          type: array
+          items:
+            type: string
+        invalid_rules:
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+              reason:
+                type: string
+        warnings:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+    TaskActionResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        new_status:
+          $ref: '#/components/schemas/TaskStatus'
+        version:
+          type: integer
+    TaskCloneResponse:
+      type: object
+      required:
+        - task_id
+        - status
+      properties:
+        task_id:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        version:
+          type: integer
+        source_task_id:
+          type: string
+    TaskVersionListResponse:
+      type: object
+      required:
+        - total
+        - items
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - version
+              - operator
+              - time
+              - changelog
+            properties:
+              version:
+                type: integer
+              operator:
+                type: string
+              time:
+                type: string
+                format: date-time
+              changelog:
+                type: string
+              diff:
+                type: object
+                additionalProperties: true
+    TaskExportRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        form_dsl_id:
+          type: string
+        risk_policy_id:
+          type: string
+        keyword:
+          type: string
+    ExportResponse:
+      type: object
+      properties:
+        export_id:
+          type: string
+        status:
+          type: string
+        module:
+          type: string
+    AIIntakeStartRequest:
+      type: object
+      required:
+        - images
+      properties:
+        images:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+            format: uri
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Optional contextual information such as operator_id or store hints.
+    AIIntakeStartResponse:
+      type: object
+      required:
+        - job_id
+        - status
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - uploaded
+            - parsing
+            - parsed
+            - failed
+    AIIntakeField:
+      type: object
+      required:
+        - key
+        - value
+        - confidence
+        - editable
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        editable:
+          type: boolean
+    AIIntakeStatusResponse:
+      type: object
+      required:
+        - job_id
+        - status
+        - fields
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - uploaded
+            - parsing
+            - parsed
+            - failed
+            - submitted
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AIIntakeField'
+        errors:
+          type: array
+          description: Optional error messages when status is failed.
+          items:
+            type: string
+    OrderSubmitRequest:
+      type: object
+      required:
+        - fields
+      properties:
+        job_id:
+          type: string
+          description: AI intake job identifier associated with this submission.
+        fields:
+          type: object
+          additionalProperties:
+            type: string
+          description: Confirmed order field values keyed by field identifiers.
+        confirm_flag:
+          type: boolean
+          description: Operator confirmation checkbox state.
+    OrderSubmitResponse:
+      type: object
+      required:
+        - order_id
+        - status
+      properties:
+        order_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - submitted
+            - under_review
+        redirect_url:
+          type: string
+          format: uri
+          description: Optional URL to navigate after submission (e.g., order detail page).
+    UploadRequest:
+      type: object
+      required:
+        - files
+      properties:
+        files:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: object
+            required:
+              - filename
+              - content_type
+              - size
+            properties:
+              filename:
+                type: string
+              content_type:
+                type: string
+              size:
+                type: integer
+                description: File size in bytes.
+    UploadResponse:
+      type: object
+      required:
+        - uploads
+      properties:
+        uploads:
+          type: array
+          items:
+            type: object
+            required:
+              - file_id
+              - upload_url
+            properties:
+              file_id:
+                type: string
+              upload_url:
+                type: string
+                format: uri
+              headers:
+                type: object
+                additionalProperties: true
+                description: Headers required when uploading to object storage.
+              expires_in:
+                type: integer
+                description: Expiration duration in seconds for the upload URL.

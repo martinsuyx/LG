@@ -1,0 +1,11 @@
+{
+  "dimension": "campaign",
+  "metric": "settlement",
+  "items": [
+    { "id": "CAMP-202509", "name": "开学季大促", "metric": 189230.45 },
+    { "id": "CAMP-202508", "name": "社群团购", "metric": 146820.32 },
+    { "id": "CAMP-202507", "name": "门店引流礼卡", "metric": 118540.27 },
+    { "id": "CAMP-202506", "name": "会员节", "metric": 102310.11 },
+    { "id": "CAMP-202505", "name": "暑期早鸟", "metric": 89660.58 }
+  ]
+}

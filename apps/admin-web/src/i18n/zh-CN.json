@@ -1,0 +1,123 @@
+{
+  "top": {
+    "search": "搜索",
+    "notifications": "通知",
+    "help": "帮助",
+    "profile": "个人资料",
+    "logout": "退出登录"
+  },
+  "nav": {
+    "overview": {
+      "_": "总览",
+      "dashboard": "仪表盘"
+    },
+    "orders": {
+      "_": "订单与审核管理",
+      "list": "订单列表",
+      "review": "审核工作台",
+      "detail": "订单详情",
+      "intake": {
+        "ai": "AI 录单",
+        "manual": "手动录单"
+      }
+    },
+    "wallet": {
+      "_": "资金与账户管理",
+      "summary": "钱包摘要",
+      "ledger": "钱包流水",
+      "withdraws": "提现管理"
+    },
+    "campaignsTasks": {
+      "_": "活动与任务管理"
+    },
+    "campaigns": "活动管理",
+    "tasks": "任务管理",
+    "org": {
+      "_": "组织与用户管理",
+      "teams": "团队与人员",
+      "usersRoles": "用户与角色"
+    },
+    "risk": {
+      "_": "风控与合规管理",
+      "hits": "风控命中列表",
+      "tickets": "风控工单",
+      "listsRules": "名单与规则",
+      "kyc": "KYC 审核"
+    },
+    "reports": {
+      "_": "报表与总览",
+      "overview": "报表总览",
+      "exports": "导出中心",
+      "auditLogs": "审计日志"
+    },
+    "system": {
+      "_": "系统与治理",
+      "settings": "系统设置"
+    }
+  },
+  "footer": {
+    "version": "版本"
+  },
+  "dashboard": {
+    "title": "仪表盘总览",
+    "subtitle": "聚焦核心 KPI 与异常提醒，快速切换筛选视角。",
+    "loading": "数据加载中…",
+    "empty": "暂无数据",
+    "alertsTitle": "异常提醒",
+    "alertsAction": "查看",
+    "filters": {
+      "groupTitle": "全局筛选",
+      "date": "日期范围",
+      "granularity": "粒度",
+      "company": "公司",
+      "city": "城市",
+      "channel": "渠道",
+      "channelHint": "可多选按渠道筛选",
+      "quick": "快速选择",
+      "quickToday": "今日",
+      "quick7d": "近 7 天",
+      "quick30d": "近 30 天",
+      "reset": "重置"
+    },
+    "granularity": {
+      "d": "按日",
+      "w": "按周",
+      "m": "按月"
+    },
+    "channel": {
+      "wechat": "微信",
+      "h5": "H5",
+      "scan": "扫码",
+      "api": "API"
+    },
+    "actions": {
+      "refresh": "刷新",
+      "export": "导出当前视图"
+    },
+    "kpi": {
+      "orders_today": "今日订单数",
+      "settlement_today": "今日结算金额",
+      "pending_reviews": "待审核订单",
+      "risk_hits": "异常命中",
+      "payout_processing": "提现处理中",
+      "approval_rate": "通过率"
+    },
+    "chart": {
+      "title": "趋势对比",
+      "metricLabel": "查看指标：",
+      "baselineYesterday": "昨日同时间",
+      "baselineLastWeek": "上周同期"
+    },
+    "compare": {
+      "title": "期间对比",
+      "metric": "指标",
+      "current": "当前",
+      "previous": "对比",
+      "change": "变化"
+    },
+    "errors": {
+      "range": "开始日期不能晚于结束日期。",
+      "load": "加载仪表盘数据失败，请稍后重试。"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "user": {
+    "user_id": "U2001",
+    "name": "测试用户",
+    "phone": "13800009999",
+    "email": "test.user@example.com",
+    "role_ids": ["R03"],
+    "status": "active",
+    "last_login_at": null,
+    "teams": []
+  },
+  "temporary_password": "Join#2025"
+}

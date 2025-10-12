@@ -1,0 +1,146 @@
+// Do not edit directly
+// Generated on Sat, 11 Oct 2025 13:24:21 GMT
+
+// Base colors
+$color-surface-0: #ffffff;
+$color-surface-25: #fbfdff;
+$color-surface-50: #f8fafc;
+$color-surface-100: #f1f5f9;
+$color-surface-200: #e2e8f0;
+$color-surface-300: #cbd5f5;
+$color-surface-500: #64748b;
+$color-surface-700: #334155;
+
+$color-text-strong: #1e293b;
+$color-text-muted: #475569;
+$color-text-on-primary: #ffffff;
+$color-error: #dc2626;
+$color-warning-soft: #fef3c7;
+$color-warning-strong: #f59e0b;
+
+$color-primary-50: #eff6ff;
+$color-primary-100: #dbeafe;
+$color-primary-200: #bfdbfe;
+$color-primary-300: #93c5fd;
+$color-primary-600: #2563eb;
+$color-primary-700: #1d4ed8;
+$color-primary-800: #1e40af;
+
+$color-danger-300: #fca5a5;
+$color-danger-600: #dc2626;
+$color-danger-700: #b91c1c;
+$color-danger-800: #991b1b;
+
+// Spacing scale
+$spacing-8: 0.5rem;
+$spacing-10: 0.625rem;
+$spacing-12: 0.75rem;
+$spacing-16: 1rem;
+$spacing-20: 1.25rem;
+$spacing-24: 1.5rem;
+$spacing-32: 2rem;
+$spacing-40: 2.5rem;
+
+// Radius scale
+$radius-8: 0.5rem;
+$radius-12: 0.75rem;
+$radius-16: 1rem;
+$radius-lg: 0.75rem;
+$radius-xl: 1.25rem;
+
+// Border
+$border-width-1: 1px;
+$border-1: $border-width-1;
+
+// Typography scale
+$font-size-12: 0.75rem;
+$font-size-16: 1rem;
+$font-line-height-16: 1.5rem;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+
+$text-12-regular-fs: $font-size-12;
+$text-12-regular-lh: 1.125rem;
+$text-12-regular-wt: $font-weight-regular;
+
+$text-12-medium-fs: $font-size-12;
+$text-12-medium-lh: 1.125rem;
+$text-12-medium-wt: $font-weight-medium;
+
+$text-14-regular-fs: 0.875rem;
+$text-14-regular-lh: 1.3125rem;
+$text-14-regular-wt: $font-weight-regular;
+
+$text-16-semibold-fs: $font-size-16;
+$text-16-semibold-lh: $font-line-height-16;
+$text-16-semibold-wt: $font-weight-semibold;
+
+$title-18-semibold-fs: 1.125rem;
+$title-18-semibold-lh: 1.75rem;
+$title-18-semibold-wt: $font-weight-semibold;
+
+// Alias colors
+$surface-0: $color-surface-0;
+$surface-25: $color-surface-25;
+$surface-50: $color-surface-50;
+$surface-100: $color-surface-100;
+$surface-200: $color-surface-200;
+$surface-300: $color-surface-300;
+$surface-on-primary: $color-text-on-primary;
+$surface-on-danger: $color-text-on-primary;
+
+$primary-50: $color-primary-50;
+$primary-100: $color-primary-100;
+$primary-200: $color-primary-200;
+$primary-300: $color-primary-300;
+$primary-600: $color-primary-600;
+$primary-700: $color-primary-700;
+$primary-800: $color-primary-800;
+
+$danger-300: $color-danger-300;
+$danger-600: $color-danger-600;
+$danger-700: $color-danger-700;
+$danger-800: $color-danger-800;
+
+$text-strong: $color-text-strong;
+$text-muted: $color-text-muted;
+$text-subtle: rgba($color-text-strong, 0.45);
+$text-on-primary: $color-text-on-primary;
+
+$color-surface-100-opaque: rgba($color-surface-100, 0.65);
+
+// Effects & misc tokens
+$transition-fast: all 0.2s ease-in-out;
+$disabled-opacity: 0.5;
+
+$overlay-700: rgba($color-surface-700, 0.45);
+$backdrop-blur: blur(8px);
+$dialog-max-w: 48rem;
+
+$shadow-card: 0 12px 36px rgba($color-surface-700, 0.08);
+$shadow-xl: 0 18px 48px rgba($color-surface-700, 0.12);
+
+$focus-ring-primary: 0 0 0 3px rgba($color-primary-300, 0.35);
+$focus-ring-danger: 0 0 0 3px rgba($color-danger-300, 0.35);
+$outline-focus: 3px;
+
+$z-dialog: 1300;
+$z-sticky: 900;
+
+$skeleton-bg: linear-gradient(
+  90deg,
+  rgba($color-surface-100, 0.8) 0%,
+  rgba($color-surface-200, 0.9) 50%,
+  rgba($color-surface-100, 0.8) 100%
+);
+$skeleton-h: 1rem;
+
+// Controls
+$control-sm-h: 2rem;
+$control-md-h: 2.5rem;
+$control-lg-h: 3rem;
+$control-height: $control-md-h;
+
+// Semantic aliases
+$focus-ring-warning: 0 0 0 3px rgba($color-warning-strong, 0.3);

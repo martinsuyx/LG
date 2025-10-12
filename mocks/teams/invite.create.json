@@ -1,0 +1,7 @@
+{
+  "invite_code": "INV-TEAM-20251011001",
+  "target_team_id": "T001A",
+  "quota": 20,
+  "expires_at": "2025-11-30T23:59:59+08:00",
+  "link": "https://joincom.example/invite/INV-TEAM-20251011001"
+}
