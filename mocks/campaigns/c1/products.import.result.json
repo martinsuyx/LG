@@ -1,0 +1,8 @@
+{
+  "task_id": "CPI20251015001",
+  "status": "succeeded",
+  "total_rows": 120,
+  "succeeded": 118,
+  "failed": 2,
+  "result_url": "https://mock/campaigns/C1/import/CPI20251015001/result.csv"
+}
