@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: Campaign Products Copy From API
+  version: '1.0.0'
+
+paths:
+  /api/v1/campaigns/{campaign_id}/products/copy_from:
+    post:
+      tags: [Campaigns]
+      summary: Copy products & plans (and commissions) from a source to current campaign
+      operationId: campaignProductsCopyFrom
+      parameters:
+        - in: path
+          name: campaign_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductsCopyFromRequest'
+            examples:
+              from_campaign:
+                value:
+                  source: { type: campaign, campaign_id: C0 }
+                  scope: { products: ["P001","P002"], plans: [] }
+                  preview: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductsCopyFromResult'
+              examples:
+                preview:
+                  value:
+                    preview: true
+                    diff: { added: 5, changed: 2, unchanged: 10 }
+                applied:
+                  value:
+                    preview: false
+                    applied: 7
+
+components:
+  schemas:
+    CampaignProductsCopyFromRequest:
+      type: object
+      properties:
+        source:
+          type: object
+          properties:
+            type: { type: string, enum: [campaign, template] }
+            campaign_id: { type: string }
+            template_id: { type: string }
+          required: [type]
+        scope:
+          type: object
+          properties:
+            products:
+              type: array
+              items: { type: string }
+            plans:
+              type: array
+              items: { type: string }
+        preview: { type: boolean, default: true }
+      required: [source]
+
+    CampaignProductsCopyFromResult:
+      type: object
+      properties:
+        preview: { type: boolean }
+        applied: { type: integer }
+        diff:
+          type: object
+          properties:
+            added: { type: integer }
+            changed: { type: integer }
+            unchanged: { type: integer }
