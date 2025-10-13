@@ -1,0 +1,39 @@
+[
+  {
+    "product_id": "P001",
+    "product_name": "宽带新装",
+    "external_key": "PROD_WB_200M",
+    "keywords": ["宽带", "200M"],
+    "plans": [
+      {
+        "plan_id": "PLAN59",
+        "plan_name": "59 元套餐",
+        "price": 59,
+        "commission_default": { "type": "percent", "value": 10 },
+        "caps": { "max_commission": 15, "min_commission": 5, "allow_override": true, "approval_required": false }
+      },
+      {
+        "plan_id": "PLAN99",
+        "plan_name": "99 元套餐",
+        "price": 99,
+        "commission_default": { "type": "fixed", "value": 20 },
+        "caps": { "max_commission": 30, "min_commission": 5, "allow_override": true, "approval_required": true }
+      }
+    ]
+  },
+  {
+    "product_id": "P002",
+    "product_name": "5G 新号",
+    "external_key": "PROD_5G_59",
+    "keywords": ["5G", "新装"],
+    "plans": [
+      {
+        "plan_id": "P2PLAN59",
+        "plan_name": "59 元套餐",
+        "price": 59,
+        "commission_default": { "type": "percent", "value": 12 },
+        "caps": { "max_commission": 18, "min_commission": 6, "allow_override": true, "approval_required": false }
+      }
+    ]
+  }
+]
