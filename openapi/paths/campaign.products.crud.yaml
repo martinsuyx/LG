@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: Campaign Products & Plans CRUD API
+  version: '1.0.0'
+
+paths:
+  /api/v1/campaigns/{campaign_id}/products:
+    post:
+      tags: [Campaigns]
+      summary: Create product under campaign
+      operationId: campaignProductCreate
+      parameters:
+        - in: path
+          name: campaign_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CampaignProductNode' }
+
+  /api/v1/campaigns/{campaign_id}/products/{product_id}:
+    put:
+      tags: [Campaigns]
+      summary: Update product
+      operationId: campaignProductUpdate
+      parameters:
+        - in: path
+          name: campaign_id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: product_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CampaignProductUpdate' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CampaignProductNode' }
+
+  /api/v1/campaigns/{campaign_id}/products/{product_id}/archive:
+    post:
+      tags: [Campaigns]
+      summary: Archive or restore product
+      operationId: campaignProductArchive
+      parameters:
+        - in: path
+          name: campaign_id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: product_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                archived: { type: boolean }
+      responses:
+        '200':
+          description: OK
+
+  /api/v1/campaigns/{campaign_id}/products/{product_id}/plans:
+    post:
+      tags: [Campaigns]
+      summary: Create plan under a product
+      operationId: campaignPlanCreate
+      parameters:
+        - in: path
+          name: campaign_id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: product_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CampaignPlanCreate' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CampaignPlan' }
+
+  /api/v1/campaigns/{campaign_id}/plans/{plan_id}:
+    put:
+      tags: [Campaigns]
+      summary: Update plan
+      operationId: campaignPlanUpdate
+      parameters:
+        - in: path
+          name: campaign_id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: plan_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CampaignPlanUpdate' }
+      responses:
+        '200': { description: OK }
+
+components:
+  schemas:
+    CommissionFixed:
+      type: object
+      properties:
+        type: { type: string, enum: [fixed] }
+        value: { type: number, format: double, minimum: 0 }
+      required: [type, value]
+    CommissionPercent:
+      type: object
+      properties:
+        type: { type: string, enum: [percent] }
+        value: { type: number, format: double, minimum: 0, maximum: 100 }
+      required: [type, value]
+    CommissionTierItem:
+      type: object
+      properties:
+        threshold: { type: number, format: double, minimum: 0 }
+        value: { type: number, format: double, minimum: 0 }
+        kind: { type: string, enum: [yuan, percent] }
+      required: [threshold, value, kind]
+    CommissionTier:
+      type: object
+      properties:
+        type: { type: string, enum: [tier] }
+        metric: { type: string, enum: [amount, count, activate], default: amount }
+        unit: { type: string, enum: [yuan, pcs], default: yuan }
+        tiers:
+          type: array
+          items: { $ref: '#/components/schemas/CommissionTierItem' }
+      required: [type, metric, unit, tiers]
+    Commission:
+      oneOf:
+        - $ref: '#/components/schemas/CommissionFixed'
+        - $ref: '#/components/schemas/CommissionPercent'
+        - $ref: '#/components/schemas/CommissionTier'
+      discriminator:
+        propertyName: type
+        mapping:
+          fixed: '#/components/schemas/CommissionFixed'
+          percent: '#/components/schemas/CommissionPercent'
+          tier: '#/components/schemas/CommissionTier'
+
+    PlanCaps:
+      type: object
+      properties:
+        max_commission: { type: number, format: double }
+        min_commission: { type: number, format: double }
+        allow_override: { type: boolean }
+        approval_required: { type: boolean }
+
+    CampaignProductCreate:
+      type: object
+      properties:
+        product_name: { type: string }
+        external_key: { type: string }
+        keywords:
+          type: array
+          items: { type: string }
+      required: [product_name]
+
+    CampaignProductUpdate:
+      allOf:
+        - $ref: '#/components/schemas/CampaignProductCreate'
+
+    CampaignPlanCreate:
+      type: object
+      properties:
+        plan_name: { type: string }
+        price: { type: number, format: double }
+        commission_default: { $ref: '#/components/schemas/Commission' }
+        caps: { $ref: '#/components/schemas/PlanCaps' }
+      required: [plan_name, price, commission_default]
+
+    CampaignPlanUpdate:
+      allOf:
+        - $ref: '#/components/schemas/CampaignPlanCreate'
+
+    CampaignPlan:
+      type: object
+      properties:
+        plan_id: { type: string }
+        plan_name: { type: string }
+        price: { type: number, format: double }
+        commission_default: { $ref: '#/components/schemas/Commission' }
+        caps: { $ref: '#/components/schemas/PlanCaps' }
+      required: [plan_id, plan_name, price, commission_default]
+
+    CampaignProductNode:
+      type: object
+      properties:
+        product_id: { type: string }
+        product_name: { type: string }
+        external_key: { type: string }
+        keywords:
+          type: array
+          items: { type: string }
+      required: [product_id, product_name]
