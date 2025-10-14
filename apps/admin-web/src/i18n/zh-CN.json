@@ -163,6 +163,20 @@
   "campaignProducts": {
     "title": "推广产品设置",
     "subtitle": "管理甲方产品与套餐结构，配置默认佣金与额度上限。",
+    "info": {
+      "campaign": "活动",
+      "period": "活动周期",
+      "status": "状态",
+      "statusDraft": "草稿",
+      "statusActive": "启用",
+      "statusRunning": "进行中",
+      "statusArchived": "已归档",
+      "matching": "匹配方式",
+      "matchingTemplate": "模板匹配",
+      "matchingAutoId": "自动匹配（唯一 ID）",
+      "matchingManual": "人工匹配",
+      "updated": "最近更新"
+    },
     "actions": {
       "newProduct": "新增产品",
       "newPackage": "新增套餐",
@@ -187,11 +201,24 @@
         "subtitle": "可选配置佣金上下限与覆盖策略。",
         "min": "最小值",
         "max": "最大值",
-        "allowOverride": "允许运营覆盖默认佣金"
+        "allowOverride": "允许运营覆盖默认佣金",
+        "approvalRequired": "超过上限需审批"
+      },
+      "metrics": {
+        "promoters": "推广人数",
+        "orders": "匹配订单数"
       },
       "save": "保存套餐"
     },
     "product": {
+      "subtitle": "维护甲方产品的匹配字段与备注信息。",
+      "externalKey": "唯一匹配字段",
+      "externalKeyHint": "多个字段使用逗号分隔，例如 external_key, sku_id",
+      "keywords": "关键字",
+      "keywordsHint": "用于模糊匹配，可输入多个关键字",
+      "category": "分类",
+      "remark": "备注",
+      "save": "保存产品信息",
       "emptyTip": "该产品尚未配置套餐，新增一个套餐开始配置。"
     },
     "placeholders": {
@@ -221,11 +248,22 @@
       "failed": "失败",
       "download": "下载结果"
     },
+    "share": {
+      "title": "分成比例",
+      "subtitle": "配置推广员、团队负责人与城市负责人的分成占比（0-1）。",
+      "roles": {
+        "promoter": "推广员",
+        "leader": "团队负责人",
+        "city_head": "城市负责人"
+      },
+      "unit": "占比"
+    },
     "success": {
       "save": "套餐已保存",
       "createProduct": "产品已创建",
       "createPackage": "套餐已创建",
-      "copy": "模板已复制到当前活动"
+      "copy": "模板已复制到当前活动",
+      "saveProduct": "产品信息已保存"
     },
     "errors": {
       "load": "加载产品树失败，请稍后再试。",

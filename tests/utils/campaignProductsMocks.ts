@@ -12,6 +12,20 @@ interface CommissionCaps {
   min?: number | null;
   max?: number | null;
   allow_override?: boolean;
+  approval_required?: boolean | null;
+}
+
+interface CampaignProductDetail {
+  product_id: string;
+  external_keys?: string[] | null;
+  keywords?: string[] | null;
+  category?: string | null;
+  remark?: string | null;
+}
+
+interface CampaignPackageMetrics {
+  promoter_count?: number;
+  matched_orders?: number;
 }
 
 interface CampaignPackageDetail {
@@ -19,9 +33,11 @@ interface CampaignPackageDetail {
   price: number;
   commission_default: CommissionValue;
   caps?: CommissionCaps | null;
+  share_rules?: Record<string, number> | null;
   description?: string | null;
   updated_at?: string | null;
   updated_by?: string | null;
+  metrics?: CampaignPackageMetrics | null;
 }
 
 interface CampaignProductNode {
@@ -33,6 +49,7 @@ interface CampaignProductNode {
   sort_order: number;
   has_children: boolean;
   children: CampaignProductNode[];
+  product_detail?: CampaignProductDetail | null;
   package_detail?: CampaignPackageDetail | null;
 }
 
@@ -45,6 +62,11 @@ interface CampaignProductTemplate {
 
 interface ProductsTreeResponse {
   campaign_id: string;
+  campaign_name?: string | null;
+  status?: string | null;
+  start_time?: string | null;
+  end_time?: string | null;
+  matching_mode?: string | null;
   updated_at?: string | null;
   nodes: CampaignProductNode[];
 }
@@ -73,8 +95,18 @@ function cloneCaps(caps?: CommissionCaps | null): CommissionCaps | undefined {
   return {
     min: caps.min ?? null,
     max: caps.max ?? null,
-    allow_override: caps.allow_override ?? false
+    allow_override: caps.allow_override ?? false,
+    approval_required: caps.approval_required ?? false
   };
+}
+
+function cloneShareRules(rules?: Record<string, number> | null) {
+  if (!rules) return undefined;
+  const clone: Record<string, number> = {};
+  Object.entries(rules).forEach(([key, value]) => {
+    clone[key] = Number(value ?? 0);
+  });
+  return clone;
 }
 
 function clonePackageDetail(detail?: CampaignPackageDetail | null): CampaignPackageDetail | null | undefined {
@@ -82,7 +114,9 @@ function clonePackageDetail(detail?: CampaignPackageDetail | null): CampaignPack
   if (!detail) return undefined;
   return {
     ...detail,
-    caps: cloneCaps(detail.caps ?? undefined)
+    caps: cloneCaps(detail.caps ?? undefined),
+    share_rules: cloneShareRules(detail.share_rules ?? undefined),
+    metrics: detail.metrics ? { ...detail.metrics } : undefined
   };
 }
 
@@ -90,6 +124,7 @@ function cloneNode(node: CampaignProductNode): CampaignProductNode {
   return {
     ...node,
     children: cloneNodes(node.children ?? []),
+    product_detail: node.product_detail ? { ...node.product_detail } : undefined,
     package_detail: clonePackageDetail(node.package_detail)
   };
 }
@@ -125,6 +160,11 @@ const templateConfigs: Record<string, Array<{ name: string; price: number; commi
 const state = {
   nodes: cloneNodes(initialTree.nodes ?? []),
   updatedAt: initialTree.updated_at ?? now(),
+  campaignName: initialTree.campaign_name ?? '—',
+  status: initialTree.status ?? 'draft',
+  startTime: initialTree.start_time ?? null,
+  endTime: initialTree.end_time ?? null,
+  matchingMode: initialTree.matching_mode ?? 'template',
   templates: templateList,
   importTask: null as ImportTaskState | null
 };
@@ -132,6 +172,11 @@ const state = {
 function resetState() {
   state.nodes = cloneNodes(initialTree.nodes ?? []);
   state.updatedAt = initialTree.updated_at ?? now();
+  state.campaignName = initialTree.campaign_name ?? '—';
+  state.status = initialTree.status ?? 'draft';
+  state.startTime = initialTree.start_time ?? null;
+  state.endTime = initialTree.end_time ?? null;
+  state.matchingMode = initialTree.matching_mode ?? 'template';
   state.importTask = null;
 }
 
@@ -173,7 +218,12 @@ function removeNode(nodes: CampaignProductNode[], nodeId: string): boolean {
 function ensurePrimaryProduct(): CampaignProductNode {
   let product = state.nodes.find((node) => node.type === 'product');
   if (!product) {
-    product = createProductNode('模板产品');
+    product = createProductNode('模板产品', {
+      external_keys: ['template_key'],
+      keywords: ['模板'],
+      category: '默认分类',
+      remark: '模板导入时生成的默认产品。'
+    });
     state.nodes.push(product);
   }
   return product;
@@ -187,6 +237,8 @@ interface PackageCreateConfig {
   commission: CommissionValue;
   description?: string | null;
   caps?: CommissionCaps | null;
+  share_rules?: Record<string, number> | null;
+  metrics?: CampaignPackageMetrics | null;
   status?: 'active' | 'archived';
 }
 
@@ -196,7 +248,8 @@ function createPackageNode(config: PackageCreateConfig): CampaignProductNode {
     ? {
         min: config.caps.min ?? null,
         max: config.caps.max ?? null,
-        allow_override: config.caps.allow_override ?? false
+        allow_override: config.caps.allow_override ?? false,
+        approval_required: config.caps.approval_required ?? false
       }
     : undefined;
   return {
@@ -213,23 +266,33 @@ function createPackageNode(config: PackageCreateConfig): CampaignProductNode {
       price: config.price,
       commission_default: config.commission,
       caps,
+      share_rules: config.share_rules ? { ...config.share_rules } : { promoter: 0.7, leader: 0.2, city_head: 0.1 },
       description: config.description ?? '',
       updated_at: now(),
-      updated_by: 'mock.operator'
+      updated_by: 'mock.operator',
+      metrics: config.metrics ? { ...config.metrics } : { promoter_count: 0, matched_orders: 0 }
     }
   };
 }
 
-function createProductNode(name: string): CampaignProductNode {
+function createProductNode(name: string, detail?: Partial<CampaignProductDetail>): CampaignProductNode {
+  const productId = `prod-${Math.random().toString(36).slice(2, 10)}`;
   return {
-    node_id: `prod-${Math.random().toString(36).slice(2, 10)}`,
+    node_id: productId,
     name,
     type: 'product',
     status: 'active',
     parent_id: null,
     sort_order: nextSortOrder(state.nodes),
     has_children: false,
-    children: []
+    children: [],
+    product_detail: {
+      product_id: productId,
+      external_keys: detail?.external_keys ?? [],
+      keywords: detail?.keywords ?? [],
+      category: detail?.category ?? '',
+      remark: detail?.remark ?? ''
+    }
   };
 }
 
@@ -250,7 +313,9 @@ function applyTemplate(templateId: string, overwrite = false): number {
       price: config.price,
       commission: config.commission,
       description: config.description,
-      caps: { allow_override: true }
+      caps: { allow_override: true, approval_required: false },
+      share_rules: { promoter: 0.7, leader: 0.2, city_head: 0.1 },
+      metrics: { promoter_count: 30 + index * 5, matched_orders: 80 + index * 20 }
     });
     packageNode.sort_order = nextSortOrder(children);
     children.push(packageNode);
@@ -269,7 +334,9 @@ function injectImportedPackage() {
     price: 128,
     commission: { type: 'fixed', value: 35 },
     description: '导入任务生成的套餐',
-    caps: { max: 50, allow_override: true }
+    caps: { max: 50, allow_override: true, approval_required: false },
+    share_rules: { promoter: 0.6, leader: 0.25, city_head: 0.15 },
+    metrics: { promoter_count: 45, matched_orders: 96 }
   });
   packageNode.sort_order = nextSortOrder(children);
   children.push(packageNode);
@@ -288,18 +355,26 @@ function updatePackageNode(node: CampaignProductNode, payload: any) {
       : {
           min: payload.caps?.min ?? null,
           max: payload.caps?.max ?? null,
-          allow_override: payload.caps?.allow_override ?? false
+          allow_override: payload.caps?.allow_override ?? false,
+          approval_required: payload.caps?.approval_required ?? false
         };
+  const shareRules =
+    payload.share_rules === undefined
+      ? node.package_detail?.share_rules ?? undefined
+      : cloneShareRules(payload.share_rules ?? {});
   const description =
     payload.description !== undefined ? payload.description ?? '' : node.package_detail?.description ?? '';
+  const metrics = node.package_detail?.metrics ? { ...node.package_detail.metrics } : { promoter_count: 0, matched_orders: 0 };
   node.package_detail = {
     package_id: node.package_detail?.package_id ?? node.node_id,
     price: payload.price ?? node.package_detail?.price ?? 0,
     commission_default: commission,
     caps,
+    share_rules: shareRules,
     description,
     updated_at: now(),
-    updated_by: 'mock.operator'
+    updated_by: 'mock.operator',
+    metrics
   };
   state.updatedAt = now();
 }
@@ -307,6 +382,20 @@ function updatePackageNode(node: CampaignProductNode, payload: any) {
 function updateProductNode(node: CampaignProductNode, payload: any) {
   node.name = payload.name ?? node.name;
   node.status = payload.status ?? node.status;
+  if (payload.product_detail) {
+    const detail = node.product_detail ?? {
+      product_id: node.node_id,
+      external_keys: [],
+      keywords: [],
+      category: '',
+      remark: ''
+    };
+    detail.external_keys = payload.product_detail.external_keys ?? detail.external_keys ?? [];
+    detail.keywords = payload.product_detail.keywords ?? detail.keywords ?? [];
+    detail.category = payload.product_detail.category ?? detail.category ?? '';
+    detail.remark = payload.product_detail.remark ?? detail.remark ?? '';
+    node.product_detail = detail;
+  }
   state.updatedAt = now();
 }
 
@@ -319,6 +408,11 @@ export async function registerCampaignProductsMocks(page: Page) {
       contentType: 'application/json',
       body: JSON.stringify({
         campaign_id: 'C1',
+        campaign_name: state.campaignName,
+        status: state.status,
+        start_time: state.startTime,
+        end_time: state.endTime,
+        matching_mode: state.matchingMode,
         updated_at: state.updatedAt,
         nodes: cloneNodes(state.nodes)
       })
@@ -402,7 +496,7 @@ export async function registerCampaignProductsMocks(page: Page) {
     }
     const payload = await route.request().postDataJSON();
     if (payload.type === 'product') {
-      const node = createProductNode(payload.name ?? '未命名产品');
+      const node = createProductNode(payload.name ?? '未命名产品', payload.product_detail ?? {});
       state.nodes.push(node);
       state.updatedAt = now();
       route.fulfill({
@@ -429,7 +523,8 @@ export async function registerCampaignProductsMocks(page: Page) {
         price: payload.price ?? 0,
         commission: payload.commission_default ?? ({ type: 'fixed', value: 0 } as CommissionValue),
         description: payload.description ?? '',
-        caps: payload.caps ?? null
+        caps: payload.caps ?? null,
+        share_rules: payload.share_rules ?? null
       });
       node.sort_order = nextSortOrder(children);
       children.push(node);

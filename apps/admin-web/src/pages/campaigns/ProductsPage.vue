@@ -24,6 +24,31 @@
       </div>
     </header>
 
+    <section class="campaign-products__info">
+      <dl>
+        <div>
+          <dt>{{ t('campaignProducts.info.campaign') }}</dt>
+          <dd>{{ campaignSummary.name || '—' }}</dd>
+        </div>
+        <div>
+          <dt>{{ t('campaignProducts.info.period') }}</dt>
+          <dd>{{ campaignSummary.period || '—' }}</dd>
+        </div>
+        <div>
+          <dt>{{ t('campaignProducts.info.status') }}</dt>
+          <dd>{{ campaignSummary.status || '—' }}</dd>
+        </div>
+        <div>
+          <dt>{{ t('campaignProducts.info.matching') }}</dt>
+          <dd>{{ campaignSummary.matchingMode || '—' }}</dd>
+        </div>
+        <div>
+          <dt>{{ t('campaignProducts.info.updated') }}</dt>
+          <dd>{{ campaignSummary.updatedAt || '—' }}</dd>
+        </div>
+      </dl>
+    </section>
+
     <p v-if="feedback.message" class="campaign-products__feedback" :data-variant="feedback.variant">
       {{ feedback.message }}
     </p>
@@ -80,6 +105,17 @@
                 {{ packageStatusLabel(selectedPackage.status) }}
               </span>
             </header>
+
+            <ul v-if="packageForm.metrics" class="package-form__stats">
+              <li>
+                <strong>{{ packageForm.metrics.promoter_count ?? 0 }}</strong>
+                <span>{{ t('campaignProducts.package.metrics.promoters') }}</span>
+              </li>
+              <li>
+                <strong>{{ packageForm.metrics.matched_orders ?? 0 }}</strong>
+                <span>{{ t('campaignProducts.package.metrics.orders') }}</span>
+              </li>
+            </ul>
 
             <div class="package-form__grid">
               <label>
@@ -170,6 +206,39 @@
                   />
                   <span>{{ t('campaignProducts.package.caps.allowOverride') }}</span>
                 </label>
+                <label class="caps-grid__checkbox">
+                  <input
+                    type="checkbox"
+                    :disabled="saving"
+                    v-model="packageForm.caps.approval_required"
+                    :aria-label="t('campaignProducts.package.caps.approvalRequired')"
+                  />
+                  <span>{{ t('campaignProducts.package.caps.approvalRequired') }}</span>
+                </label>
+              </div>
+            </section>
+
+            <section class="package-form__section">
+              <header>
+                <h3>{{ t('campaignProducts.share.title') }}</h3>
+                <p>{{ t('campaignProducts.share.subtitle') }}</p>
+              </header>
+              <div class="share-grid">
+                <label v-for="role in shareRuleRoles" :key="role" class="share-grid__item">
+                  <span>{{ t(`campaignProducts.share.roles.${role}`) }}</span>
+                  <div class="share-grid__input">
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      :disabled="saving"
+                      v-model.number="packageForm.share_rules[role]"
+                      :aria-label="t(`campaignProducts.share.roles.${role}`)"
+                    />
+                    <span>{{ t('campaignProducts.share.unit') }}</span>
+                  </div>
+                </label>
               </div>
             </section>
 
@@ -180,12 +249,76 @@
             </footer>
           </div>
 
-          <div v-else-if="selectedProduct" class="product-empty">
-            <h2>{{ selectedProduct.name }}</h2>
-            <p>{{ t('campaignProducts.product.emptyTip') }}</p>
-            <Button size="sm" variant="secondary" @click="openCreatePackage" :disabled="loading">
-              {{ t('campaignProducts.actions.newPackage') }}
-            </Button>
+          <div v-else-if="selectedProduct" class="product-form">
+            <header class="product-form__head">
+              <div>
+                <h2>{{ productForm.name }}</h2>
+                <p>{{ t('campaignProducts.product.subtitle') }}</p>
+              </div>
+              <span class="product-form__status" :data-status="selectedProduct.status">
+                {{ packageStatusLabel(selectedProduct.status as 'active' | 'archived') }}
+              </span>
+            </header>
+
+            <div class="product-form__grid">
+              <label>
+                <span>{{ t('campaignProducts.modals.productName') }}</span>
+                <input
+                  type="text"
+                  v-model.trim="productForm.name"
+                  :disabled="saving"
+                  :aria-label="t('campaignProducts.modals.productName')"
+                />
+              </label>
+              <label>
+                <span>{{ t('campaignProducts.product.externalKey') }}</span>
+                <input
+                  type="text"
+                  v-model="productForm.external_keys"
+                  :placeholder="t('campaignProducts.product.externalKeyHint')"
+                  :disabled="saving"
+                  :aria-label="t('campaignProducts.product.externalKey')"
+                />
+              </label>
+              <label>
+                <span>{{ t('campaignProducts.product.keywords') }}</span>
+                <input
+                  type="text"
+                  v-model="productForm.keywords"
+                  :placeholder="t('campaignProducts.product.keywordsHint')"
+                  :disabled="saving"
+                  :aria-label="t('campaignProducts.product.keywords')"
+                />
+              </label>
+              <label>
+                <span>{{ t('campaignProducts.product.category') }}</span>
+                <input
+                  type="text"
+                  v-model.trim="productForm.category"
+                  :disabled="saving"
+                  :aria-label="t('campaignProducts.product.category')"
+                />
+              </label>
+              <label class="product-form__textarea">
+                <span>{{ t('campaignProducts.product.remark') }}</span>
+                <textarea
+                  rows="3"
+                  v-model.trim="productForm.remark"
+                  :disabled="saving"
+                  :aria-label="t('campaignProducts.product.remark')"
+                />
+              </label>
+            </div>
+
+            <footer class="product-form__footer">
+              <Button size="sm" variant="secondary" :disabled="loading" @click="openCreatePackage">
+                {{ t('campaignProducts.actions.newPackage') }}
+              </Button>
+              <span class="product-form__spacer" />
+              <Button size="sm" variant="primary" :loading="saving" @click="saveProduct">
+                {{ t('campaignProducts.product.save') }}
+              </Button>
+            </footer>
           </div>
 
           <div v-else class="product-placeholder">
@@ -201,6 +334,22 @@
         <label>
           <span>{{ t('campaignProducts.modals.productName') }}</span>
           <input type="text" v-model.trim="createProductForm.name" :aria-label="t('campaignProducts.modals.productName')" />
+        </label>
+        <label>
+          <span>{{ t('campaignProducts.product.externalKey') }}</span>
+          <input type="text" v-model="createProductForm.external_keys" :aria-label="t('campaignProducts.product.externalKey')" />
+        </label>
+        <label>
+          <span>{{ t('campaignProducts.product.keywords') }}</span>
+          <input type="text" v-model="createProductForm.keywords" :aria-label="t('campaignProducts.product.keywords')" />
+        </label>
+        <label>
+          <span>{{ t('campaignProducts.product.category') }}</span>
+          <input type="text" v-model.trim="createProductForm.category" :aria-label="t('campaignProducts.product.category')" />
+        </label>
+        <label class="modal-form__textarea">
+          <span>{{ t('campaignProducts.product.remark') }}</span>
+          <textarea rows="3" v-model.trim="createProductForm.remark" :aria-label="t('campaignProducts.product.remark')" />
         </label>
       </form>
       <template #footer>
@@ -227,6 +376,19 @@
           />
         </label>
         <CommissionField v-model="createPackageForm.commission_default" />
+        <div class="modal-form__share">
+          <label v-for="role in shareRuleRoles" :key="role">
+            <span>{{ t(`campaignProducts.share.roles.${role}`) }}</span>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              max="1"
+              v-model.number="createPackageForm.share_rules[role]"
+              :aria-label="t(`campaignProducts.share.roles.${role}`)"
+            />
+          </label>
+        </div>
       </form>
       <template #footer>
         <Button variant="secondary" @click="closeCreatePackage" :disabled="saving">{{ t('common.cancel') }}</Button>
@@ -324,6 +486,16 @@ interface TreeViewNode extends CampaignProductNode {
   children: TreeViewNode[];
 }
 
+const shareRuleRoles = ['promoter', 'leader', 'city_head'] as const;
+
+const campaignSummary = reactive({
+  name: '',
+  period: '',
+  status: '',
+  matchingMode: '',
+  updatedAt: ''
+});
+
 const campaignId = computed(() => String(route.params.id || ''));
 
 const loading = ref(false);
@@ -358,8 +530,27 @@ const packageForm = reactive({
   caps: {
     min: null as number | null,
     max: null as number | null,
-    allow_override: false
+    allow_override: false,
+    approval_required: false
+  },
+  share_rules: {
+    promoter: 0.7,
+    leader: 0.2,
+    city_head: 0.1
+  } as Record<(typeof shareRuleRoles)[number], number>,
+  metrics: {
+    promoter_count: undefined as number | undefined,
+    matched_orders: undefined as number | undefined
   }
+});
+
+const productForm = reactive({
+  node_id: '',
+  name: '',
+  external_keys: '',
+  keywords: '',
+  category: '',
+  remark: ''
 });
 
 function resetPackageForm() {
@@ -373,7 +564,17 @@ function resetPackageForm() {
     caps: {
       min: null as number | null,
       max: null as number | null,
-      allow_override: false
+      allow_override: false,
+      approval_required: false
+    },
+    share_rules: {
+      promoter: 0.7,
+      leader: 0.2,
+      city_head: 0.1
+    },
+    metrics: {
+      promoter_count: undefined,
+      matched_orders: undefined
     }
   });
 }
@@ -386,11 +587,22 @@ const modals = reactive({
   importTask: false
 });
 
-const createProductForm = reactive({ name: '' });
+const createProductForm = reactive({
+  name: '',
+  external_keys: '',
+  keywords: '',
+  category: '',
+  remark: ''
+});
 const createPackageForm = reactive({
   name: '',
   price: 0,
-  commission_default: { type: 'fixed', value: 0 } as CommissionValue
+  commission_default: { type: 'fixed', value: 0 } as CommissionValue,
+  share_rules: {
+    promoter: 0.7,
+    leader: 0.2,
+    city_head: 0.1
+  } as Record<(typeof shareRuleRoles)[number], number>
 });
 
 const copyForm = reactive({ template_id: '', overwrite: false });
@@ -421,8 +633,25 @@ watch(
       return;
     }
     panelLoading.value = true;
-    Object.assign(packageForm, mapPackageDetail(pkg.name, pkg.package_detail));
+    Object.assign(packageForm, mapPackageDetail(pkg, pkg.package_detail));
     panelLoading.value = false;
+  },
+  { immediate: true }
+);
+
+watch(
+  () => selectedProduct.value,
+  (product) => {
+    if (!product) {
+      productForm.node_id = '';
+      productForm.name = '';
+      productForm.external_keys = '';
+      productForm.keywords = '';
+      productForm.category = '';
+      productForm.remark = '';
+      return;
+    }
+    mapProductDetail(product);
   },
   { immediate: true }
 );
@@ -498,6 +727,7 @@ async function loadTree() {
   feedback.message = '';
   try {
     const data = await CampaignProductsService.getTree(campaignId.value);
+    hydrateCampaignSummary(data);
     const rawNodes = Array.isArray(data?.nodes) ? data.nodes : [];
     treeData.value = normaliseTree(rawNodes);
     if (!treeData.value.length) {
@@ -545,20 +775,45 @@ function selectNode(nodeId: string) {
   expandToNode(nodeId);
 }
 
-function mapPackageDetail(name: string, detail: CampaignPackageDetail) {
+function mapProductDetail(node: TreeViewNode) {
+  productForm.node_id = node.node_id;
+  productForm.name = node.name;
+  const detail = node.product_detail;
+  productForm.external_keys = (detail?.external_keys || []).join(', ');
+  productForm.keywords = (detail?.keywords || []).join(', ');
+  productForm.category = detail?.category || '';
+  productForm.remark = detail?.remark || '';
+}
+
+function mapPackageDetail(node: TreeViewNode, detail: CampaignPackageDetail) {
+  const shareRules = normaliseShareRules(detail.share_rules);
   return {
     node_id: detail.package_id,
-    name,
-    status: selectedPackage.value?.status ?? 'active',
+    name: node.name,
+    status: node.status as 'active' | 'archived',
     price: detail.price,
     description: detail.description || '',
     commission_default: detail.commission_default ?? { type: 'fixed', value: 0 },
     caps: {
       min: detail.caps?.min ?? null,
       max: detail.caps?.max ?? null,
-      allow_override: detail.caps?.allow_override ?? false
+      allow_override: detail.caps?.allow_override ?? false,
+      approval_required: detail.caps?.approval_required ?? false
+    },
+    share_rules: shareRules,
+    metrics: {
+      promoter_count: detail.metrics?.promoter_count,
+      matched_orders: detail.metrics?.matched_orders
     }
   };
+}
+
+function hydrateCampaignSummary(data: CampaignProductsTreeResponse) {
+  campaignSummary.name = data.campaign_name || `#${data.campaign_id}`;
+  campaignSummary.period = formatPeriod(data.start_time, data.end_time);
+  campaignSummary.status = translateStatus(data.status);
+  campaignSummary.matchingMode = translateMatchingMode(data.matching_mode);
+  campaignSummary.updatedAt = formatDateTime(data.updated_at);
 }
 
 async function savePackage() {
@@ -573,8 +828,10 @@ async function savePackage() {
       caps: {
         min: packageForm.caps.min,
         max: packageForm.caps.max,
-        allow_override: packageForm.caps.allow_override
+        allow_override: packageForm.caps.allow_override,
+        approval_required: packageForm.caps.approval_required
       },
+      share_rules: formatShareRules(packageForm.share_rules),
       status: packageForm.status
     };
     const updated = await CampaignProductsService.updateNode(campaignId.value, selectedPackage.value.node_id, payload);
@@ -587,16 +844,50 @@ async function savePackage() {
   }
 }
 
+async function saveProduct() {
+  if (!selectedProduct.value) return;
+  if (!productForm.name.trim()) {
+    setFeedback(t('campaignProducts.errors.nameRequired'), 'error');
+    return;
+  }
+  saving.value = true;
+  try {
+    const payload = {
+      name: productForm.name.trim(),
+      product_detail: {
+        external_keys: splitInput(productForm.external_keys),
+        keywords: splitInput(productForm.keywords),
+        category: productForm.category.trim() || undefined,
+        remark: productForm.remark.trim() || undefined
+      }
+    };
+    const updated = await CampaignProductsService.updateNode(campaignId.value, selectedProduct.value.node_id, payload);
+    applyNodeUpdate(updated);
+    const refreshed = findNode(treeData.value, updated.node_id);
+    if (refreshed) mapProductDetail(refreshed);
+    setFeedback(t('campaignProducts.success.saveProduct'), 'info');
+  } catch (error) {
+    setFeedback((error as Error).message || t('campaignProducts.errors.save'), 'error');
+  } finally {
+    saving.value = false;
+  }
+}
+
 function applyNodeUpdate(updated: CampaignProductNode) {
   const node = findNode(treeData.value, updated.node_id);
   if (!node) return;
   node.name = updated.name;
   node.status = updated.status;
+  node.product_detail = updated.product_detail ?? node.product_detail;
   node.package_detail = updated.package_detail;
 }
 
 function openCreateProduct() {
   createProductForm.name = '';
+  createProductForm.external_keys = '';
+  createProductForm.keywords = '';
+  createProductForm.category = '';
+  createProductForm.remark = '';
   modals.createProduct = true;
 }
 
@@ -611,10 +902,17 @@ async function submitCreateProduct() {
   }
   saving.value = true;
   try {
+    const productDetail = {
+      external_keys: splitInput(createProductForm.external_keys),
+      keywords: splitInput(createProductForm.keywords),
+      category: createProductForm.category.trim() || undefined,
+      remark: createProductForm.remark.trim() || undefined
+    };
     await CampaignProductsService.createNode(campaignId.value, {
       type: 'product',
       name: createProductForm.name.trim(),
-      parent_id: null
+      parent_id: null,
+      product_detail: productDetail
     });
     modals.createProduct = false;
     setFeedback(t('campaignProducts.success.createProduct'), 'info');
@@ -634,6 +932,11 @@ function openCreatePackage() {
   createPackageForm.name = '';
   createPackageForm.price = 0;
   createPackageForm.commission_default = { type: 'fixed', value: 0 };
+  createPackageForm.share_rules = {
+    promoter: 0.7,
+    leader: 0.2,
+    city_head: 0.1
+  };
   modals.createPackage = true;
 }
 
@@ -654,7 +957,8 @@ async function submitCreatePackage() {
       name: createPackageForm.name.trim(),
       parent_id: selectedProduct.value.node_id,
       price: Number(createPackageForm.price) || 0,
-      commission_default: createPackageForm.commission_default
+      commission_default: createPackageForm.commission_default,
+      share_rules: formatShareRules(createPackageForm.share_rules)
     });
     modals.createPackage = false;
     setFeedback(t('campaignProducts.success.createPackage'), 'info');
@@ -752,6 +1056,77 @@ function exportPackages() {
   setFeedback(t('campaignProducts.stub.export'), 'info');
 }
 
+function splitInput(value: string) {
+  const list = value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+  return list.length ? list : undefined;
+}
+
+function normaliseShareRules(rules?: Record<string, number> | null) {
+  const base: Record<(typeof shareRuleRoles)[number], number> = {
+    promoter: 0,
+    leader: 0,
+    city_head: 0
+  };
+  shareRuleRoles.forEach((role) => {
+    if (rules && typeof rules[role] === 'number') {
+      base[role] = Number(rules[role]);
+    }
+  });
+  return base;
+}
+
+function formatShareRules(rules: Record<(typeof shareRuleRoles)[number], number>) {
+  const payload: Record<string, number> = {};
+  shareRuleRoles.forEach((role) => {
+    const value = Number(rules[role] ?? 0);
+    if (Number.isFinite(value) && value >= 0) {
+      payload[role] = parseFloat(value.toFixed(4));
+    }
+  });
+  return payload;
+}
+
+function translateStatus(status?: string | null) {
+  if (!status) return '';
+  const map: Record<string, string> = {
+    draft: t('campaignProducts.info.statusDraft'),
+    active: t('campaignProducts.info.statusActive'),
+    running: t('campaignProducts.info.statusRunning'),
+    archived: t('campaignProducts.info.statusArchived')
+  };
+  return map[status] || status;
+}
+
+function translateMatchingMode(mode?: string | null) {
+  if (!mode) return '';
+  const map: Record<string, string> = {
+    template: t('campaignProducts.info.matchingTemplate'),
+    auto_id: t('campaignProducts.info.matchingAutoId'),
+    manual_form: t('campaignProducts.info.matchingManual')
+  };
+  return map[mode] || mode;
+}
+
+function formatPeriod(start?: string | null, end?: string | null) {
+  if (!start && !end) return '';
+  const startText = start ? formatDateTime(start, { dateOnly: true }) : '—';
+  const endText = end ? formatDateTime(end, { dateOnly: true }) : '—';
+  return `${startText} ~ ${endText}`;
+}
+
+function formatDateTime(value?: string | null, options: { dateOnly?: boolean } = {}) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  if (options.dateOnly) {
+    return date.toLocaleDateString();
+  }
+  return date.toLocaleString();
+}
+
 function importStatusLabel(status?: string) {
   if (!status) return t('campaignProducts.import.statusUnknown');
   const map: Record<string, string> = {
@@ -826,6 +1201,31 @@ onBeforeUnmount(() => {
 .campaign-products__actions {
   display: flex;
   gap: $spacing-12;
+}
+
+.campaign-products__info {
+  background: $color-surface-0;
+  border-radius: $radius-16;
+  border: $border-width-1 solid $color-surface-200;
+  padding: $spacing-16 $spacing-20;
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: $spacing-12;
+  }
+
+  dt {
+    font-size: $text-12-regular-fs;
+    color: $text-muted;
+  }
+
+  dd {
+    margin: $spacing-4 0 0;
+    font-size: $text-14-regular-fs;
+    color: $text-strong;
+  }
 }
 
 .campaign-products__feedback {
@@ -950,6 +1350,69 @@ onBeforeUnmount(() => {
   color: $text-muted;
 }
 
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-20;
+}
+
+.product-form__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $spacing-16;
+
+  p {
+    margin: $spacing-4 0 0;
+    font-size: $text-12-regular-fs;
+    color: $text-muted;
+  }
+}
+
+.product-form__status {
+  padding: calc(#{$spacing-8} / 2) $spacing-12;
+  border-radius: $radius-12;
+  font-size: $text-12-regular-fs;
+  background: $color-surface-100;
+  color: $text-muted;
+}
+
+.product-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: $spacing-16;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: calc(#{$spacing-8} / 2);
+    font-size: $text-12-regular-fs;
+    color: $text-muted;
+  }
+
+  input,
+  textarea {
+    border: $border-width-1 solid $color-surface-200;
+    border-radius: $radius-8;
+    padding: $spacing-8 $spacing-12;
+    font: inherit;
+  }
+}
+
+.product-form__textarea {
+  grid-column: 1 / -1;
+}
+
+.product-form__footer {
+  display: flex;
+  align-items: center;
+  gap: $spacing-12;
+}
+
+.product-form__spacer {
+  flex: 1;
+}
+
 .package-form {
   display: flex;
   flex-direction: column;
@@ -1035,6 +1498,29 @@ onBeforeUnmount(() => {
   font-size: $text-12-regular-fs;
 }
 
+.package-form__stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: $spacing-16;
+
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: calc(#{$spacing-8} / 4);
+    font-size: $text-12-regular-fs;
+    color: $text-muted;
+
+    strong {
+      font-size: $text-16-semibold-fs;
+      line-height: $text-16-semibold-lh;
+      font-weight: $text-16-semibold-wt;
+      color: $text-strong;
+    }
+  }
+}
+
 .caps-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
@@ -1058,6 +1544,39 @@ onBeforeUnmount(() => {
   border-radius: $radius-8;
   padding: $spacing-8 $spacing-12;
   font: inherit;
+}
+
+.share-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: $spacing-12;
+}
+
+.share-grid__item {
+  display: flex;
+  flex-direction: column;
+  gap: calc(#{$spacing-8} / 2);
+  font-size: $text-12-regular-fs;
+  color: $text-muted;
+}
+
+.share-grid__input {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+
+  input {
+    flex: 1;
+    border: $border-width-1 solid $color-surface-200;
+    border-radius: $radius-8;
+    padding: $spacing-8 $spacing-12;
+    font: inherit;
+  }
+
+  span {
+    color: $text-muted;
+    font-size: $text-12-regular-fs;
+  }
 }
 
 .package-form__footer {
@@ -1092,6 +1611,28 @@ onBeforeUnmount(() => {
   border-radius: $radius-8;
   padding: $spacing-8 $spacing-12;
   font: inherit;
+}
+
+.modal-form__textarea {
+  display: flex;
+  flex-direction: column;
+  gap: calc(#{$spacing-8} / 2);
+  font-size: $text-12-regular-fs;
+  color: $text-muted;
+}
+
+.modal-form__share {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: $spacing-12;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: calc(#{$spacing-8} / 2);
+    font-size: $text-12-regular-fs;
+    color: $text-muted;
+  }
 }
 
 .checkbox {
