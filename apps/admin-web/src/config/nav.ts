@@ -50,6 +50,20 @@ export const NAV: NavItem[] = [
     icon: 'flag',
     children: [
       { key: 'campaigns', label: 'nav.campaigns', path: '/campaigns', icon: 'campaign' },
+      {
+        key: 'campaigns.basics',
+        label: 'nav.campaignBasics',
+        path: '/campaigns/:id/basics',
+        icon: 'campaign',
+        hidden: true
+      },
+      {
+        key: 'campaigns.products',
+        label: 'nav.campaignProducts',
+        path: '/campaigns/:id/products',
+        icon: 'campaign',
+        hidden: true
+      },
       { key: 'tasks', label: 'nav.tasks', path: '/tasks', icon: 'tasks' }
     ]
   },
@@ -59,7 +73,15 @@ export const NAV: NavItem[] = [
     icon: 'org',
     children: [
       { key: 'org.teams', label: 'nav.org.teams', path: '/org/teams', icon: 'tree' },
-      { key: 'org.usersRoles', label: 'nav.org.usersRoles', path: '/org/users-roles', icon: 'users' }
+      { key: 'org.usersRoles', label: 'nav.org.usersRoles', path: '/org/users-roles', icon: 'users' },
+      {
+        key: 'org.teamCommission',
+        label: 'nav.org.teamCommission',
+        path: '/org/teams/:teamId/commission',
+        icon: 'equalizer',
+        hidden: true,
+        roles: ['admin', 'org_admin', 'team_lead']
+      }
     ]
   },
   {

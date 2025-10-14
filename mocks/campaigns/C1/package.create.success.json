@@ -1,0 +1,16 @@
+{
+  "node_id": "pkg-300-A",
+  "name": "体验卡",
+  "type": "package",
+  "status": "active",
+  "parent_id": "prod-300",
+  "sort_order": 10,
+  "has_children": false,
+  "children": [],
+  "package_detail": {
+    "package_id": "pkg-300-A",
+    "price": 0,
+    "commission_default": { "type": "fixed", "value": 0 },
+    "caps": { "min": 0, "max": 10, "allow_override": true }
+  }
+}

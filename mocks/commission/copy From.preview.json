@@ -1,8 +1,16 @@
 {
   "preview": true,
-  "diff": {
-    "added": 120,
-    "changed": 45,
-    "unchanged": 300
-  }
+  "message": "来自上期活动的佣金规则差异预览",
+  "diffs": [
+    {
+      "member_id": "U1001",
+      "before": { "type": "percent", "value": 15 },
+      "after": { "type": "percent", "value": 18 }
+    },
+    {
+      "member_id": "U1003",
+      "before": null,
+      "after": { "type": "percent", "value": 10 }
+    }
+  ]
 }

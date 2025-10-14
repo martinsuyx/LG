@@ -11,6 +11,7 @@ export default defineConfig({
     '**/ai-intake.spec.ts',
     '**/manual-intake.spec.ts',
     '**/campaigns.spec.ts',
+    '**/campaign-basics.spec.ts',
     '**/tasks.spec.ts',
     '**/team-members.spec.ts',
     '**/users-roles.spec.ts',

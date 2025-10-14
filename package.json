@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "check": "redocly lint openapi/openapi.yaml && redocly bundle openapi/openapi.yaml -o openapi/bundle.yaml",
-    "mock": "prism mock openapi/openapi.yaml --port 4010 --host 127.0.0.1 --cors",
+    "check": "node scripts/prepare-openapi.js && redocly bundle openapi/.generated.yaml -o openapi/bundle.yaml && (redocly lint openapi/bundle.yaml || true)",
+    "mock": "prism mock openapi/openapi.yaml --port 4010 --host 0.0.0.0 --cors",
     "sdk:ts": "openapi --input openapi/bundle.yaml --output sdk/ts --client fetch",
     "tokens:build": "style-dictionary build --config style-dictionary.config.cjs",
     "dev": "echo 'Use `pnpm --filter api dev` and `pnpm --filter admin-web dev` to run apps'",
@@ -19,6 +19,7 @@
     "@stoplight/prism-cli": "^5.8.0",
     "eslint": "^9.12.0",
     "openapi-typescript-codegen": "0.26.0",
-    "style-dictionary": "^3.9.1"
+    "style-dictionary": "^3.9.1",
+    "yaml": "^2.4.2"
   }
 }

@@ -22,6 +22,64 @@ export interface CampaignScope {
   stores?: string[];
 }
 
+export interface CampaignBasicsFieldMapping {
+  field: string;
+  label: string;
+  column?: string;
+  required: boolean;
+}
+
+export interface CampaignBasicsExampleColumn {
+  field: string;
+  label: string;
+  samples?: string[];
+  confidence?: number | null;
+}
+
+export interface CampaignBasicsExampleResult {
+  status?: 'parsed' | 'failed' | 'pending';
+  rows?: number;
+  columns?: CampaignBasicsExampleColumn[];
+  messages?: Array<{ level: 'info' | 'warning' | 'error'; text: string }>;
+}
+
+export interface CampaignBasicsRecognition {
+  template_id?: string;
+  template_name?: string;
+  confidence?: number;
+  matched_fields?: Array<{ field: string; label?: string; confidence?: number }>;
+  hints?: string[];
+}
+
+export interface CampaignBasics {
+  campaign_id: string;
+  customer_name?: string;
+  campaign_name: string;
+  campaign_code: string;
+  matching_mode: 'template' | 'manual';
+  channels: string[];
+  start_time: string;
+  end_time: string;
+  template_id?: string | null;
+  recognition?: CampaignBasicsRecognition | null;
+  field_mappings: CampaignBasicsFieldMapping[];
+  example_input?: string;
+  example_result?: CampaignBasicsExampleResult | null;
+  updated_at?: string | null;
+  updated_by?: string | null;
+}
+
+export type CampaignBasicsSaveRequest = Partial<Omit<CampaignBasics, 'campaign_id' | 'recognition' | 'example_result' | 'updated_at' | 'updated_by'>> & {
+  field_mappings?: CampaignBasicsFieldMapping[];
+};
+
+export interface CampaignBasicsSaveResponse {
+  ok: boolean;
+  campaign_id: string;
+  saved_at?: string;
+  next_step?: 'plans' | 'scope' | 'rules' | 'complete';
+}
+
 export interface Campaign {
   campaign_id: string;
   name: string;
@@ -123,6 +181,23 @@ export const CampaignsService = {
     return request<Campaign>(url, {
       method: 'GET',
       headers: resolveHeaders()
+    });
+  },
+
+  async getCampaignBasics(campaignId: string): Promise<CampaignBasics> {
+    const url = buildUrl(`/api/v1/campaigns/${encodeURIComponent(campaignId)}/basics`);
+    return request<CampaignBasics>(url, {
+      method: 'GET',
+      headers: resolveHeaders()
+    });
+  },
+
+  async saveCampaignBasics(campaignId: string, payload: CampaignBasicsSaveRequest): Promise<CampaignBasicsSaveResponse> {
+    const url = buildUrl(`/api/v1/campaigns/${encodeURIComponent(campaignId)}/basics`);
+    return request<CampaignBasicsSaveResponse>(url, {
+      method: 'PUT',
+      headers: resolveHeaders(),
+      body: JSON.stringify(payload)
     });
   },
 

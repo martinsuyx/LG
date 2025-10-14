@@ -1,0 +1,19 @@
+{
+  "node_id": "pkg-300-A",
+  "name": "门店 129 元组合包",
+  "type": "package",
+  "status": "active",
+  "parent_id": "prod-300",
+  "sort_order": 10,
+  "has_children": false,
+  "children": [],
+  "package_detail": {
+    "package_id": "pkg-300-A",
+    "price": 129,
+    "commission_default": { "type": "percent", "value": 10 },
+    "caps": { "min": 6, "max": 18, "allow_override": true },
+    "description": "线下门店限定组合包",
+    "updated_at": "2025-10-15T09:15:00+08:00",
+    "updated_by": "wang.hui"
+  }
+}

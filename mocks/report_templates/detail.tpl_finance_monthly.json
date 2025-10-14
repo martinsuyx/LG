@@ -1,0 +1,15 @@
+{
+  "template_id": "tpl_finance_monthly",
+  "name": "财务日报模板（电信渠道）",
+  "category": "finance",
+  "version": "2025.09",
+  "description": "财务部用于日度回款核对的导出模板，包含基础客户信息及订单金额。",
+  "fields": [
+    { "field": "customer_id", "label": "客户 ID", "required": true, "type": "string", "example": "C001" },
+    { "field": "customer_name", "label": "客户名称", "required": false, "type": "string", "example": "京夏通讯" },
+    { "field": "order_amount", "label": "订单金额（元）", "required": true, "type": "number", "example": "1299.00" },
+    { "field": "order_time", "label": "下单时间", "required": true, "type": "datetime", "example": "2025-09-13 10:30:00" },
+    { "field": "channel_code", "label": "渠道编码", "required": false, "type": "string", "example": "SZ-MKT" }
+  ],
+  "sample": "客户编号,客户名称,订单金额（元）,下单时间,渠道编号\nC001,京夏通讯,1299,2025-09-13 10:30:00,SZ-MKT"
+}

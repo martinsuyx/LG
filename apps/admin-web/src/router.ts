@@ -23,6 +23,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/CampaignsPage.vue')
   },
   {
+    path: '/campaigns/:id/basics',
+    name: 'campaign-basics',
+    component: () => import('@/pages/campaigns/BasicsPage.vue')
+  },
+  {
+    path: '/campaigns/:id/products',
+    name: 'campaign-products',
+    component: () => import('@/pages/campaigns/ProductsPage.vue')
+  },
+  {
     path: '/tasks',
     name: 'tasks',
     component: () => import('@/pages/TasksPage.vue')
@@ -71,6 +81,11 @@ const routes: RouteRecordRaw[] = [
     path: '/reports/overview',
     name: 'reports-overview',
     component: () => import('@/pages/ReportsOverviewPage.vue')
+  },
+  {
+    path: '/org/teams/:teamId/commission',
+    name: 'team-commission',
+    component: () => import('@/pages/team-commission/TeamCommissionPage.vue')
   },
   {
     path: '/system/settings',

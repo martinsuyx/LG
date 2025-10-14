@@ -1,0 +1,26 @@
+{
+  "node_id": "pkg-300-B",
+  "name": "引流体验券",
+  "type": "package",
+  "status": "archived",
+  "parent_id": "prod-300",
+  "sort_order": 20,
+  "has_children": false,
+  "children": [],
+  "package_detail": {
+    "package_id": "pkg-300-B",
+    "price": 19,
+    "commission_default": {
+      "type": "tier",
+      "tiers": [
+        { "threshold": 30, "value": 3 },
+        { "threshold": 80, "value": 4.5 },
+        { "threshold": 150, "value": 6 }
+      ]
+    },
+    "caps": { "min": 0, "max": 8, "allow_override": false },
+    "description": "门店地推体验券，阶梯激励",
+    "updated_at": "2025-10-15T09:18:00+08:00",
+    "updated_by": "wang.hui"
+  }
+}

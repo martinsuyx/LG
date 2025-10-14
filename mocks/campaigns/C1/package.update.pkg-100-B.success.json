@@ -1,0 +1,19 @@
+{
+  "node_id": "pkg-100-B",
+  "name": "首充 99 元套餐",
+  "type": "package",
+  "status": "active",
+  "parent_id": "prod-100",
+  "sort_order": 20,
+  "has_children": false,
+  "children": [],
+  "package_detail": {
+    "package_id": "pkg-100-B",
+    "price": 99,
+    "commission_default": { "type": "fixed", "value": 18 },
+    "caps": { "min": 8, "max": 30, "allow_override": false },
+    "description": "高客单价礼包",
+    "updated_at": "2025-10-15T10:20:00+08:00",
+    "updated_by": "li.mei"
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "campaign_id": "C1",
+  "updated_at": "2025-09-18T10:00:00+08:00",
+  "nodes": [
+    {
+      "node_id": "prod-100",
+      "name": "5G 地推礼包",
+      "type": "product",
+      "status": "active",
+      "parent_id": null,
+      "sort_order": 1,
+      "has_children": true,
+      "children": [
+        {
+          "node_id": "pkg-100-A",
+          "name": "首充 59 元套餐",
+          "type": "package",
+          "status": "active",
+          "parent_id": "prod-100",
+          "sort_order": 10,
+          "has_children": false,
+          "children": [],
+          "package_detail": {
+            "package_id": "pkg-100-A",
+            "price": 59,
+            "commission_default": { "type": "percent", "value": 12 },
+            "caps": { "min": 5, "max": 20, "allow_override": true },
+            "description": "地推新用户首充奖励",
+            "updated_at": "2025-09-12T16:30:00+08:00",
+            "updated_by": "li.mei"
+          }
+        },
+        {
+          "node_id": "pkg-100-B",
+          "name": "首充 99 元套餐",
+          "type": "package",
+          "status": "active",
+          "parent_id": "prod-100",
+          "sort_order": 20,
+          "has_children": false,
+          "children": [],
+          "package_detail": {
+            "package_id": "pkg-100-B",
+            "price": 99,
+            "commission_default": { "type": "fixed", "value": 18 },
+            "caps": { "min": 8, "max": 30, "allow_override": false },
+            "description": "高客单价礼包",
+            "updated_at": "2025-09-13T09:45:00+08:00",
+            "updated_by": "li.mei"
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "prod-200",
+      "name": "校园渠道专享",
+      "type": "product",
+      "status": "active",
+      "parent_id": null,
+      "sort_order": 2,
+      "has_children": true,
+      "children": [
+        {
+          "node_id": "pkg-200-A",
+          "name": "校园 39 元体验包",
+          "type": "package",
+          "status": "archived",
+          "parent_id": "prod-200",
+          "sort_order": 5,
+          "has_children": false,
+          "children": [],
+          "package_detail": {
+            "package_id": "pkg-200-A",
+            "price": 39,
+            "commission_default": {
+              "type": "tier",
+              "tiers": [
+                { "threshold": 50, "value": 6 },
+                { "threshold": 120, "value": 8.5 }
+              ]
+            },
+            "caps": { "min": 3, "max": 12, "allow_override": true },
+            "description": "暑期校园拉新包",
+            "updated_at": "2025-08-30T11:20:00+08:00",
+            "updated_by": "chen.zhi"
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "prod-300",
+      "name": "线下门店特卖",
+      "type": "product",
+      "status": "archived",
+      "parent_id": null,
+      "sort_order": 3,
+      "has_children": true,
+      "children": [
+        {
+          "node_id": "pkg-300-A",
+          "name": "门店 129 元组合包",
+          "type": "package",
+          "status": "active",
+          "parent_id": "prod-300",
+          "sort_order": 10,
+          "has_children": false,
+          "children": [],
+          "package_detail": {
+            "package_id": "pkg-300-A",
+            "price": 129,
+            "commission_default": { "type": "percent", "value": 10 },
+            "caps": { "min": 6, "max": 18, "allow_override": true },
+            "description": "线下门店限定组合包",
+            "updated_at": "2025-09-22T14:10:00+08:00",
+            "updated_by": "wang.hui"
+          }
+        },
+        {
+          "node_id": "pkg-300-B",
+          "name": "引流体验券",
+          "type": "package",
+          "status": "archived",
+          "parent_id": "prod-300",
+          "sort_order": 20,
+          "has_children": false,
+          "children": [],
+          "package_detail": {
+            "package_id": "pkg-300-B",
+            "price": 19,
+            "commission_default": {
+              "type": "tier",
+              "tiers": [
+                { "threshold": 30, "value": 3 },
+                { "threshold": 80, "value": 4.5 },
+                { "threshold": 150, "value": 6 }
+              ]
+            },
+            "caps": { "min": 0, "max": 8, "allow_override": false },
+            "description": "门店地推体验券，阶梯激励",
+            "updated_at": "2025-09-10T18:00:00+08:00",
+            "updated_by": "wang.hui"
+          }
+        }
+      ]
+    }
+  ]
+}

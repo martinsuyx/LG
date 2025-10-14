@@ -31,11 +31,14 @@
       "_": "活动与任务管理"
     },
     "campaigns": "活动管理",
+    "campaignBasics": "活动基础设置",
+    "campaignProducts": "推广产品设置",
     "tasks": "任务管理",
     "org": {
       "_": "组织与用户管理",
       "teams": "团队与人员",
-      "usersRoles": "用户与角色"
+      "usersRoles": "用户与角色",
+      "teamCommission": "团队佣金配置"
     },
     "risk": {
       "_": "风控与合规管理",
@@ -57,6 +60,186 @@
   },
   "footer": {
     "version": "版本"
+  },
+  "campaignBasics": {
+    "title": "活动基础设置",
+    "subtitle": "填写活动基础信息，配置报表模板与字段映射，确保后续结算准确对齐。",
+    "loading": "正在加载基础配置…",
+    "sections": {
+      "base": "基础信息",
+      "period": "活动周期",
+      "channels": "投放渠道",
+      "matching": "匹配方式"
+    },
+    "form": {
+      "customer": "客户名称",
+      "campaignName": "活动名称",
+      "campaignCode": "活动编码",
+      "startTime": "开始时间",
+      "endTime": "结束时间",
+      "matching": {
+        "template": "使用报表模板匹配",
+        "manual": "手动匹配字段"
+      }
+    },
+    "channels": {
+      "wechat": "微信",
+      "h5": "H5",
+      "scan": "扫码",
+      "api": "API"
+    },
+    "actions": {
+      "save": "保存草稿",
+      "test": "测试解析",
+      "next": "下一步"
+    },
+    "template": {
+      "title": "报表模板",
+      "subtitle": "选择或识别数据来源模板，系统将自动生成字段映射。",
+      "recognize": "自动识别模板",
+      "applySuggestion": "应用识别结果",
+      "selectLabel": "选择模板",
+      "selectPlaceholder": "请选择模板",
+      "recognitionTitle": "识别建议",
+      "confidence": "置信度：{value}%"
+    },
+    "mappings": {
+      "title": "字段映射",
+      "field": "模板字段",
+      "column": "数据列 / 备注",
+      "columnPlaceholder": "请输入对应列名称或备注",
+      "required": "必填",
+      "fieldCount": "共 {count} 个字段",
+      "empty": "请选择模板以配置字段映射"
+    },
+    "example": {
+      "title": "示例数据",
+      "hint": "支持粘贴 CSV / TSV 内容，首行为列头",
+      "placeholder": "列头1,列头2,列头3\n示例值1,示例值2,示例值3",
+      "summaryTitle": "解析结果",
+      "rows": "共 {count} 行样本",
+      "field": "字段",
+      "samples": "示例值",
+      "noSample": "暂无示例值"
+    },
+    "common": {
+      "required": "必填",
+      "optional": "选填"
+    },
+    "success": {
+      "save": "草稿已保存",
+      "parse": "解析完成",
+      "recognize": "识别完成，可选择应用建议",
+      "next": "已保存草稿，可继续配置下一步"
+    },
+    "errors": {
+      "load": "加载基础设置失败，请稍后重试。",
+      "save": "保存草稿失败，请检查填写内容。",
+      "parse": "解析失败，请检查示例内容格式。",
+      "recognize": "识别失败，请稍后再试。",
+      "templateDetail": "加载模板详情失败。"
+    }
+  },
+  "commissionField": {
+    "type": {
+      "percent": "比例佣金",
+      "fixed": "固定佣金",
+      "tier": "阶梯佣金"
+    },
+    "percentLabel": "默认佣金比例",
+    "fixedLabel": "默认佣金金额",
+    "percentHint": "建议范围：{min}% ~ {max}%。",
+    "tierHeader": "阶梯设置",
+    "addTier": "新增阶梯",
+    "threshold": "达成量阈值",
+    "value": "佣金金额",
+    "remove": "移除",
+    "noTier": "尚未配置阶梯，可点击“新增阶梯”添加。"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确认"
+  },
+  "campaignProducts": {
+    "title": "推广产品设置",
+    "subtitle": "管理甲方产品与套餐结构，配置默认佣金与额度上限。",
+    "actions": {
+      "newProduct": "新增产品",
+      "newPackage": "新增套餐",
+      "copyTemplate": "复制模板",
+      "import": "导入配置",
+      "export": "导出"
+    },
+    "searchPlaceholder": "搜索产品 / 套餐",
+    "loading": "正在加载套餐数据…",
+    "package": {
+      "planName": "套餐名称",
+      "price": "套餐价格",
+      "status": "状态",
+      "statusActive": "使用中",
+      "statusArchived": "已归档",
+      "description": "套餐说明",
+      "noDescription": "暂无描述",
+      "defaultCommission": "默认计佣规则",
+      "defaultCommissionHint": "设置该套餐的默认佣金，可配置比例、固定金额或阶梯。",
+      "caps": {
+        "title": "佣金上限",
+        "subtitle": "可选配置佣金上下限与覆盖策略。",
+        "min": "最小值",
+        "max": "最大值",
+        "allowOverride": "允许运营覆盖默认佣金"
+      },
+      "save": "保存套餐"
+    },
+    "product": {
+      "emptyTip": "该产品尚未配置套餐，新增一个套餐开始配置。"
+    },
+    "placeholders": {
+      "selectNode": "请选择左侧的产品或套餐查看详情"
+    },
+    "modals": {
+      "newProductTitle": "新增产品",
+      "productName": "产品名称",
+      "newPackageTitle": "新增套餐",
+      "packageName": "套餐名称",
+      "copyTitle": "从模板复制套餐",
+      "copyTemplate": "选择模板",
+      "copyPlaceholder": "请选择模板",
+      "copyOverwrite": "覆盖当前套餐配置",
+      "importTitle": "导入套餐配置",
+      "importToken": "上传凭证",
+      "importEmail": "通知邮箱（可选）",
+      "importDryRun": "仅校验，不落库",
+      "importTaskTitle": "导入任务进度"
+    },
+    "import": {
+      "status": "任务状态",
+      "statusUnknown": "未知",
+      "queued": "排队中",
+      "processing": "处理中",
+      "succeeded": "已完成",
+      "failed": "失败",
+      "download": "下载结果"
+    },
+    "success": {
+      "save": "套餐已保存",
+      "createProduct": "产品已创建",
+      "createPackage": "套餐已创建",
+      "copy": "模板已复制到当前活动"
+    },
+    "errors": {
+      "load": "加载产品树失败，请稍后再试。",
+      "save": "保存失败，请检查填写内容。",
+      "nameRequired": "请填写名称",
+      "selectProductFirst": "请先选择一个产品。",
+      "selectTemplate": "请选择模板",
+      "copy": "复制模板失败，请稍后再试。",
+      "tokenRequired": "请填写上传凭证",
+      "import": "导入失败，请稍后再试。"
+    },
+    "stub": {
+      "export": "已创建导出任务（Mock）"
+    }
   },
   "dashboard": {
     "title": "仪表盘总览",

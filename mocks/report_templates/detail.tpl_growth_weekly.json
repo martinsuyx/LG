@@ -1,0 +1,15 @@
+{
+  "template_id": "tpl_growth_weekly",
+  "name": "增长周报模板",
+  "category": "growth",
+  "version": "2025.08",
+  "description": "增长团队每周复盘使用的报表，聚焦渠道表现及结算金额。",
+  "fields": [
+    { "field": "week_no", "label": "周次", "required": true, "type": "string", "example": "2025W36" },
+    { "field": "channel_code", "label": "渠道编码", "required": true, "type": "string", "example": "GZ-UNI" },
+    { "field": "lead_count", "label": "到店量", "required": true, "type": "number", "example": "120" },
+    { "field": "conversion_rate", "label": "转化率", "required": false, "type": "percent", "example": "18.5%" },
+    { "field": "commission_amount", "label": "佣金金额（元）", "required": false, "type": "number", "example": "6800" }
+  ],
+  "sample": "周次,渠道编码,到店量,转化率,佣金金额（元）\n2025W36,GZ-UNI,120,18.5%,6800"
+}

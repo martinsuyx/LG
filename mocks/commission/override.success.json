@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "entity_id": "U1001",
+  "entity_type": "promoter",
+  "commission": {
+    "type": "percent",
+    "value": 15
+  }
+}

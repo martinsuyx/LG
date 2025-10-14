@@ -1,0 +1,15 @@
+{
+  "team_id": "T009",
+  "name": "华南备战团队",
+  "parent_id": "T001",
+  "has_children": false,
+  "members_count": 0,
+  "lead_user_id": "U1999",
+  "lead_user_name": "陈信",
+  "company_bindings": ["广州分公司"],
+  "tags": ["新建"],
+  "status": "active",
+  "created_at": "2025-10-03T11:20:00+08:00",
+  "stores_count": 0,
+  "desc": "负责华南地区新业务拓展"
+}

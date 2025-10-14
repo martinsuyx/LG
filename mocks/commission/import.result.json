@@ -1,8 +1,11 @@
 {
   "task_id": "T20251015001",
   "status": "succeeded",
-  "total_rows": 1000,
-  "succeeded": 980,
-  "failed": 20,
-  "result_url": "https://mock/commission/import/T20251015001/result.csv"
+  "processed": 1000,
+  "total": 1000,
+  "success_count": 980,
+  "failed_count": 20,
+  "result_url": "https://mock/commission/import/T20251015001/result.csv",
+  "errors_url": "https://mock/commission/import/T20251015001/errors.csv",
+  "message": "导入成功：980 条更新，20 条失败"
 }

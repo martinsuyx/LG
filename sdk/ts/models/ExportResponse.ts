@@ -4,5 +4,7 @@
 /* eslint-disable */
 export type ExportResponse = {
     export_id?: string;
+    status?: string;
+    module?: string;
 };
 

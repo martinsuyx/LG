@@ -1,0 +1,18 @@
+{
+  "templates": [
+    {
+      "template_id": "tpl_finance_monthly",
+      "name": "财务日报模板（电信渠道）",
+      "category": "finance",
+      "description": "适配电信渠道日报导出，包含客户编号、订单金额、下单时间等字段。",
+      "updated_at": "2025-09-10T18:30:00+08:00"
+    },
+    {
+      "template_id": "tpl_growth_weekly",
+      "name": "增长周报模板",
+      "category": "growth",
+      "description": "适用地推增长周报，记录渠道编码、转化状态、佣金金额。",
+      "updated_at": "2025-08-28T09:00:00+08:00"
+    }
+  ]
+}

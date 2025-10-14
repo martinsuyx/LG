@@ -1291,6 +1291,109 @@ paths:
           description: Campaign code conflict detected.
         '422':
           description: Campaign scope or plans invalid.
+  /api/v1/campaigns/{campaign_id}/basics:
+    get:
+      summary: Fetch campaign basics configuration
+      operationId: getCampaignBasics
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign basics payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignBasics'
+              examples:
+                default:
+                  value:
+                    campaign_id: C1
+                    customer_name: 京夏通讯
+                    campaign_name: 校园地推 59 元套餐
+                    campaign_code: CAMP59
+                    matching_mode: template
+                    channels:
+                      - wechat
+                      - scan
+                    start_time: '2025-09-01T00:00:00+08:00'
+                    end_time: '2025-10-31T23:59:59+08:00'
+                    template_id: tpl_finance_monthly
+                    recognition:
+                      template_id: tpl_finance_monthly
+                      template_name: 财务日报模板（电信渠道）
+                      confidence: 0.92
+                    field_mappings:
+                      - field: customer_id
+                        label: 客户 ID
+                        column: 客户编号
+                        required: true
+                      - field: order_amount
+                        label: 订单金额
+                        column: 下单金额（元）
+                        required: true
+                    example_input: |
+                      客户编号,下单金额（元）,下单时间,渠道编号
+                      C001,1299,2025-09-13 10:30:00,SZ-MKT
+                      C002,999,2025-09-13 11:15:00,GZ-UNI
+                    example_result:
+                      status: parsed
+                      rows: 2
+                      columns:
+                        - field: customer_id
+                          label: 客户 ID
+                          samples:
+                            - C001
+                            - C002
+                        - field: order_amount
+                          label: 订单金额
+                          samples:
+                            - '1299'
+                            - '999'
+        '404':
+          description: Campaign not found.
+    put:
+      summary: Save campaign basics configuration
+      operationId: updateCampaignBasics
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignBasicsSaveRequest'
+      responses:
+        '200':
+          description: Basics saved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignBasicsSaveResponse'
+              examples:
+                default:
+                  value:
+                    ok: true
+                    campaign_id: C1
+                    saved_at: '2025-09-16T14:05:00+08:00'
+                    next_step: plans
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Campaign not found.
+        '409':
+          description: Campaign state prevents editing.
   /api/v1/campaigns/{campaign_id}/publish:
     post:
       summary: Publish campaign
@@ -1385,6 +1488,465 @@ paths:
                     source_campaign_id: C20251003001
         '404':
           description: Campaign not found.
+  /api/v1/report_templates:
+    get:
+      summary: List available report templates
+      operationId: listReportTemplates
+      tags:
+        - ReportTemplates
+      responses:
+        '200':
+          description: Report template catalogue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateListResponse'
+  /api/v1/report_templates/{template_id}:
+    parameters:
+      - name: template_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get report template detail
+      operationId: getReportTemplate
+      tags:
+        - ReportTemplates
+      responses:
+        '200':
+          description: Report template detail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateDetail'
+        '404':
+          description: Template not found.
+  /api/v1/campaigns/{campaign_id}/products_tree:
+    get:
+      summary: Fetch campaign product tree
+      operationId: getCampaignProductsTree
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hierarchical campaign product/package tree.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductsTreeResponse'
+              example:
+                campaign_id: C1
+                updated_at: '2025-09-18T10:00:00+08:00'
+                nodes:
+                  - node_id: prod-100
+                    name: 5G 地推礼包
+                    type: product
+                    status: active
+                    parent_id: null
+                    sort_order: 1
+                    has_children: true
+                    children:
+                      - node_id: pkg-100-A
+                        name: 首充 59 元套餐
+                        type: package
+                        status: active
+                        parent_id: prod-100
+                        sort_order: 10
+                        has_children: false
+                        children: []
+                        package_detail:
+                          package_id: pkg-100-A
+                          price: 59
+                          commission_default:
+                            type: percent
+                            value: 12
+                          caps:
+                            min: 5
+                            max: 20
+                            allow_override: true
+                          description: 地推新用户首充奖励
+                          updated_at: '2025-09-12T16:30:00+08:00'
+                          updated_by: li.mei
+                      - node_id: pkg-100-B
+                        name: 首充 99 元套餐
+                        type: package
+                        status: active
+                        parent_id: prod-100
+                        sort_order: 20
+                        has_children: false
+                        children: []
+                        package_detail:
+                          package_id: pkg-100-B
+                          price: 99
+                          commission_default:
+                            type: fixed
+                            value: 18
+                          caps:
+                            min: 8
+                            max: 30
+                            allow_override: false
+                          description: 高客单价礼包
+                          updated_at: '2025-09-13T09:45:00+08:00'
+                          updated_by: li.mei
+                  - node_id: prod-200
+                    name: 校园渠道专享
+                    type: product
+                    status: active
+                    parent_id: null
+                    sort_order: 2
+                    has_children: true
+                    children:
+                      - node_id: pkg-200-A
+                        name: 校园 39 元体验包
+                        type: package
+                        status: archived
+                        parent_id: prod-200
+                        sort_order: 5
+                        has_children: false
+                        children: []
+                        package_detail:
+                          package_id: pkg-200-A
+                          price: 39
+                          commission_default:
+                            type: tier
+                            tiers:
+                              - threshold: 50
+                                value: 6
+                              - threshold: 120
+                                value: 8.5
+                          caps:
+                            min: 3
+                            max: 12
+                            allow_override: true
+                          description: 暑期校园拉新包
+                          updated_at: '2025-08-30T11:20:00+08:00'
+                          updated_by: chen.zhi
+                  - node_id: prod-300
+                    name: 线下门店特卖
+                    type: product
+                    status: archived
+                    parent_id: null
+                    sort_order: 3
+                    has_children: true
+                    children:
+                      - node_id: pkg-300-A
+                        name: 门店 129 元组合包
+                        type: package
+                        status: active
+                        parent_id: prod-300
+                        sort_order: 10
+                        has_children: false
+                        children: []
+                        package_detail:
+                          package_id: pkg-300-A
+                          price: 129
+                          commission_default:
+                            type: percent
+                            value: 10
+                          caps:
+                            min: 6
+                            max: 18
+                            allow_override: true
+                          description: 线下门店限定组合包
+                          updated_at: '2025-09-22T14:10:00+08:00'
+                          updated_by: wang.hui
+                      - node_id: pkg-300-B
+                        name: 引流体验券
+                        type: package
+                        status: archived
+                        parent_id: prod-300
+                        sort_order: 20
+                        has_children: false
+                        children: []
+                        package_detail:
+                          package_id: pkg-300-B
+                          price: 19
+                          commission_default:
+                            type: tier
+                            tiers:
+                              - threshold: 30
+                                value: 3
+                              - threshold: 80
+                                value: 4.5
+                              - threshold: 150
+                                value: 6
+                          caps:
+                            min: 0
+                            max: 8
+                            allow_override: false
+                          description: 门店地推体验券，阶梯激励
+                          updated_at: '2025-09-10T18:00:00+08:00'
+                          updated_by: wang.hui
+        '404':
+          description: Campaign not found.
+  /api/v1/campaigns/{campaign_id}/products/templates:
+    get:
+      summary: List campaign product templates
+      operationId: listCampaignProductTemplates
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Available product/package templates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductTemplateListResponse'
+              example:
+                templates:
+                  - template_id: tpl-fast-start
+                    name: 5G 快速配置模板
+                    description: 包含首充 59/99 套餐，适用于电信渠道。
+                    packages_count: 2
+                  - template_id: tpl-campus-basic
+                    name: 校园渠道基础模板
+                    description: 包含39元体验包与地推佣金阶梯。
+                    packages_count: 1
+        '404':
+          description: Campaign not found.
+  /api/v1/campaigns/{campaign_id}/products:
+    post:
+      summary: Create campaign product or package
+      operationId: createCampaignProductNode
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductCreateRequest'
+      responses:
+        '200':
+          description: Product or package node created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductNode'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Campaign not found.
+        '422':
+          description: Validation failed for product node.
+  /api/v1/campaigns/{campaign_id}/products/{node_id}:
+    put:
+      summary: Update campaign product or package
+      operationId: updateCampaignProductNode
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: node_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductUpdateRequest'
+      responses:
+        '200':
+          description: Product or package node updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductNode'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Node not found.
+        '422':
+          description: Validation failed for product node.
+    delete:
+      summary: Delete campaign product or package
+      operationId: deleteCampaignProductNode
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: node_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Product or package node deleted.
+        '404':
+          description: Node not found.
+  /api/v1/campaigns/{campaign_id}/products/copy_from:
+    post:
+      summary: Copy campaign products from template
+      operationId: copyCampaignProductsFromTemplate
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductCopyRequest'
+      responses:
+        '200':
+          description: Products copied from template.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductCopyResponse'
+              example:
+                ok: true
+                imported_count: 4
+        '404':
+          description: Campaign or template not found.
+  /api/v1/campaigns/{campaign_id}/products/import:
+    post:
+      summary: Submit campaign product import task
+      operationId: importCampaignProductNodes
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductImportRequest'
+      responses:
+        '200':
+          description: Import task accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductImportTask'
+              example:
+                task_id: pkg-import-20251016001
+                status: processing
+                processed: 0
+                total: 0
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Campaign not found.
+  /api/v1/campaigns/{campaign_id}/products/import/{task_id}:
+    get:
+      summary: Get campaign product import task
+      operationId: getCampaignProductImportTask
+      tags:
+        - Campaigns
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Import task status payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductImportTask'
+              example:
+                task_id: pkg-import-20251016001
+                status: succeeded
+                processed: 12
+                total: 12
+                result_url: https://mock.example.com/import/pkg-import-20251016001.xlsx
+        '404':
+          description: Import task not found.
+  /api/v1/report_templates/{template_id}/parse_example:
+    post:
+      summary: Parse example data with template
+      operationId: parseReportTemplateExample
+      tags:
+        - ReportTemplates
+      parameters:
+        - name: template_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportTemplateParseRequest'
+      responses:
+        '200':
+          description: Parse result summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateParseResponse'
+        '404':
+          description: Template not found.
+  /api/v1/report_templates/recognize:
+    post:
+      summary: Recognize matching report template
+      operationId: recognizeReportTemplate
+      tags:
+        - ReportTemplates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportTemplateRecognizeRequest'
+      responses:
+        '200':
+          description: Recognized template suggestion.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateRecognizeResponse'
   /api/v1/exports/campaigns:
     post:
       summary: Enqueue campaign export task
@@ -1922,6 +2484,2391 @@ paths:
                 $ref: '#/components/schemas/ExportResponse'
         '400':
           description: Invalid request.
+  /api/v1/risk/hits:
+    get:
+      summary: List risk hits
+      operationId: listRiskHits
+      tags:
+        - Risk
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: severity
+          in: query
+          schema:
+            type: string
+            enum:
+              - low
+              - medium
+              - high
+              - critical
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - new
+              - processing
+              - resolved
+              - ignored
+        - name: channel
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Risk hit list.
+          content:
+            application/json:
+              example:
+                total: 5
+                page: 1
+                page_size: 20
+                items:
+                  - hit_id: H202510030001
+                    hit_time: '2025-10-03T10:12:30+08:00'
+                    rule_code: GEOFENCE_OUT
+                    rule_name: 越界地理围栏
+                    severity: high
+                    order_id: O20251003001
+                    entity:
+                      phone: 138****0000
+                      device_id: DEV-9A7
+                      store_id: S001
+                    channel: wechat
+                    score: 87.5
+                    status: new
+                    ticket_id: null
+                    operator: null
+                    note: ''
+                  - hit_id: H202510030014
+                    hit_time: '2025-10-03T09:48:21+08:00'
+                    rule_code: FREQ_APPLY
+                    rule_name: 短期高频提交
+                    severity: medium
+                    order_id: O20251002999
+                    entity:
+                      id_number: 4401***********1234
+                      device_id: DEV-42C
+                      ip: 183.23.12.9
+                    channel: h5
+                    score: 74.2
+                    status: processing
+                    ticket_id: RTK-2025100008
+                    operator: 林杉
+                    note: 工单处理中
+                  - hit_id: H202510021208
+                    hit_time: '2025-10-02T22:05:18+08:00'
+                    rule_code: DEVICE_BLACK
+                    rule_name: 设备命中黑名单
+                    severity: critical
+                    order_id: null
+                    entity:
+                      device_id: DEV-BLK-888
+                      promoter_id: P0021
+                    channel: api
+                    score: 95
+                    status: new
+                    ticket_id: null
+                    operator: null
+                    note: ''
+                  - hit_id: H202510020076
+                    hit_time: '2025-10-02T14:32:05+08:00'
+                    rule_code: ID_GEO_MISMATCH
+                    rule_name: 证件地址与定位不一致
+                    severity: medium
+                    order_id: O20251002045
+                    entity:
+                      name: 王某
+                      id_number: 3201***********5678
+                      lat: 34.23
+                      lng: 108.95
+                    channel: scan
+                    score: 69.3
+                    status: resolved
+                    ticket_id: RTK-2025100004
+                    operator: 刘源
+                    note: 确认正常变更
+                  - hit_id: H202510010312
+                    hit_time: '2025-10-01T08:43:42+08:00'
+                    rule_code: MULTI_STORE_RADIUS
+                    rule_name: 同设备多门店半径命中
+                    severity: low
+                    order_id: O20251001022
+                    entity:
+                      device_id: DEV-22A
+                      store_id: S008
+                      count_24h: 4
+                    channel: wechat
+                    score: 48.1
+                    status: ignored
+                    ticket_id: null
+                    operator: 周洁
+                    note: 门店活动导致
+  /api/v1/risk/hits/{hit_id}:
+    parameters:
+      - name: hit_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get risk hit detail
+      operationId: getRiskHitDetail
+      tags:
+        - Risk
+      responses:
+        '200':
+          description: Risk hit detail payload.
+          content:
+            application/json:
+              example:
+                hit_id: H202510030001
+                context:
+                  location:
+                    lat: 23.129
+                    lng: 113.264
+                    distance_to_store_km: 12.7
+                    store_lat: 23.105
+                    store_lng: 113.316
+                  form:
+                    name: 张三
+                    id_number: 4401***********1234
+                    order_amount: 2680
+                    campaign_id: CAMP-202510-01
+                  device:
+                    device_id: DEV-9A7
+                    fingerprint: fp-a19c9e31
+                    recent_orders_24h: 5
+                  network:
+                    ip: 113.23.45.67
+                    city: 深圳
+                    ip_change_1h: 2
+                evidences:
+                  - type: text
+                    content: 定位距离门店超过 10km
+                  - type: stat
+                    content: 同设备 24 小时内触发该规则 3 次
+                  - type: stat
+                    content: 同身份证最近 7 天命中风险 2 次
+                similar_hits:
+                  - hit_id: H202510020123
+                    time: '2025-10-02T11:20:00+08:00'
+                    rule_code: GEOFENCE_OUT
+                    score: 83.2
+                  - hit_id: H202510010456
+                    time: '2025-10-01T15:02:00+08:00'
+                    rule_code: GEOFENCE_OUT
+                    score: 80.1
+                  - hit_id: H202509280212
+                    time: '2025-09-28T19:45:00+08:00'
+                    rule_code: GEOFENCE_OUT
+                    score: 78.6
+        '404':
+          description: Hit not found.
+  /api/v1/risk/hits/batch_ignore:
+    post:
+      summary: Batch ignore risk hits
+      operationId: batchIgnoreRiskHits
+      tags:
+        - Risk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Ignore result.
+          content:
+            application/json:
+              example:
+                ok: true
+                count: 3
+  /api/v1/exports/risk-hits:
+    post:
+      summary: Create export task for risk hits
+      operationId: exportRiskHits
+      tags:
+        - Risk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Export task enqueued.
+          content:
+            application/json:
+              example:
+                export_id: EXP-RISK-HITS-20251011
+                status: pending
+                module: risk-hits
+  /api/v1/exports:
+    get:
+      summary: List export jobs
+      operationId: listExportJobs
+      tags:
+        - Exports
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Export job list.
+          content:
+            application/json:
+              example:
+                total: 5
+                page: 1
+                page_size: 20
+                items:
+                  - job_id: E20251003001
+                    type: orders
+                    status: processing
+                    progress: 65
+                    file_name: null
+                    file_type: csv
+                    file_size: null
+                    download_url: null
+                    expires_at: null
+                    params:
+                      start: '2025-09-01'
+                      end: '2025-09-30'
+                      status: approved
+                    created_by: U1001
+                    created_at: '2025-10-03T10:00:00+08:00'
+                    finished_at: null
+                    source: /orders
+                    retry_of: null
+                    error: null
+                  - job_id: E20251003002
+                    type: wallet_ledger
+                    status: ready
+                    progress: 100
+                    file_name: wallet_ledger_202509.csv
+                    file_type: csv
+                    file_size: 10485760
+                    download_url: https://mock/exports/E20251003002?sig=ready
+                    expires_at: '2025-10-04T10:00:00+08:00'
+                    params:
+                      start: '2025-09-01'
+                      end: '2025-09-30'
+                      dimension: store
+                    created_by: U2001
+                    created_at: '2025-10-03T09:30:00+08:00'
+                    finished_at: '2025-10-03T09:45:12+08:00'
+                    source: /wallet/ledger
+                    retry_of: null
+                    error: null
+                  - job_id: E20251003003
+                    type: risk_hits
+                    status: failed
+                    progress: 80
+                    file_name: null
+                    file_type: csv
+                    file_size: null
+                    download_url: null
+                    expires_at: null
+                    params:
+                      start: '2025-09-28'
+                      end: '2025-10-03'
+                    created_by: U3001
+                    created_at: '2025-10-03T08:00:00+08:00'
+                    finished_at: '2025-10-03T08:20:00+08:00'
+                    source: /risk/hits
+                    retry_of: null
+                    error:
+                      code: EXPORT_TIMEOUT
+                      message: Job exceeded 20m limit
+                  - job_id: E20251003004
+                    type: reports_custom
+                    status: queued
+                    progress: 5
+                    file_name: null
+                    file_type: xlsx
+                    file_size: null
+                    download_url: null
+                    expires_at: null
+                    params:
+                      preset: channel_weekly
+                      period: 2025-W39
+                    created_by: U1002
+                    created_at: '2025-10-03T10:30:00+08:00'
+                    finished_at: null
+                    source: /reports/overview
+                    retry_of: null
+                    error: null
+                  - job_id: E20251002011
+                    type: withdraws
+                    status: expired
+                    progress: 100
+                    file_name: withdraws_20250925.csv
+                    file_type: csv
+                    file_size: 5242880
+                    download_url: null
+                    expires_at: '2025-10-02T22:00:00+08:00'
+                    params:
+                      start: '2025-09-25'
+                      end: '2025-09-25'
+                    created_by: U2002
+                    created_at: '2025-10-02T20:15:00+08:00'
+                    finished_at: '2025-10-02T20:35:00+08:00'
+                    source: /withdraws
+                    retry_of: null
+                    error: null
+  /api/v1/exports/{job_id}:
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get export job detail
+      operationId: getExportJobDetail
+      tags:
+        - Exports
+      responses:
+        '200':
+          description: Export job detail.
+          content:
+            application/json:
+              example:
+                job_id: E20251003002
+                type: wallet_ledger
+                status: ready
+                progress: 100
+                file_name: wallet_ledger_202509.csv
+                file_type: csv
+                file_size: 10485760
+                download_url: https://mock/exports/E20251003002?sig=ready
+                expires_at: '2025-10-04T10:00:00+08:00'
+                params:
+                  start: '2025-09-01'
+                  end: '2025-09-30'
+                  dimension: store
+                created_by: U2001
+                created_at: '2025-10-03T09:30:00+08:00'
+                finished_at: '2025-10-03T09:45:12+08:00'
+                source: /wallet/ledger
+                retry_of: null
+                error: null
+                logs_tail: |-
+                  2025-10-03 09:30:01 queued
+                  2025-10-03 09:30:05 pulling data...
+                  2025-10-03 09:36:12 writing csv chunk 5/5
+                  2025-10-03 09:37:01 uploading to storage
+                  2025-10-03 09:45:12 job completed.
+                downloads:
+                  - time: '2025-10-03T09:50:00+08:00'
+                    actor: U2001
+                    channel: web
+                    ip: 10.10.1.8
+        '404':
+          description: Export job not found.
+  /api/v1/exports/{job_id}/retry:
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Retry export job
+      operationId: retryExportJob
+      tags:
+        - Exports
+      responses:
+        '200':
+          description: New job created.
+          content:
+            application/json:
+              example:
+                new_job_id: E20251003003-R1
+                status: queued
+        '409':
+          description: Job cannot be retried.
+  /api/v1/exports/{job_id}/cancel:
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Cancel export job
+      operationId: cancelExportJob
+      tags:
+        - Exports
+      responses:
+        '200':
+          description: Job canceled.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: canceled
+        '409':
+          description: Job cannot be canceled.
+  /api/v1/exports/batch_delete_expired:
+    post:
+      summary: Delete expired export jobs
+      operationId: deleteExpiredExportJobs
+      tags:
+        - Exports
+      responses:
+        '200':
+          description: Delete count.
+          content:
+            application/json:
+              example:
+                deleted: 4
+  /api/v1/audit/events:
+    get:
+      summary: List audit events
+      operationId: listAuditEvents
+      tags:
+        - Audit
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+        - name: end
+          in: query
+          schema:
+            type: string
+        - name: level
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: result
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Audit events page.
+          content:
+            application/json:
+              example:
+                total: 4
+                page: 1
+                page_size: 50
+                items:
+                  - event_id: A202510030001
+                    ts: '2025-10-03T10:00:12+08:00'
+                    level: security
+                    type: export_download
+                    actor:
+                      user_id: U1001
+                      name: 李想
+                      roles:
+                        - finance
+                      org_id: ORG-01
+                    source: web
+                    resource:
+                      type: export
+                      id: E20251003002
+                    action: download
+                    result: fail
+                    reason: signature expired
+                    ip: 203.0.113.10
+                    ua: Chrome/140
+                    trace_id: tr-9abcde
+                    signature:
+                      algo: SHA256
+                      hash: abc123
+                      prev_hash: def456
+                      chain_ok: true
+                  - event_id: A202510030002
+                    ts: '2025-10-03T09:45:33+08:00'
+                    level: info
+                    type: login_success
+                    actor:
+                      user_id: U2002
+                      name: 王晴
+                      roles:
+                        - security_admin
+                    source: web
+                    resource:
+                      type: user
+                      id: U2002
+                    action: login
+                    result: success
+                    ip: 198.51.100.24
+                    ua: Safari/17
+                    trace_id: tr-abcdef
+                    signature:
+                      algo: SHA256
+                      hash: ghi789
+                      prev_hash: jkl012
+                      chain_ok: true
+                  - event_id: A202510030003
+                    ts: '2025-10-03T09:32:05+08:00'
+                    level: warn
+                    type: permission_change
+                    actor:
+                      user_id: U2001
+                      name: 陈惠
+                      roles:
+                        - admin
+                    source: web
+                    resource:
+                      type: role
+                      id: auditor
+                    action: grant
+                    result: success
+                    ip: 203.0.113.42
+                    ua: Edge/119
+                    trace_id: tr-77ab999
+                    signature:
+                      algo: SHA256
+                      hash: mno345
+                      prev_hash: pqr678
+                      chain_ok: true
+                  - event_id: A202510030004
+                    ts: '2025-10-03T09:15:20+08:00'
+                    level: security
+                    type: wallet_export
+                    actor:
+                      user_id: U3001
+                      name: 赵越
+                      roles:
+                        - finance
+                    source: api
+                    resource:
+                      type: wallet
+                      id: WLT-8899
+                    action: export
+                    result: success
+                    ip: 192.0.2.20
+                    ua: API Client/2.5
+                    trace_id: tr-5566aa
+                    signature:
+                      algo: SHA256
+                      hash: stu901
+                      prev_hash: vwx234
+                      chain_ok: false
+  /api/v1/audit/events/{event_id}:
+    parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get audit event detail
+      operationId: getAuditEventDetail
+      tags:
+        - Audit
+      responses:
+        '200':
+          description: Audit event detail.
+          content:
+            application/json:
+              example:
+                event_id: A202510030001
+                ts: '2025-10-03T10:00:12+08:00'
+                level: security
+                type: export_download
+                actor:
+                  user_id: U1001
+                  name: 李想
+                  roles:
+                    - finance
+                  org_id: ORG-01
+                source: web
+                resource:
+                  type: export
+                  id: E20251003002
+                action: download
+                result: fail
+                reason: signature expired
+                ip: 203.0.113.10
+                ua: Chrome/140
+                trace_id: tr-9abcde
+                signature:
+                  algo: SHA256
+                  hash: abc123
+                  prev_hash: def456
+                  chain_ok: true
+                redactions:
+                  - extra.token
+                extra:
+                  params_hash: 9f178d
+                  download_url: https://mock/exports/E20251003002?sig=expired
+                  token: '***'
+                chain:
+                  prev:
+                    event_id: A202510030000
+                    ts: '2025-10-03T09:58:00+08:00'
+                    hash: def456
+                  next:
+                    event_id: A202510030002
+                    ts: '2025-10-03T10:05:00+08:00'
+                    hash: ghi789
+                context:
+                  http:
+                    method: GET
+                    path: /api/v1/exports/E20251003002/download
+                    query: expires=1696300000&signature=***
+        '404':
+          description: Audit event not found.
+  /api/v1/audit/verify:
+    get:
+      summary: Verify audit signature chain
+      operationId: verifyAuditChain
+      tags:
+        - Audit
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+        - name: to
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Verification result.
+          content:
+            application/json:
+              example:
+                ok: true
+                first_hash: abc000
+                last_hash: xyz999
+                broken_links: []
+  /api/v1/audit/evidence:
+    post:
+      summary: Request audit evidence package
+      operationId: createAuditEvidence
+      tags:
+        - Audit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_ids:
+                  type: array
+                  items:
+                    type: string
+                include_context:
+                  type: boolean
+      responses:
+        '200':
+          description: Evidence package info.
+          content:
+            application/json:
+              example:
+                package_id: EV20251003001
+                download_url: https://mock/audit/evidence/EV20251003001.zip
+                status: ready
+  /api/v1/settings:
+    get:
+      summary: Get system settings
+      operationId: getSystemSettings
+      tags:
+        - Settings
+      responses:
+        '200':
+          description: Settings payload grouped by module.
+          content:
+            application/json:
+              example:
+                uploads:
+                  provider: aliyun
+                  bucket: lg-prod
+                  region: cn-guangzhou
+                  key_tpls:
+                    - biz: order_attachment
+                      template: orders/${date}/${uuid}.jpg
+                      ttl_seconds: 86400
+                    - biz: kyc
+                      template: kyc/${user_id}/${uuid}.png
+                      ttl_seconds: 43200
+                  max_size_mb: 15
+                  allow_types:
+                    - jpg
+                    - png
+                    - pdf
+                  sts_ttl_seconds: 900
+                  cdn_domain: https://cdn.example.com
+                secrets:
+                  items:
+                    - id: CRT-20251001
+                      name: API TLS 证书
+                      type: tls_cert
+                      kid: tls-202510
+                      status: active
+                      created_at: '2025-09-01T08:00:00+08:00'
+                      expires_at: '2026-09-01T08:00:00+08:00'
+                      scope: global
+                      tags:
+                        - prod
+                      creator: security_admin
+                    - id: KEY-20250915
+                      name: JWT Signing
+                      type: jwt_signing
+                      kid: kid-202509
+                      status: rolling
+                      created_at: '2025-09-15T10:00:00+08:00'
+                      expires_at: null
+                      scope: service
+                      tags:
+                        - auth
+                      creator: security_admin
+                      last_rotated_at: '2025-10-01T09:30:00+08:00'
+                  rotation_policy:
+                    rotate_every_days: 90
+                    overlap_days: 7
+                    notify_before_days: 14
+                  kms_provider: aliyun_kms
+                  vault_path: kms:/prod/lg-platform
+                flags:
+                  flags:
+                    - flag_key: wallet_v2
+                      name: 钱包 2.0
+                      desc: 启用新钱包服务
+                      status: gray
+                      gray_percent: 30
+                      conditions:
+                        region:
+                          - GZ
+                        role:
+                          - finance
+                      owner: product
+                      created_at: '2025-08-01T12:00:00+08:00'
+                      updated_at: '2025-09-28T09:00:00+08:00'
+                    - flag_key: risk_rules_v3
+                      name: 风控规则 3.0
+                      desc: 新规则引擎灰度
+                      status: 'off'
+                      owner: risk
+                      created_at: '2025-09-10T10:00:00+08:00'
+                      updated_at: '2025-09-10T10:00:00+08:00'
+                notify:
+                  channels:
+                    - channel: email
+                      name: 安全邮件
+                      endpoint: security@example.com
+                      enabled: true
+                      retry:
+                        max_times: 3
+                        backoff: exp
+                        interval_sec: 60
+                    - channel: webhook
+                      name: 风控告警 Hook
+                      endpoint: https://hooks.example.com/risk
+                      secret: '****'
+                      enabled: true
+                      retry:
+                        max_times: 5
+                        backoff: linear
+                        interval_sec: 30
+                  templates:
+                    - tpl_key: export_fail
+                      title: 导出失败告警
+                      content: 导出任务 {{job_id}} 失败，请排查。
+                      channel:
+                        - email
+                        - webhook
+                  subscriptions:
+                    - event_key: risk.alert
+                      channels:
+                        - webhook
+                      filters:
+                        severity:
+                          - high
+                i18n:
+                  default_timezone: Asia/Shanghai
+                  default_currency: CNY
+                  decimal_scale:
+                    money: 2
+                    percent: 2
+                    weight: 3
+                  locale_options:
+                    - company_id: COMP-001
+                      timezone: Asia/Hong_Kong
+                      currency: HKD
+                      decimal_overrides:
+                        money: 2
+                    - company_id: COMP-002
+                      timezone: America/New_York
+                      currency: USD
+                      decimal_overrides:
+                        percent: 1
+                auth:
+                  jwt:
+                    issuer: lg-platform
+                    audience: lg-clients
+                    alg: RS256
+                    kid_active: kid-202510
+                    jwks_endpoint: https://auth.example.com/.well-known/jwks.json
+                    access_ttl_minutes: 30
+                    refresh_ttl_days: 7
+                    clock_skew_sec: 30
+                  sso:
+                    type: oidc
+                    client_id: client-123
+                    redirect_uri: https://admin.example.com/callback
+                    issuer: https://login.example.com
+                    auth_url: https://login.example.com/auth
+                    token_url: https://login.example.com/token
+                    logout_url: https://login.example.com/logout
+                    scopes:
+                      - openid
+                      - profile
+                      - email
+                    mapping:
+                      email: username
+                      groups: roles
+                workflow:
+                  uploads:
+                    status: effective
+                    updated_at: '2025-09-20T10:00:00+08:00'
+                    updated_by: ops_admin
+                  secrets:
+                    status: effective
+                    updated_at: '2025-09-22T11:00:00+08:00'
+                    updated_by: security_admin
+                  flags:
+                    status: draft
+                    updated_at: '2025-10-02T08:30:00+08:00'
+                    updated_by: product
+                  notify:
+                    status: effective
+                    updated_at: '2025-09-25T14:00:00+08:00'
+                    updated_by: ops_admin
+                  i18n:
+                    status: submitted
+                    updated_at: '2025-10-01T09:30:00+08:00'
+                    updated_by: admin
+                  auth:
+                    status: effective
+                    updated_at: '2025-09-18T16:40:00+08:00'
+                    updated_by: security_admin
+  /api/v1/settings/{group}:
+    parameters:
+      - name: group
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+            - uploads
+            - secrets
+            - flags
+            - notify
+            - i18n
+            - auth
+    put:
+      summary: Save settings draft for group
+      operationId: saveSettingsGroup
+      tags:
+        - Settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Draft saved.
+          content:
+            application/json:
+              example:
+                draft_id: D20251003001
+                status: draft
+  /api/v1/settings/{group}/submit:
+    post:
+      summary: Submit settings group for approval
+      operationId: submitSettingsGroup
+      tags:
+        - Settings
+      responses:
+        '200':
+          description: Submitted.
+          content:
+            application/json:
+              example:
+                approval_id: AP20251003001
+                status: submitted
+  /api/v1/settings/{group}/approve:
+    post:
+      summary: Approve settings group
+      operationId: approveSettingsGroup
+      tags:
+        - Settings
+      responses:
+        '200':
+          description: Group approved.
+          content:
+            application/json:
+              example:
+                status: effective
+                effective_at: '2025-10-03T12:00:00+08:00'
+  /api/v1/settings/{group}/test:
+    post:
+      summary: Test settings group connection
+      operationId: testSettingsGroup
+      tags:
+        - Settings
+      responses:
+        '200':
+          description: Test result.
+          content:
+            application/json:
+              example:
+                ok: true
+                detail: 连接成功，延迟 120ms
+  /api/v1/roles:
+    get:
+      summary: List roles
+      operationId: listRoles
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Role list payload.
+          content:
+            application/json:
+              example:
+                items:
+                  - role_id: R01
+                    name: 组织管理员
+                    desc: 可管理组织架构与用户权限
+                    status: active
+                    bound_users: 18
+                    updated_at: '2025-09-20T09:30:00+08:00'
+                  - role_id: R02
+                    name: 审核员
+                    desc: 负责订单与提现审核
+                    status: active
+                    bound_users: 32
+                    updated_at: '2025-09-18T14:10:00+08:00'
+                  - role_id: R03
+                    name: 访客
+                    desc: 只读权限
+                    status: active
+                    bound_users: 12
+                    updated_at: '2025-09-01T08:00:00+08:00'
+                  - role_id: R04
+                    name: 财务专员
+                    desc: 查看钱包与财务报表
+                    status: active
+                    bound_users: 9
+                    updated_at: '2025-09-25T15:12:00+08:00'
+                  - role_id: R05
+                    name: 渠道拓展
+                    desc: 任务领取与活动报表
+                    status: archived
+                    bound_users: 3
+                    updated_at: '2025-08-01T10:00:00+08:00'
+                total: 5
+  /api/v1/roles/{role_id}:
+    parameters:
+      - name: role_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get role detail
+      operationId: getRoleDetail
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Role detail payload.
+          content:
+            application/json:
+              example:
+                role_id: R01
+                name: 组织管理员
+                desc: 可管理组织架构与用户权限
+                status: active
+                created_at: '2024-01-01T09:00:00+08:00'
+                updated_at: '2025-09-20T09:30:00+08:00'
+                bound_users: 18
+                permissions:
+                  - menu:dashboard
+                  - menu:orders
+                  - menu:wallet
+                  - menu:org
+                  - menu:reports
+                  - api:/api/v1/users
+                  - api:/api/v1/roles
+                  - api:/api/v1/teams
+        '404':
+          description: Role not found.
+  /api/v1/permissions/tree:
+    get:
+      summary: List permission tree
+      operationId: listPermissionTree
+      tags:
+        - Permissions
+      responses:
+        '200':
+          description: Permission hierarchy.
+          content:
+            application/json:
+              example:
+                items:
+                  - perm_id: menu:dashboard
+                    name: 仪表盘
+                    type: menu
+                    children:
+                      - perm_id: menu:dashboard:overview
+                        name: 概览
+                        type: menu
+                        children:
+                          - perm_id: api:/api/v1/dashboard/overview
+                            name: Dashboard 概览接口
+                            type: api
+                            children: []
+                  - perm_id: menu:orders
+                    name: 订单与审核
+                    type: menu
+                    children:
+                      - perm_id: menu:orders:list
+                        name: 订单列表
+                        type: menu
+                        children: []
+                      - perm_id: menu:orders:review
+                        name: 审核工作台
+                        type: menu
+                        children: []
+                      - perm_id: api:/api/v1/orders/review
+                        name: 订单审核接口
+                        type: api
+                        children: []
+                      - perm_id: api:/api/v1/orders/export
+                        name: 订单导出接口
+                        type: api
+                        children: []
+                  - perm_id: menu:wallet
+                    name: 资金与账户
+                    type: menu
+                    children:
+                      - perm_id: menu:wallet:summary
+                        name: 钱包摘要
+                        type: menu
+                        children: []
+                      - perm_id: menu:wallet:ledger
+                        name: 钱包流水
+                        type: menu
+                        children: []
+                      - perm_id: api:/api/v1/wallet/summary
+                        name: 钱包摘要接口
+                        type: api
+                        children: []
+                      - perm_id: api:/api/v1/withdraws/audit
+                        name: 提现审核接口
+                        type: api
+                        children: []
+                  - perm_id: menu:org
+                    name: 组织与用户
+                    type: menu
+                    children:
+                      - perm_id: menu:org:teams
+                        name: 团队与人员
+                        type: menu
+                        children: []
+                      - perm_id: menu:org:users
+                        name: 用户与角色
+                        type: menu
+                        children: []
+                      - perm_id: api:/api/v1/users
+                        name: 用户管理接口
+                        type: api
+                        children: []
+                      - perm_id: api:/api/v1/roles
+                        name: 角色管理接口
+                        type: api
+                        children: []
+                  - perm_id: menu:reports
+                    name: 报表与导出
+                    type: menu
+                    children:
+                      - perm_id: menu:reports:overview
+                        name: 报表总览
+                        type: menu
+                        children: []
+                      - perm_id: menu:reports:exports
+                        name: 导出中心
+                        type: menu
+                        children: []
+                      - perm_id: api:/api/v1/reports/overview
+                        name: 报表接口
+                        type: api
+                        children: []
+                      - perm_id: api:/api/v1/exports
+                        name: 导出接口
+                        type: api
+                        children: []
+        '404':
+          description: Tree not available.
+  /api/v1/users:
+    get:
+      summary: List users
+      operationId: listUsers
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User list payload.
+          content:
+            application/json:
+              example:
+                page: 1
+                page_size: 20
+                total: 6
+                items:
+                  - user_id: U1001
+                    name: 张三
+                    phone: '13800000001'
+                    email: zhangsan@example.com
+                    role_ids:
+                      - R01
+                      - R02
+                    status: active
+                    last_login_at: '2025-09-28T12:00:00+08:00'
+                    teams:
+                      - 华南大区
+                      - 广州一区
+                  - user_id: U1002
+                    name: 李四
+                    phone: '13800000002'
+                    email: lisi@example.com
+                    role_ids:
+                      - R03
+                    status: frozen
+                    last_login_at: '2025-09-25T09:15:00+08:00'
+                    teams:
+                      - 华东大区
+                  - user_id: U1003
+                    name: 王五
+                    phone: '13800000003'
+                    email: wangwu@example.com
+                    role_ids:
+                      - R04
+                    status: active
+                    last_login_at: '2025-09-30T18:45:00+08:00'
+                    teams:
+                      - 中西运营中心
+                  - user_id: U1004
+                    name: 赵六
+                    phone: '13800000004'
+                    email: zhaoliu@example.com
+                    role_ids:
+                      - R02
+                    status: active
+                    last_login_at: '2025-09-24T14:05:00+08:00'
+                    teams:
+                      - 华南大区
+                      - 深圳一区
+                  - user_id: U1005
+                    name: 周七
+                    phone: '13800000005'
+                    email: zhouqi@example.com
+                    role_ids:
+                      - R03
+                      - R04
+                    status: active
+                    last_login_at: '2025-09-18T10:40:00+08:00'
+                    teams:
+                      - 华南大区
+                  - user_id: U1006
+                    name: 钱八
+                    phone: '13800000006'
+                    email: qianba@example.com
+                    role_ids:
+                      - R05
+                    status: deleted
+                    last_login_at: null
+                    teams:
+                      - 离职用户
+    post:
+      summary: Create user
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                email:
+                  type: string
+                role_ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: User created.
+          content:
+            application/json:
+              example:
+                ok: true
+                user:
+                  user_id: U2001
+                  name: 测试用户
+                  phone: '13800009999'
+                  email: test.user@example.com
+                  role_ids:
+                    - R03
+                  status: active
+                  last_login_at: null
+                  teams: []
+                temporary_password: Join#2025
+  /api/v1/users/{user_id}:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get user detail
+      operationId: getUserDetail
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User detail payload.
+          content:
+            application/json:
+              example:
+                user_id: U1001
+                name: 张三
+                phone: '13800000001'
+                email: zhangsan@example.com
+                role_ids:
+                  - R01
+                  - R02
+                status: active
+                last_login_at: '2025-09-28T12:00:00+08:00'
+                teams:
+                  - 华南大区
+                  - 广州一区
+                created_at: '2024-01-06T08:00:00+08:00'
+                updated_at: '2025-09-25T11:10:00+08:00'
+                recent_actions:
+                  - ts: '2025-09-25T11:00:00+08:00'
+                    action: 登录后台
+                  - ts: '2025-09-24T16:22:00+08:00'
+                    action: 审批订单 ORD-223344
+        '404':
+          description: User not found.
+  /api/v1/users/{user_id}/roles:
+    post:
+      summary: Assign roles to user
+      operationId: assignUserRoles
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role_ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Roles updated.
+          content:
+            application/json:
+              example:
+                ok: true
+                user_id: U1001
+                role_ids:
+                  - R01
+                  - R02
+                  - R03
+                updated_at: '2025-10-11T10:30:00+08:00'
+  /api/v1/users/{user_id}/reset_password:
+    post:
+      summary: Reset user password
+      operationId: resetUserPassword
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Temporary password generated.
+          content:
+            application/json:
+              example:
+                ok: true
+                user_id: U1001
+                temp_password: Temp#9201
+                expire_at: '2025-10-12T23:59:59+08:00'
+  /api/v1/users/{user_id}/freeze:
+    post:
+      summary: Freeze user account
+      operationId: freezeUser
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User frozen.
+          content:
+            application/json:
+              example:
+                ok: true
+                user_id: U1001
+                status: frozen
+                frozen_at: '2025-10-11T10:35:00+08:00'
+  /api/v1/users/{user_id}/activate:
+    post:
+      summary: Activate frozen user
+      operationId: activateUser
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User activated.
+          content:
+            application/json:
+              example:
+                ok: true
+                user_id: U1002
+                status: active
+                activated_at: '2025-10-11T10:36:00+08:00'
+  /api/v1/risk/tickets:
+    get:
+      summary: List risk tickets
+      operationId: listRiskTickets
+      tags:
+        - Risk
+      responses:
+        '200':
+          description: Ticket list payload.
+          content:
+            application/json:
+              example:
+                total: 3
+                page: 1
+                page_size: 20
+                items:
+                  - ticket_id: K20251003001
+                    created_at: '2025-10-03T09:10:00+08:00'
+                    priority: high
+                    status: investigating
+                    severity: high
+                    assignee_id: U2001
+                    assignee_name: 林杉
+                    source: hit
+                    rule_id: GEOFENCE_OUT
+                    title: 越界地理围栏(高) O20251003001
+                    due_at: '2025-10-03T10:10:00+08:00'
+                    sla_minutes: 60
+                    tags:
+                      - 地理围栏
+                      - 高风险
+                  - ticket_id: K20251003005
+                    created_at: '2025-10-03T08:45:00+08:00'
+                    priority: normal
+                    status: assigned
+                    severity: medium
+                    assignee_id: U2002
+                    assignee_name: 朱敏
+                    source: hit
+                    rule_id: FREQ_APPLY
+                    title: 短期高频提交 O20251002999
+                    due_at: '2025-10-03T11:45:00+08:00'
+                    sla_minutes: 180
+                    tags:
+                      - 频率
+                      - 人工
+                  - ticket_id: K20251002021
+                    created_at: '2025-10-02T14:20:00+08:00'
+                    priority: critical
+                    status: pending_info
+                    severity: critical
+                    assignee_id: U2003
+                    assignee_name: 周洁
+                    source: manual
+                    rule_id: DEVICE_BLACK
+                    title: 设备黑名单复核 DEV-BLK-888
+                    due_at: '2025-10-02T15:50:00+08:00'
+                    sla_minutes: 90
+                    tags:
+                      - 黑名单
+                      - 高优先
+    post:
+      summary: Create risk ticket
+      operationId: createRiskTicket
+      tags:
+        - Risk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hit_id:
+                  type: string
+                priority:
+                  type: string
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Ticket created.
+          content:
+            application/json:
+              example:
+                ticket_id: K20251003001
+                created_at: '2025-10-03T09:10:00+08:00'
+                updated_at: '2025-10-03T09:18:00+08:00'
+                priority: high
+                status: investigating
+                severity: high
+                assignee_id: U2001
+                assignee_name: 林杉
+                creator_id: U1900
+                creator_name: 风控机器人
+                source: hit
+                rule_id: GEOFENCE_OUT
+                title: 越界地理围栏(高) O20251003001
+                desc: 位置与门店距离超过 10km，疑似代办。
+                tags:
+                  - 地理围栏
+                  - 高风险
+                hit_ids:
+                  - H202510030001
+                order_ids:
+                  - O20251003001
+                entities:
+                  - type: device
+                    id: DEV-9A7
+                    label: 设备
+                  - type: phone
+                    id: 138****0000
+                    label: 手机号
+                actions:
+                  - time: '2025-10-03T09:11:00+08:00'
+                    actor: 系统
+                    action: create
+                    note: 命中 GEOFENCE_OUT 规则
+                  - time: '2025-10-03T09:12:00+08:00'
+                    actor: 林杉
+                    action: assign
+                    note: 指派给自己
+                    to_status: assigned
+                  - time: '2025-10-03T09:13:30+08:00'
+                    actor: 林杉
+                    action: start
+                    note: 开始调查
+                    to_status: investigating
+                attachments:
+                  - name: location-map.png
+                    url: /mock/location-map.png
+                    uploaded_by: 林杉
+                    uploaded_at: '2025-10-03T09:14:00+08:00'
+                due_at: '2025-10-03T10:10:00+08:00'
+                sla_minutes: 60
+                overdue: false
+  /api/v1/risk/tickets/{ticket_id}:
+    parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get risk ticket detail
+      operationId: getRiskTicketDetail
+      tags:
+        - Risk
+      responses:
+        '200':
+          description: Ticket detail payload.
+          content:
+            application/json:
+              example:
+                ticket_id: K20251003001
+                created_at: '2025-10-03T09:10:00+08:00'
+                updated_at: '2025-10-03T09:18:00+08:00'
+                priority: high
+                status: investigating
+                severity: high
+                assignee_id: U2001
+                assignee_name: 林杉
+                creator_id: U1900
+                creator_name: 风控机器人
+                source: hit
+                rule_id: GEOFENCE_OUT
+                title: 越界地理围栏(高) O20251003001
+                desc: 位置与门店距离超过 10km，疑似代办。
+                tags:
+                  - 地理围栏
+                  - 高风险
+                hit_ids:
+                  - H202510030001
+                order_ids:
+                  - O20251003001
+                entities:
+                  - type: device
+                    id: DEV-9A7
+                    label: 设备
+                  - type: phone
+                    id: 138****0000
+                    label: 手机号
+                actions:
+                  - time: '2025-10-03T09:11:00+08:00'
+                    actor: 系统
+                    action: create
+                    note: 命中 GEOFENCE_OUT 规则
+                  - time: '2025-10-03T09:12:00+08:00'
+                    actor: 林杉
+                    action: assign
+                    note: 指派给自己
+                    to_status: assigned
+                  - time: '2025-10-03T09:13:30+08:00'
+                    actor: 林杉
+                    action: start
+                    note: 开始调查
+                    to_status: investigating
+                attachments:
+                  - name: location-map.png
+                    url: /mock/location-map.png
+                    uploaded_by: 林杉
+                    uploaded_at: '2025-10-03T09:14:00+08:00'
+                due_at: '2025-10-03T10:10:00+08:00'
+                sla_minutes: 60
+                overdue: false
+        '404':
+          description: Ticket not found.
+  /api/v1/risk/tickets/{ticket_id}/assign:
+    post:
+      summary: Assign risk ticket
+      operationId: assignRiskTicket
+      tags:
+        - Risk
+      parameters:
+        - name: ticket_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assignment accepted.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: assigned
+                assignee_id: U2099
+                assignee_name: 王语
+  /api/v1/risk/tickets/{ticket_id}/start:
+    post:
+      summary: Start investigation
+      operationId: startRiskTicket
+      tags:
+        - Risk
+      parameters:
+        - name: ticket_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket moved to investigating.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: investigating
+  /api/v1/risk/tickets/{ticket_id}/pend:
+    post:
+      summary: Mark ticket pending information
+      operationId: pendRiskTicket
+      tags:
+        - Risk
+      parameters:
+        - name: ticket_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket moved to pending.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: pending_info
+  /api/v1/risk/tickets/{ticket_id}/resolve:
+    post:
+      summary: Resolve risk ticket
+      operationId: resolveRiskTicket
+      tags:
+        - Risk
+      parameters:
+        - name: ticket_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket resolved.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: resolved
+  /api/v1/risk/tickets/{ticket_id}/reject:
+    post:
+      summary: Reject risk ticket
+      operationId: rejectRiskTicket
+      tags:
+        - Risk
+      parameters:
+        - name: ticket_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket rejected.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: rejected
+  /api/v1/risk/tickets/{ticket_id}/close:
+    post:
+      summary: Close risk ticket
+      operationId: closeRiskTicket
+      tags:
+        - Risk
+      parameters:
+        - name: ticket_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket closed.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: closed
+  /api/v1/risk/lists:
+    get:
+      summary: List risk lists
+      operationId: listRiskLists
+      tags:
+        - Risk
+      responses:
+        '200':
+          description: Risk lists.
+          content:
+            application/json:
+              example:
+                total: 4
+                page: 1
+                page_size: 20
+                items:
+                  - list_id: L202510030001
+                    type: blacklist
+                    entity_type: phone
+                    entity_value: '13800000000'
+                    status: active
+                    source: import
+                    hit_count: 42
+                    expire_at: '2026-10-03T00:00:00+08:00'
+                    note: 高风险号码
+                  - list_id: L202510030002
+                    type: whitelist
+                    entity_type: store
+                    entity_value: STORE-001
+                    status: active
+                    source: manual
+                    hit_count: 3
+                    expire_at: null
+                    note: 合作门店
+                  - list_id: L202510020001
+                    type: greylist
+                    entity_type: device
+                    entity_value: DEV-9A7
+                    status: active
+                    source: api
+                    hit_count: 15
+                    expire_at: '2025-12-31T00:00:00+08:00'
+                    note: 待观察设备
+                  - list_id: L202509300001
+                    type: blacklist
+                    entity_type: id_number
+                    entity_value: 4401***********1234
+                    status: archived
+                    source: import
+                    hit_count: 8
+                    expire_at: null
+                    note: 人工审核归档
+    post:
+      summary: Create risk list item
+      operationId: createRiskList
+      tags:
+        - Risk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: List item created.
+  /api/v1/risk/lists/{list_id}:
+    parameters:
+      - name: list_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get list detail
+      operationId: getRiskListDetail
+      tags:
+        - Risk
+      responses:
+        '200':
+          description: List detail payload.
+          content:
+            application/json:
+              example:
+                list_id: L202510030001
+                type: blacklist
+                entity_type: phone
+                entity_value: '13800000000'
+                status: active
+                source: import
+                hit_count: 42
+                expire_at: '2026-10-03T00:00:00+08:00'
+                note: 高风险号码
+                created_at: '2025-10-03T08:00:00+08:00'
+                updated_at: '2025-10-03T09:30:00+08:00'
+                history:
+                  - time: '2025-10-03T09:30:00+08:00'
+                    action: review
+                    actor: 林杉
+                    note: 确认有效
+                  - time: '2025-10-03T08:00:00+08:00'
+                    action: import
+                    actor: 系统
+                    note: 批量导入
+  /api/v1/risk/lists/import:
+    post:
+      summary: Import risk lists
+      operationId: importRiskLists
+      tags:
+        - Risk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Import task accepted.
+          content:
+            application/json:
+              example:
+                task_id: IMPORT-20251003001
+                file_name: blacklist_20251003.csv
+                rows_total: 5000
+                rows_valid: 4800
+                rows_invalid: 200
+                status: processing
+  /api/v1/risk/lists/import/{task_id}:
+    parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get import task
+      operationId: getRiskListImportTask
+      tags:
+        - Risk
+      responses:
+        '200':
+          description: Import task detail.
+          content:
+            application/json:
+              example:
+                task_id: IMPORT-20251003001
+                file_name: blacklist_20251003.csv
+                rows_total: 5000
+                rows_valid: 4800
+                rows_invalid: 200
+                status: succeeded
+                error_file: /mock/import-errors.csv
+  /api/v1/risk/lists/dedup_preview:
+    post:
+      summary: Preview deduplication result
+      operationId: previewRiskListDedup
+      tags:
+        - Risk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Dedup preview.
+          content:
+            application/json:
+              example:
+                total: 5
+                duplicates:
+                  - entity_value: '13800000000'
+                    existing_list_id: L202510030001
+                    type: blacklist
+                  - entity_value: DEV-9A7
+                    existing_list_id: L202510020001
+                    type: greylist
+                conflicts:
+                  - entity_value: STORE-001
+                    existing_type: whitelist
+                    new_type: blacklist
+  /api/v1/risk/rules:
+    get:
+      summary: List risk rules
+      operationId: listRiskRules
+      tags:
+        - Risk
+      responses:
+        '200':
+          description: Risk rule list.
+          content:
+            application/json:
+              example:
+                total: 3
+                page: 1
+                page_size: 20
+                items:
+                  - rule_id: R2025100301
+                    code: GEOFENCE_OUT
+                    name: 越界地理围栏
+                    level: high
+                    status: published
+                    version: 12
+                    weight: 1.2
+                    threshold: 80
+                    package: geo
+                    hit_7d: 128
+                    updated_by: 林杉
+                    updated_at: '2025-10-03T09:20:00+08:00'
+                  - rule_id: R2025100201
+                    code: FREQ_APPLY
+                    name: 短期高频提交
+                    level: medium
+                    status: draft
+                    version: 3
+                    weight: 1
+                    threshold: 65
+                    package: behavior
+                    hit_7d: 76
+                    updated_by: 朱敏
+                    updated_at: '2025-10-02T18:00:00+08:00'
+                  - rule_id: R2025093002
+                    code: DEVICE_BLACK
+                    name: 设备黑名单
+                  - rule_id: R2025093002
+                    code: DEVICE_BLACK
+                    name: 设备黑名单
+                    level: critical
+                    status: offline
+                    version: 8
+                    weight: 1.5
+                    threshold: 90
+                    package: device
+                    hit_7d: 210
+                    updated_by: 周洁
+                    updated_at: '2025-09-30T20:10:00+08:00'
+  /api/v1/risk/rules/{rule_id}:
+    parameters:
+      - name: rule_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get rule detail
+      operationId: getRiskRuleDetail
+      tags:
+        - Risk
+      responses:
+        '200':
+          description: Rule detail payload.
+          content:
+            application/json:
+              example:
+                rule_id: R2025100301
+                code: GEOFENCE_OUT
+                name: 越界地理围栏
+                level: high
+                status: published
+                version: 12
+                weight: 1.2
+                threshold: 80
+                package: geo
+                expr: distance_to_store_km > 10 AND device_recent_orders_24h > 3
+                datasource_map:
+                  distance_to_store_km: geo.distance
+                  device_recent_orders_24h: device.orders_24h
+                changelog: 调整阈值至 80，新增距门店条件
+                updated_by: 林杉
+                updated_at: '2025-10-03T09:20:00+08:00'
+                simulations:
+                  - simulation_id: SIM-20251003-01
+                    dataset: last_7d
+                    metrics:
+                      precision: 0.86
+                      recall: 0.72
+                      coverage: 0.35
+                      hit_count: 128
+                    created_at: '2025-10-03T09:05:00+08:00'
+                versions:
+                  - version: 12
+                    updated_at: '2025-10-03T09:20:00+08:00'
+                    comment: 灰度 20% 发布
+                  - version: 11
+                    updated_at: '2025-09-28T18:00:00+08:00'
+                    comment: 修复距离计算
+  /api/v1/risk/rules/{rule_id}/simulate:
+    post:
+      summary: Run rule simulation
+      operationId: simulateRiskRule
+      tags:
+        - Risk
+      parameters:
+        - name: rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Simulation result.
+          content:
+            application/json:
+              example:
+                simulation_id: SIM-20251003-02
+                dataset: last_30d
+                status: succeeded
+                metrics:
+                  precision: 0.88
+                  recall: 0.74
+                  fpr: 0.09
+                  tpr: 0.74
+                  auc: 0.83
+                  coverage: 0.4
+                  hit_count: 352
+                result_url: /mock/simulation-report.html
+  /api/v1/risk/rules/{rule_id}/publish:
+    post:
+      summary: Publish risk rule
+      operationId: publishRiskRule
+      tags:
+        - Risk
+      parameters:
+        - name: rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Publish accepted.
+          content:
+            application/json:
+              example:
+                ok: true
+                deployment_id: DEP-20251003-01
+                mode: gray
+                percent: 20
+  /api/v1/risk/rules/{rule_id}/replay:
+    post:
+      summary: Replay risk rule
+      operationId: replayRiskRule
+      tags:
+        - Risk
+      parameters:
+        - name: rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Replay enqueued.
+      content:
+        application/json:
+          example:
+            replay_id: REPLAY-20251003-01
+            status: succeeded
+            range:
+              start: '2025-09-20'
+              end: '2025-09-30'
+            before_rule_version: 11
+            after_rule_version: 12
+            delta_metrics:
+              hit_count: 42
+              precision: 0.03
+              recall: 0.05
+              coverage: 0.04
+            report_url: /mock/replay-report.html
+  /api/v1/kyc/cases:
+    get:
+      summary: List KYC cases
+      operationId: listKycCases
+      tags:
+        - KYC
+      responses:
+        '200':
+          description: KYC case list.
+          content:
+            application/json:
+              example:
+                total: 3
+                page: 1
+                page_size: 20
+                items:
+                  - case_id: KYC20251003001
+                    created_at: '2025-10-03T09:30:00+08:00'
+                    status: pending
+                    risk_level: high
+                    channel: wechat
+                    source: auto
+                    id_type: cn_id
+                    order_id: O20251002001
+                    user_id: U138000
+                    assignee_id: null
+                  - case_id: KYC20251002008
+                    created_at: '2025-10-02T14:12:00+08:00'
+                    status: need_more
+                    risk_level: medium
+                    channel: h5
+                    source: manual
+                    id_type: passport
+                    order_id: O20251001088
+                    user_id: U556677
+                    assignee_id: U2005
+                  - case_id: KYC20250930015
+                    created_at: '2025-09-30T11:05:00+08:00'
+                    status: callback_error
+                    risk_level: critical
+                    channel: api
+                    source: auto
+                    id_type: cn_id
+                    order_id: O20250928022
+                    user_id: U998800
+                    assignee_id: U2002
+  /api/v1/kyc/cases/{case_id}:
+    parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get KYC case detail
+      operationId: getKycCaseDetail
+      tags:
+        - KYC
+      responses:
+        '200':
+          description: KYC case detail payload.
+          content:
+            application/json:
+              example:
+                case_id: KYC20251003001
+                created_at: '2025-10-03T09:30:00+08:00'
+                status: pending
+                risk_level: high
+                channel: wechat
+                source: auto
+                id_type: cn_id
+                order_id: O20251002001
+                user_id: U138000
+                assignee_id: null
+                double_review: true
+                materials:
+                  id_front_url: /mock/images/id_front.jpg
+                  id_back_url: /mock/images/id_back.jpg
+                  selfie_url: /mock/images/selfie.jpg
+                  liveness_score: 0.92
+                  psl_similarity: 0.88
+                ocr:
+                  name: 张三
+                  id_number: 4401********1234
+                  birth_date: '1995-06-18'
+                  gender: M
+                  address: 广东省广州市天河区体育西路 1 号
+                  valid_from: '2021-01-01'
+                  valid_to: '2031-01-01'
+                  confidence: 0.94
+                form:
+                  name: 张三
+                  id_number: 4401********1234
+                  birth_date: '1995-06-18'
+                  gender: M
+                  address: 广东省广州市天河区体育西路 1 号
+                diffs:
+                  - key: name
+                    ocr_value: 张三
+                    form_value: 张三
+                    confidence: 0.94
+                    mismatch: false
+                  - key: id_number
+                    ocr_value: 4401********1234
+                    form_value: 4401********1234
+                    confidence: 0.92
+                    mismatch: false
+                  - key: address
+                    ocr_value: 广东省广州市天河区体育西路一号
+                    form_value: 广东省广州市天河区体育西路 1 号
+                    confidence: 0.76
+                    mismatch: true
+                actions:
+                  - time: '2025-10-03T09:31:00+08:00'
+                    actor: 系统
+                    action: auto_review
+                    note: 触发人工复核
+  /api/v1/kyc/cases/{case_id}/assign:
+    post:
+      summary: Assign KYC case
+      operationId: assignKycCase
+      tags:
+        - KYC
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assignment result.
+          content:
+            application/json:
+              example:
+                ok: true
+                assignee_id: U2005
+                assignee_name: 朱敏
+                new_status: pending
+  /api/v1/kyc/cases/{case_id}/approve:
+    post:
+      summary: Approve KYC case
+      operationId: approveKycCase
+      tags:
+        - KYC
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approval result.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: approved
+  /api/v1/kyc/cases/{case_id}/reject:
+    post:
+      summary: Reject KYC case
+      operationId: rejectKycCase
+      tags:
+        - KYC
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rejection result.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: rejected
+  /api/v1/kyc/cases/{case_id}/request_more:
+    post:
+      summary: Request more materials
+      operationId: requestMoreKycCase
+      tags:
+        - KYC
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request more result.
+          content:
+            application/json:
+              example:
+                ok: true
+                new_status: need_more
+  /api/v1/kyc/cases/{case_id}/sync_callback:
+    post:
+      summary: Sync KYC callback result
+      operationId: syncKycCallback
+      tags:
+        - KYC
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sync result.
+          content:
+            application/json:
+              example:
+                ok: true
+                third_party_status: approved
+                synced_at: '2025-10-03T09:58:00+08:00'
+  /api/v1/exports/users:
+    post:
+      summary: Create export task for users
+      operationId: exportUsersList
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Export queued.
+          content:
+            application/json:
+              example:
+                export_id: EXP-USERS-20251011001
+                status: pending
+                module: users
   /api/v1/uploads:
     post:
       operationId: createUploadPolicy
@@ -3209,8 +6156,597 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/CampaignStatus'
-        source_campaign_id:
+    CampaignProductNode:
+      type: object
+      required:
+        - node_id
+        - name
+        - type
+        - status
+        - parent_id
+        - sort_order
+        - has_children
+      properties:
+        node_id:
           type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - product
+            - package
+        status:
+          type: string
+          enum:
+            - active
+            - archived
+        parent_id:
+          type: string
+          nullable: true
+        sort_order:
+          type: integer
+        has_children:
+          type: boolean
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignProductNode'
+        package_detail:
+          $ref: '#/components/schemas/CampaignPackageDetail'
+    CampaignPackageDetail:
+      type: object
+      required:
+        - package_id
+        - price
+        - commission_default
+      properties:
+        package_id:
+          type: string
+        price:
+          type: number
+          format: float
+        commission_default:
+          $ref: '#/components/schemas/CampaignCommissionScheme'
+        caps:
+          $ref: '#/components/schemas/CampaignCommissionCaps'
+        description:
+          type: string
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_by:
+          type: string
+          nullable: true
+    CampaignCommissionCaps:
+      type: object
+      properties:
+        min:
+          type: number
+          format: float
+          nullable: true
+        max:
+          type: number
+          format: float
+          nullable: true
+        allow_override:
+          type: boolean
+    CampaignProductsTreeResponse:
+      type: object
+      required:
+        - campaign_id
+        - nodes
+      properties:
+        campaign_id:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignProductNode'
+    CampaignProductTemplate:
+      type: object
+      required:
+        - template_id
+        - name
+      properties:
+        template_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        packages_count:
+          type: integer
+    CampaignProductTemplateListResponse:
+      type: object
+      required:
+        - templates
+      properties:
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignProductTemplate'
+    CampaignProductCreateRequest:
+      type: object
+      required:
+        - type
+        - name
+      properties:
+        type:
+          type: string
+          enum:
+            - product
+            - package
+        name:
+          type: string
+        parent_id:
+          type: string
+          nullable: true
+        price:
+          type: number
+          format: float
+        commission_default:
+          $ref: '#/components/schemas/CampaignCommissionScheme'
+        caps:
+          $ref: '#/components/schemas/CampaignCommissionCaps'
+        description:
+          type: string
+          nullable: true
+    CampaignProductUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        commission_default:
+          $ref: '#/components/schemas/CampaignCommissionScheme'
+        caps:
+          $ref: '#/components/schemas/CampaignCommissionCaps'
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum:
+            - active
+            - archived
+    CampaignProductCopyRequest:
+      type: object
+      required:
+        - template_id
+      properties:
+        template_id:
+          type: string
+        overwrite:
+          type: boolean
+          default: false
+    CampaignProductCopyResponse:
+      type: object
+      required:
+        - ok
+        - imported_count
+      properties:
+        ok:
+          type: boolean
+        imported_count:
+          type: integer
+    CampaignProductImportRequest:
+      type: object
+      required:
+        - upload_token
+      properties:
+        upload_token:
+          type: string
+        notify_email:
+          type: string
+          format: email
+          nullable: true
+        dry_run:
+          type: boolean
+          default: false
+    CampaignProductImportTaskError:
+      type: object
+      properties:
+        row:
+          type: integer
+        message:
+          type: string
+    CampaignProductImportTask:
+      type: object
+      required:
+        - task_id
+        - status
+      properties:
+        task_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - queued
+            - processing
+            - succeeded
+            - failed
+        processed:
+          type: integer
+          nullable: true
+        total:
+          type: integer
+          nullable: true
+        result_url:
+          type: string
+          format: uri
+          nullable: true
+        message:
+          type: string
+          nullable: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignProductImportTaskError'
+    CampaignBasicsFieldMapping:
+      type: object
+      required:
+        - field
+        - label
+      properties:
+        field:
+          type: string
+        label:
+          type: string
+        column:
+          type: string
+        required:
+          type: boolean
+    CampaignBasicsExampleColumn:
+      type: object
+      required:
+        - field
+        - label
+      properties:
+        field:
+          type: string
+        label:
+          type: string
+        samples:
+          type: array
+          items:
+            type: string
+        confidence:
+          type: number
+          format: double
+          nullable: true
+    CampaignBasicsExampleResult:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - parsed
+            - failed
+            - pending
+        rows:
+          type: integer
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignBasicsExampleColumn'
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              level:
+                type: string
+                enum:
+                  - info
+                  - warning
+                  - error
+              text:
+                type: string
+    CampaignBasicsRecognition:
+      type: object
+      properties:
+        template_id:
+          type: string
+        template_name:
+          type: string
+        confidence:
+          type: number
+          format: double
+        matched_fields:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              label:
+                type: string
+              confidence:
+                type: number
+                format: double
+        hints:
+          type: array
+          items:
+            type: string
+    CampaignBasics:
+      type: object
+      required:
+        - campaign_id
+        - campaign_name
+        - campaign_code
+        - start_time
+        - end_time
+        - channels
+        - matching_mode
+      properties:
+        campaign_id:
+          type: string
+        customer_name:
+          type: string
+        campaign_name:
+          type: string
+        campaign_code:
+          type: string
+        matching_mode:
+          type: string
+          enum:
+            - template
+            - manual
+        channels:
+          type: array
+          items:
+            type: string
+            enum:
+              - wechat
+              - h5
+              - scan
+              - api
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        template_id:
+          type: string
+        recognition:
+          $ref: '#/components/schemas/CampaignBasicsRecognition'
+        field_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignBasicsFieldMapping'
+        example_input:
+          type: string
+        example_result:
+          $ref: '#/components/schemas/CampaignBasicsExampleResult'
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_by:
+          type: string
+    CampaignBasicsSaveRequest:
+      type: object
+      properties:
+        customer_name:
+          type: string
+        campaign_name:
+          type: string
+        campaign_code:
+          type: string
+        matching_mode:
+          type: string
+          enum:
+            - template
+            - manual
+        channels:
+          type: array
+          items:
+            type: string
+            enum:
+              - wechat
+              - h5
+              - scan
+              - api
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        template_id:
+          type: string
+        field_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignBasicsFieldMapping'
+        example_input:
+          type: string
+    CampaignBasicsSaveResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        campaign_id:
+          type: string
+        saved_at:
+          type: string
+          format: date-time
+        next_step:
+          type: string
+          enum:
+            - plans
+            - scope
+            - rules
+            - complete
+    ReportTemplateSummary:
+      type: object
+      required:
+        - template_id
+        - name
+      properties:
+        template_id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+    ReportTemplateListResponse:
+      type: object
+      properties:
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTemplateSummary'
+    ReportTemplateField:
+      type: object
+      required:
+        - field
+        - label
+      properties:
+        field:
+          type: string
+        label:
+          type: string
+        required:
+          type: boolean
+        type:
+          type: string
+        example:
+          type: string
+    ReportTemplateDetail:
+      type: object
+      required:
+        - template_id
+        - name
+        - fields
+      properties:
+        template_id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        version:
+          type: string
+        description:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTemplateField'
+        sample:
+          type: string
+    ReportTemplateParseRequest:
+      type: object
+      required:
+        - example
+      properties:
+        example:
+          type: string
+        options:
+          type: object
+          additionalProperties: true
+    ReportTemplateParseColumn:
+      type: object
+      required:
+        - field
+        - label
+      properties:
+        field:
+          type: string
+        label:
+          type: string
+        samples:
+          type: array
+          items:
+            type: string
+        confidence:
+          type: number
+          format: double
+          nullable: true
+    ReportTemplateParseMessage:
+      type: object
+      properties:
+        level:
+          type: string
+          enum:
+            - info
+            - warning
+            - error
+        text:
+          type: string
+    ReportTemplateParseResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - parsed
+            - failed
+        rows:
+          type: integer
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTemplateParseColumn'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTemplateParseMessage'
+    ReportTemplateRecognizeRequest:
+      type: object
+      required:
+        - sample
+      properties:
+        sample:
+          type: string
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 5
+    ReportTemplateRecognizeResponse:
+      type: object
+      properties:
+        template_id:
+          type: string
+        template_name:
+          type: string
+        confidence:
+          type: number
+          format: double
+        matched_fields:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              label:
+                type: string
+              confidence:
+                type: number
+                format: double
+        hints:
+          type: array
+          items:
+            type: string
     CampaignExportRequest:
       type: object
       properties:

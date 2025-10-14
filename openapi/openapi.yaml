@@ -1141,6 +1141,101 @@ paths:
           description: Campaign code conflict detected.
         '422':
           description: Campaign scope or plans invalid.
+  /api/v1/campaigns/{campaign_id}/basics:
+    get:
+      summary: Fetch campaign basics configuration
+      operationId: getCampaignBasics
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign basics payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignBasics'
+              examples:
+                default:
+                  value:
+                    campaign_id: C1
+                    customer_name: 京夏通讯
+                    campaign_name: 校园地推 59 元套餐
+                    campaign_code: CAMP59
+                    matching_mode: template
+                    channels: [wechat, scan]
+                    start_time: '2025-09-01T00:00:00+08:00'
+                    end_time: '2025-10-31T23:59:59+08:00'
+                    template_id: tpl_finance_monthly
+                    recognition:
+                      template_id: tpl_finance_monthly
+                      template_name: 财务日报模板（电信渠道）
+                      confidence: 0.92
+                    field_mappings:
+                      - field: customer_id
+                        label: 客户 ID
+                        column: 客户编号
+                        required: true
+                      - field: order_amount
+                        label: 订单金额
+                        column: 下单金额（元）
+                        required: true
+                    example_input: |
+                      客户编号,下单金额（元）,下单时间,渠道编号
+                      C001,1299,2025-09-13 10:30:00,SZ-MKT
+                      C002,999,2025-09-13 11:15:00,GZ-UNI
+                    example_result:
+                      status: parsed
+                      rows: 2
+                      columns:
+                        - field: customer_id
+                          label: 客户 ID
+                          samples: [C001, C002]
+                        - field: order_amount
+                          label: 订单金额
+                          samples: ['1299', '999']
+        '404':
+          description: Campaign not found.
+    put:
+      summary: Save campaign basics configuration
+      operationId: updateCampaignBasics
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignBasicsSaveRequest'
+      responses:
+        '200':
+          description: Basics saved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignBasicsSaveResponse'
+              examples:
+                default:
+                  value:
+                    ok: true
+                    campaign_id: C1
+                    saved_at: '2025-09-16T14:05:00+08:00'
+                    next_step: plans
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Campaign not found.
+        '409':
+          description: Campaign state prevents editing.
   /api/v1/campaigns/{campaign_id}/publish:
     post:
       summary: Publish campaign
@@ -1232,6 +1327,291 @@ paths:
                     source_campaign_id: C20251003001
         '404':
           description: Campaign not found.
+  /api/v1/report_templates:
+    get:
+      summary: List available report templates
+      operationId: listReportTemplates
+      tags: [ReportTemplates]
+      responses:
+        '200':
+          description: Report template catalogue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateListResponse'
+  /api/v1/report_templates/{template_id}:
+    parameters:
+      - name: template_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get report template detail
+      operationId: getReportTemplate
+      tags: [ReportTemplates]
+      responses:
+        '200':
+          description: Report template detail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateDetail'
+        '404':
+          description: Template not found.
+  /api/v1/campaigns/{campaign_id}/products_tree:
+    get:
+      summary: Fetch campaign product tree
+      operationId: getCampaignProductsTree
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hierarchical campaign product/package tree.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductsTreeResponse'
+              example: !include ../mocks/campaigns/C1/products_tree.json
+        '404':
+          description: Campaign not found.
+  /api/v1/campaigns/{campaign_id}/products/templates:
+    get:
+      summary: List campaign product templates
+      operationId: listCampaignProductTemplates
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Available product/package templates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductTemplateListResponse'
+              example: !include ../mocks/campaigns/C1/templates.json
+        '404':
+          description: Campaign not found.
+  /api/v1/campaigns/{campaign_id}/products:
+    post:
+      summary: Create campaign product or package
+      operationId: createCampaignProductNode
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductCreateRequest'
+      responses:
+        '200':
+          description: Product or package node created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductNode'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Campaign not found.
+        '422':
+          description: Validation failed for product node.
+  /api/v1/campaigns/{campaign_id}/products/{node_id}:
+    put:
+      summary: Update campaign product or package
+      operationId: updateCampaignProductNode
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: node_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductUpdateRequest'
+      responses:
+        '200':
+          description: Product or package node updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductNode'
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Node not found.
+        '422':
+          description: Validation failed for product node.
+    delete:
+      summary: Delete campaign product or package
+      operationId: deleteCampaignProductNode
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: node_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Product or package node deleted.
+        '404':
+          description: Node not found.
+  /api/v1/campaigns/{campaign_id}/products/copy_from:
+    post:
+      summary: Copy campaign products from template
+      operationId: copyCampaignProductsFromTemplate
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductCopyRequest'
+      responses:
+        '200':
+          description: Products copied from template.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductCopyResponse'
+              example: !include ../mocks/campaigns/C1/copy_from.success.json
+        '404':
+          description: Campaign or template not found.
+  /api/v1/campaigns/{campaign_id}/products/import:
+    post:
+      summary: Submit campaign product import task
+      operationId: importCampaignProductNodes
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignProductImportRequest'
+      responses:
+        '200':
+          description: Import task accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductImportTask'
+              example: !include ../mocks/campaigns/C1/import.enqueue.json
+        '400':
+          description: Invalid payload.
+        '404':
+          description: Campaign not found.
+  /api/v1/campaigns/{campaign_id}/products/import/{task_id}:
+    get:
+      summary: Get campaign product import task
+      operationId: getCampaignProductImportTask
+      tags: [Campaigns]
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Import task status payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignProductImportTask'
+              example: !include ../mocks/campaigns/C1/import.status.success.json
+        '404':
+          description: Import task not found.
+  /api/v1/report_templates/{template_id}/parse_example:
+    post:
+      summary: Parse example data with template
+      operationId: parseReportTemplateExample
+      tags: [ReportTemplates]
+      parameters:
+        - name: template_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportTemplateParseRequest'
+      responses:
+        '200':
+          description: Parse result summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateParseResponse'
+        '404':
+          description: Template not found.
+  /api/v1/report_templates/recognize:
+    post:
+      summary: Recognize matching report template
+      operationId: recognizeReportTemplate
+      tags: [ReportTemplates]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportTemplateRecognizeRequest'
+      responses:
+        '200':
+          description: Recognized template suggestion.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateRecognizeResponse'
   /api/v1/exports/campaigns:
     post:
       summary: Enqueue campaign export task
@@ -1838,30 +2218,6 @@ paths:
           content:
             application/json:
               example: !include ../mocks/risk-hits/batch_ignore.success.json
-  /api/v1/risk/tickets:
-    post:
-      summary: Create risk ticket from hit
-      operationId: createRiskTicket
-      tags: [Risk]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                hit_id:
-                  type: string
-                priority:
-                  type: string
-                note:
-                  type: string
-      responses:
-        '200':
-          description: Ticket created.
-          content:
-            application/json:
-              example: !include ../mocks/risk-hits/ticket.create.json
   /api/v1/exports/risk-hits:
     post:
       summary: Create export task for risk hits
@@ -2352,6 +2708,13 @@ paths:
           application/json:
             schema:
               type: object
+              properties:
+                hit_id:
+                  type: string
+                priority:
+                  type: string
+                note:
+                  type: string
       responses:
         '200':
           description: Ticket created.
@@ -3905,8 +4268,536 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/CampaignStatus'
-        source_campaign_id:
+    CampaignProductNode:
+      type: object
+      required:
+        - node_id
+        - name
+        - type
+        - status
+        - parent_id
+        - sort_order
+        - has_children
+      properties:
+        node_id:
           type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [product, package]
+        status:
+          type: string
+          enum: [active, archived]
+        parent_id:
+          type: string
+          nullable: true
+        sort_order:
+          type: integer
+        has_children:
+          type: boolean
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignProductNode'
+        package_detail:
+          $ref: '#/components/schemas/CampaignPackageDetail'
+    CampaignPackageDetail:
+      type: object
+      required:
+        - package_id
+        - price
+        - commission_default
+      properties:
+        package_id:
+          type: string
+        price:
+          type: number
+          format: float
+        commission_default:
+          $ref: '#/components/schemas/CampaignCommissionScheme'
+        caps:
+          $ref: '#/components/schemas/CampaignCommissionCaps'
+        description:
+          type: string
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_by:
+          type: string
+          nullable: true
+    CampaignCommissionCaps:
+      type: object
+      properties:
+        min:
+          type: number
+          format: float
+          nullable: true
+        max:
+          type: number
+          format: float
+          nullable: true
+        allow_override:
+          type: boolean
+    CampaignProductsTreeResponse:
+      type: object
+      required:
+        - campaign_id
+        - nodes
+      properties:
+        campaign_id:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignProductNode'
+    CampaignProductTemplate:
+      type: object
+      required:
+        - template_id
+        - name
+      properties:
+        template_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        packages_count:
+          type: integer
+    CampaignProductTemplateListResponse:
+      type: object
+      required: [templates]
+      properties:
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignProductTemplate'
+    CampaignProductCreateRequest:
+      type: object
+      required:
+        - type
+        - name
+      properties:
+        type:
+          type: string
+          enum: [product, package]
+        name:
+          type: string
+        parent_id:
+          type: string
+          nullable: true
+        price:
+          type: number
+          format: float
+        commission_default:
+          $ref: '#/components/schemas/CampaignCommissionScheme'
+        caps:
+          $ref: '#/components/schemas/CampaignCommissionCaps'
+        description:
+          type: string
+          nullable: true
+    CampaignProductUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        commission_default:
+          $ref: '#/components/schemas/CampaignCommissionScheme'
+        caps:
+          $ref: '#/components/schemas/CampaignCommissionCaps'
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, archived]
+    CampaignProductCopyRequest:
+      type: object
+      required: [template_id]
+      properties:
+        template_id:
+          type: string
+        overwrite:
+          type: boolean
+          default: false
+    CampaignProductCopyResponse:
+      type: object
+      required: [ok, imported_count]
+      properties:
+        ok:
+          type: boolean
+        imported_count:
+          type: integer
+    CampaignProductImportRequest:
+      type: object
+      required: [upload_token]
+      properties:
+        upload_token:
+          type: string
+        notify_email:
+          type: string
+          format: email
+          nullable: true
+        dry_run:
+          type: boolean
+          default: false
+    CampaignProductImportTaskError:
+      type: object
+      properties:
+        row:
+          type: integer
+        message:
+          type: string
+    CampaignProductImportTask:
+      type: object
+      required: [task_id, status]
+      properties:
+        task_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, processing, succeeded, failed]
+        processed:
+          type: integer
+          nullable: true
+        total:
+          type: integer
+          nullable: true
+        result_url:
+          type: string
+          format: uri
+          nullable: true
+        message:
+          type: string
+          nullable: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignProductImportTaskError'
+    CampaignBasicsFieldMapping:
+      type: object
+      required: [field, label]
+      properties:
+        field:
+          type: string
+        label:
+          type: string
+        column:
+          type: string
+        required:
+          type: boolean
+    CampaignBasicsExampleColumn:
+      type: object
+      required: [field, label]
+      properties:
+        field:
+          type: string
+        label:
+          type: string
+        samples:
+          type: array
+          items:
+            type: string
+        confidence:
+          type: number
+          format: double
+          nullable: true
+    CampaignBasicsExampleResult:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [parsed, failed, pending]
+        rows:
+          type: integer
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignBasicsExampleColumn'
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              level:
+                type: string
+                enum: [info, warning, error]
+              text:
+                type: string
+    CampaignBasicsRecognition:
+      type: object
+      properties:
+        template_id:
+          type: string
+        template_name:
+          type: string
+        confidence:
+          type: number
+          format: double
+        matched_fields:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              label:
+                type: string
+              confidence:
+                type: number
+                format: double
+        hints:
+          type: array
+          items:
+            type: string
+    CampaignBasics:
+      type: object
+      required:
+        - campaign_id
+        - campaign_name
+        - campaign_code
+        - start_time
+        - end_time
+        - channels
+        - matching_mode
+      properties:
+        campaign_id:
+          type: string
+        customer_name:
+          type: string
+        campaign_name:
+          type: string
+        campaign_code:
+          type: string
+        matching_mode:
+          type: string
+          enum: [template, manual]
+        channels:
+          type: array
+          items:
+            type: string
+            enum: [wechat, h5, scan, api]
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        template_id:
+          type: string
+        recognition:
+          $ref: '#/components/schemas/CampaignBasicsRecognition'
+        field_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignBasicsFieldMapping'
+        example_input:
+          type: string
+        example_result:
+          $ref: '#/components/schemas/CampaignBasicsExampleResult'
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_by:
+          type: string
+    CampaignBasicsSaveRequest:
+      type: object
+      properties:
+        customer_name:
+          type: string
+        campaign_name:
+          type: string
+        campaign_code:
+          type: string
+        matching_mode:
+          type: string
+          enum: [template, manual]
+        channels:
+          type: array
+          items:
+            type: string
+            enum: [wechat, h5, scan, api]
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        template_id:
+          type: string
+        field_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignBasicsFieldMapping'
+        example_input:
+          type: string
+    CampaignBasicsSaveResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        campaign_id:
+          type: string
+        saved_at:
+          type: string
+          format: date-time
+        next_step:
+          type: string
+          enum: [plans, scope, rules, complete]
+    ReportTemplateSummary:
+      type: object
+      required: [template_id, name]
+      properties:
+        template_id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+    ReportTemplateListResponse:
+      type: object
+      properties:
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTemplateSummary'
+    ReportTemplateField:
+      type: object
+      required: [field, label]
+      properties:
+        field:
+          type: string
+        label:
+          type: string
+        required:
+          type: boolean
+        type:
+          type: string
+        example:
+          type: string
+    ReportTemplateDetail:
+      type: object
+      required: [template_id, name, fields]
+      properties:
+        template_id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        version:
+          type: string
+        description:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTemplateField'
+        sample:
+          type: string
+    ReportTemplateParseRequest:
+      type: object
+      required: [example]
+      properties:
+        example:
+          type: string
+        options:
+          type: object
+          additionalProperties: true
+    ReportTemplateParseColumn:
+      type: object
+      required: [field, label]
+      properties:
+        field:
+          type: string
+        label:
+          type: string
+        samples:
+          type: array
+          items:
+            type: string
+        confidence:
+          type: number
+          format: double
+          nullable: true
+    ReportTemplateParseMessage:
+      type: object
+      properties:
+        level:
+          type: string
+          enum: [info, warning, error]
+        text:
+          type: string
+    ReportTemplateParseResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [parsed, failed]
+        rows:
+          type: integer
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTemplateParseColumn'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTemplateParseMessage'
+    ReportTemplateRecognizeRequest:
+      type: object
+      required: [sample]
+      properties:
+        sample:
+          type: string
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 5
+    ReportTemplateRecognizeResponse:
+      type: object
+      properties:
+        template_id:
+          type: string
+        template_name:
+          type: string
+        confidence:
+          type: number
+          format: double
+        matched_fields:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              label:
+                type: string
+              confidence:
+                type: number
+                format: double
+        hints:
+          type: array
+          items:
+            type: string
     CampaignExportRequest:
       type: object
       properties:

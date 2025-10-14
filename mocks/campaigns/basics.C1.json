@@ -1,0 +1,35 @@
+{
+  "campaign_id": "C1",
+  "customer_name": "京夏通讯",
+  "campaign_name": "校园地推 59 元套餐",
+  "campaign_code": "CAMP59",
+  "matching_mode": "template",
+  "channels": ["wechat", "scan"],
+  "start_time": "2025-09-01T00:00:00+08:00",
+  "end_time": "2025-10-31T23:59:59+08:00",
+  "template_id": "tpl_finance_monthly",
+  "recognition": {
+    "template_id": "tpl_finance_monthly",
+    "template_name": "财务日报模板（电信渠道）",
+    "confidence": 0.92
+  },
+  "field_mappings": [
+    { "field": "customer_id", "label": "客户 ID", "column": "客户编号", "required": true },
+    { "field": "order_amount", "label": "订单金额", "column": "下单金额（元）", "required": true },
+    { "field": "order_time", "label": "下单时间", "column": "下单时间", "required": true },
+    { "field": "channel_code", "label": "渠道编码", "column": "渠道编号", "required": false }
+  ],
+  "example_input": "客户编号,下单金额（元）,下单时间,渠道编号\nC001,1299,2025-09-13 10:30:00,SZ-MKT\nC002,999,2025-09-13 11:15:00,GZ-UNI",
+  "example_result": {
+    "status": "parsed",
+    "rows": 2,
+    "columns": [
+      { "field": "customer_id", "label": "客户 ID", "samples": ["C001", "C002"] },
+      { "field": "order_amount", "label": "订单金额", "samples": ["1299", "999"] },
+      { "field": "order_time", "label": "下单时间", "samples": ["2025-09-13 10:30:00", "2025-09-13 11:15:00"] },
+      { "field": "channel_code", "label": "渠道编码", "samples": ["SZ-MKT", "GZ-UNI"] }
+    ]
+  },
+  "updated_at": "2025-09-15T09:12:00+08:00",
+  "updated_by": "liu.ying"
+}

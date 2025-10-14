@@ -1,0 +1,9 @@
+templates:
+  - template_id: tpl-fast-start
+    name: 5G 快速配置模板
+    description: 包含首充 59/99 套餐，适用于电信渠道。
+    packages_count: 2
+  - template_id: tpl-campus-basic
+    name: 校园渠道基础模板
+    description: 包含39元体验包与地推佣金阶梯。
+    packages_count: 1

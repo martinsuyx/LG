@@ -1,0 +1,25 @@
+{
+  "node_id": "pkg-200-A",
+  "name": "校园 39 元体验包",
+  "type": "package",
+  "status": "archived",
+  "parent_id": "prod-200",
+  "sort_order": 5,
+  "has_children": false,
+  "children": [],
+  "package_detail": {
+    "package_id": "pkg-200-A",
+    "price": 39,
+    "commission_default": {
+      "type": "tier",
+      "tiers": [
+        { "threshold": 50, "value": 6 },
+        { "threshold": 120, "value": 8.5 }
+      ]
+    },
+    "caps": { "min": 3, "max": 12, "allow_override": true },
+    "description": "暑期校园拉新包",
+    "updated_at": "2025-10-15T09:55:00+08:00",
+    "updated_by": "chen.zhi"
+  }
+}

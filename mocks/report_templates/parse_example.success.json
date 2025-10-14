@@ -1,0 +1,14 @@
+{
+  "status": "parsed",
+  "rows": 2,
+  "columns": [
+    { "field": "customer_id", "label": "客户 ID", "samples": ["C001", "C002"], "confidence": 0.99 },
+    { "field": "order_amount", "label": "订单金额（元）", "samples": ["1299", "999"], "confidence": 0.97 },
+    { "field": "order_time", "label": "下单时间", "samples": ["2025-09-13 10:30:00", "2025-09-13 11:15:00"], "confidence": 0.94 },
+    { "field": "channel_code", "label": "渠道编码", "samples": ["SZ-MKT", "GZ-UNI"], "confidence": 0.88 }
+  ],
+  "messages": [
+    { "level": "info", "text": "自动匹配字段 4 个。" },
+    { "level": "warning", "text": "发现列【客户名称】，未在模板字段中配置。" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "node_id": "prod-300",
+  "name": "渠道加推礼包",
+  "type": "product",
+  "status": "active",
+  "parent_id": null,
+  "sort_order": 99,
+  "has_children": false,
+  "children": []
+}

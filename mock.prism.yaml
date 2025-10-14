@@ -10,7 +10,7 @@ http:
 
 # Mock 生成逻辑
 mock:
-  dynamic: true            # 无 example 时按 schema 动态生成
+  dynamic: false           # 优先使用 example 数据
   errors:
     random: false
   partial: true            # 若 example 缺少字段则自动补充
@@ -528,6 +528,13 @@ routes:
         application/json: !include ./mocks/tasks/detail.json
 
   # Teams & Users
+  - method: post
+    path: /api/v1/teams
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/create.success.json
+
   - method: get
     path: /api/v1/teams
     response:
@@ -653,6 +660,293 @@ routes:
       status: 200
       examples:
         application/json: !include ./mocks/teams/members.T002A.page1.json
+
+  - method: get
+    path: /api/v1/teams/{teamId}/commissions
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/teams/commissions.default.json
+
+  - method: post
+    path: /api/v1/commission/override
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/commission/override.success.json
+
+  - method: delete
+    path: /api/v1/commission/override
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/commission/override.success.json
+
+  - method: post
+    path: /api/v1/commission/batch_override
+    response:
+      status: 200
+      examples:
+        application/json: !include './mocks/commission/batch Override.success.json'
+
+  - method: post
+    path: /api/v1/commission/import
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/commission/import.accepted.json
+
+  - method: get
+    path: /api/v1/commission/import/{taskId}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/commission/import.result.json
+
+  - method: post
+    path: /api/v1/commission/copy_from
+    response:
+      status: 200
+      examples:
+        application/json: !include './mocks/commission/copy From.preview.json'
+
+
+  - method: post
+    path: /api/v1/campaigns/C1/products
+    response:
+      status: 200
+      body:
+        node_id: prod-300
+        name: 渠道加推礼包
+        type: product
+        status: active
+        parent_id: null
+        sort_order: 99
+        has_children: false
+        children: []
+
+  - method: put
+    path: /api/v1/campaigns/C1/products/pkg-100-A
+    response:
+      status: 200
+      body:
+        node_id: pkg-100-A
+        name: 首充 59 元套餐
+        type: package
+        status: active
+        parent_id: prod-100
+        sort_order: 10
+        has_children: false
+        children: []
+        package_detail:
+          package_id: pkg-100-A
+          price: 59
+          commission_default:
+            type: percent
+            value: 12
+          caps:
+            min: 5
+            max: 20
+            allow_override: true
+          description: 地推新用户首充奖励
+          updated_at: 2025-09-16T10:00:00+08:00
+          updated_by: liu.ying
+
+  - method: put
+    path: /api/v1/campaigns/C1/products/pkg-100-B
+    response:
+      status: 200
+      body:
+        node_id: pkg-100-B
+        name: 首充 99 元套餐
+        type: package
+        status: active
+        parent_id: prod-100
+        sort_order: 20
+        has_children: false
+        children: []
+        package_detail:
+          package_id: pkg-100-B
+          price: 99
+          commission_default:
+            type: fixed
+            value: 18
+          caps:
+            min: 8
+            max: 30
+            allow_override: false
+          description: 高客单价礼包
+          updated_at: 2025-10-15T10:20:00+08:00
+          updated_by: li.mei
+
+  - method: put
+    path: /api/v1/campaigns/C1/products/pkg-200-A
+    response:
+      status: 200
+      body:
+        node_id: pkg-200-A
+        name: 校园 39 元体验包
+        type: package
+        status: archived
+        parent_id: prod-200
+        sort_order: 5
+        has_children: false
+        children: []
+        package_detail:
+          package_id: pkg-200-A
+          price: 39
+          commission_default:
+            type: tier
+            tiers:
+              - threshold: 50
+                value: 6
+              - threshold: 120
+                value: 8.5
+          caps:
+            min: 3
+            max: 12
+            allow_override: true
+          description: 暑期校园拉新包
+          updated_at: 2025-10-15T09:55:00+08:00
+          updated_by: chen.zhi
+
+  - method: put
+    path: /api/v1/campaigns/C1/products/pkg-300-A
+    response:
+      status: 200
+      body:
+        node_id: pkg-300-A
+        name: 门店 129 元组合包
+        type: package
+        status: active
+        parent_id: prod-300
+        sort_order: 10
+        has_children: false
+        children: []
+        package_detail:
+          package_id: pkg-300-A
+          price: 129
+          commission_default:
+            type: percent
+            value: 10
+          caps:
+            min: 6
+            max: 18
+            allow_override: true
+          description: 线下门店限定组合包
+          updated_at: 2025-10-15T09:15:00+08:00
+          updated_by: wang.hui
+
+  - method: put
+    path: /api/v1/campaigns/C1/products/pkg-300-B
+    response:
+      status: 200
+      body:
+        node_id: pkg-300-B
+        name: 引流体验券
+        type: package
+        status: archived
+        parent_id: prod-300
+        sort_order: 20
+        has_children: false
+        children: []
+        package_detail:
+          package_id: pkg-300-B
+          price: 19
+          commission_default:
+            type: tier
+            tiers:
+              - threshold: 30
+                value: 3
+              - threshold: 80
+                value: 4.5
+              - threshold: 150
+                value: 6
+          caps:
+            min: 0
+            max: 8
+            allow_override: false
+          description: 门店地推体验券，阶梯激励
+          updated_at: 2025-10-15T09:18:00+08:00
+          updated_by: wang.hui
+
+  - method: post
+    path: /api/v1/campaigns/C1/products/copy_from
+    response:
+      status: 200
+      body:
+        ok: true
+        imported_count: 4
+
+  - method: post
+    path: /api/v1/campaigns/C1/products/import
+    response:
+      status: 200
+      body:
+        task_id: pkg-import-20251016001
+        status: processing
+        processed: 0
+        total: 0
+
+  - method: get
+    path: /api/v1/campaigns/C1/products/import/pkg-import-20251016001
+    response:
+      status: 200
+      body:
+        task_id: pkg-import-20251016001
+        status: succeeded
+        processed: 12
+        total: 12
+        result_url: https://mock.example.com/import/pkg-import-20251016001.xlsx
+
+  - method: get
+    path: /api/v1/campaigns/C1/basics
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/basics.C1.json
+
+  - method: put
+    path: /api/v1/campaigns/C1/basics
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/campaigns/basics.update.success.json
+
+  - method: get
+    path: /api/v1/report_templates
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/report_templates/list.json
+
+  - method: get
+    path: /api/v1/report_templates/tpl_finance_monthly
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/report_templates/detail.tpl_finance_monthly.json
+
+  - method: get
+    path: /api/v1/report_templates/tpl_growth_weekly
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/report_templates/detail.tpl_growth_weekly.json
+
+  - method: post
+    path: /api/v1/report_templates/tpl_finance_monthly/parse_example
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/report_templates/parse_example.success.json
+
+  - method: post
+    path: /api/v1/report_templates/recognize
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/report_templates/recognize.success.json
 
   - method: post
     path: /api/v1/teams/{id}/move

@@ -1,6 +1,14 @@
 import { OpenAPI } from '../../../../sdk/ts';
 
-const apiBase = import.meta.env.VITE_API_BASE || 'http://localhost:4010';
+function inferMockBase(): string {
+  if (typeof window === 'undefined') {
+    return 'http://127.0.0.1:4010';
+  }
+  const { protocol, hostname } = window.location;
+  return `${protocol}//${hostname}:4010`;
+}
+
+const apiBase = import.meta.env.VITE_API_BASE || inferMockBase();
 OpenAPI.BASE = apiBase;
 
 const authToken = import.meta.env.VITE_API_TOKEN || 'mocktoken';
@@ -18,3 +26,6 @@ export * from './reports';
 export { ExportJobsService } from './exports';
 export { AuditService } from './audit';
 export { SystemSettingsService } from './settings';
+export { CommissionService } from './commission';
+export { ReportTemplatesService } from './reportTemplates';
+export { CampaignProductsService } from './campaignProducts';
