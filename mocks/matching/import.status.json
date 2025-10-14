@@ -1,0 +1,41 @@
+{
+  "task_id": "MATCH_TASK_20251015_001",
+  "status": "matched",
+  "progress": 100,
+  "summary": {
+    "report_orders": 1240,
+    "matched": 992,
+    "unmatched": 118,
+    "ambiguous": 64,
+    "duplicate": 28,
+    "risky": 38,
+    "match_rate": 0.8,
+    "valid_rate": 0.78,
+    "delta": {
+      "added": 236,
+      "updated": 112,
+      "unchanged": 892
+    }
+  },
+  "template_id": "TPL_CMCC_GZ_DAILY",
+  "template_version": "v2025.10.15",
+  "matching_rule_version": "mr-1.2.0",
+  "files": [
+    {
+      "filename": "cmcc_guangzhou_daily_20251015.xlsx",
+      "status": "completed",
+      "rows": 640,
+      "warnings": 4
+    },
+    {
+      "filename": "cmcc_guangzhou_daily_20251014.xlsx",
+      "status": "completed",
+      "rows": 600,
+      "warnings": 6
+    }
+  ],
+  "messages": [
+    "模板识别成功：TPL_CMCC_GZ_DAILY（置信度 0.96）",
+    "共导入 1240 条报表订单，匹配率 80.0%，有效率 78.0%"
+  ]
+}

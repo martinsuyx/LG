@@ -1,0 +1,149 @@
+{
+  "total": 1240,
+  "page": 1,
+  "page_size": 20,
+  "summary": {
+    "report_orders": 1240,
+    "matched": 992,
+    "unmatched": 118,
+    "ambiguous": 64,
+    "duplicate": 28,
+    "risky": 38,
+    "match_rate": 0.8,
+    "valid_rate": 0.78,
+    "delta": {
+      "added": 236,
+      "updated": 112,
+      "unchanged": 892
+    }
+  },
+  "metadata": {
+    "template_id": "TPL_CMCC_GZ_DAILY",
+    "template_version": "v2025.10.15",
+    "matching_rule_version": "mr-1.2.0",
+    "generated_at": "2025-10-15T10:05:00+08:00"
+  },
+  "items": [
+    {
+      "report_row_id": "R1001",
+      "order_no": "A-0001",
+      "product_key": "PROD_5G_59",
+      "phone": "138***0001",
+      "promoter_unique_id": "T-001",
+      "match_mode": "auto_id",
+      "match_status": "matched",
+      "candidate_count": 1,
+      "candidate_top_score": 1,
+      "matched_order_id": "O20251015001",
+      "valid": true,
+      "risk_flags": [],
+      "template_id": "TPL_CMCC_GZ_DAILY",
+      "template_version": "v2025.10.15",
+      "matching_rule_version": "mr-1.2.0",
+      "delta": "added",
+      "updated_at": "2025-10-15T09:22:00+08:00"
+    },
+    {
+      "report_row_id": "R1002",
+      "order_no": "A-0002",
+      "product_key": "PROD_WB_200M",
+      "phone": "138***0002",
+      "promoter_unique_id": null,
+      "match_mode": "manual_form",
+      "match_status": "ambiguous",
+      "candidate_count": 2,
+      "candidate_top_score": 0.74,
+      "matched_order_id": null,
+      "valid": false,
+      "risk_flags": [
+        "duplicate"
+      ],
+      "template_id": "TPL_CMCC_GZ_DAILY",
+      "template_version": "v2025.10.15",
+      "matching_rule_version": "mr-1.2.0",
+      "delta": "updated",
+      "updated_at": "2025-10-15T09:25:00+08:00"
+    },
+    {
+      "report_row_id": "R1003",
+      "order_no": "A-0003",
+      "product_key": "PROD_BUNDLE_99",
+      "phone": "138***0003",
+      "promoter_unique_id": "T-004",
+      "match_mode": "auto_id",
+      "match_status": "unmatched",
+      "candidate_count": 0,
+      "candidate_top_score": null,
+      "matched_order_id": null,
+      "valid": false,
+      "risk_flags": [],
+      "template_id": "TPL_CMCC_GZ_DAILY",
+      "template_version": "v2025.10.15",
+      "matching_rule_version": "mr-1.2.0",
+      "delta": "added",
+      "updated_at": "2025-10-15T09:24:00+08:00"
+    },
+    {
+      "report_row_id": "R1004",
+      "order_no": "A-0004",
+      "product_key": "PROD_HOME_299",
+      "phone": "138***0004",
+      "promoter_unique_id": "T-006",
+      "match_mode": "auto_id",
+      "match_status": "risky",
+      "candidate_count": 1,
+      "candidate_top_score": 0.93,
+      "matched_order_id": "O20251015004",
+      "valid": false,
+      "risk_flags": [
+        "high_refund",
+        "risk_blacklist"
+      ],
+      "template_id": "TPL_CMCC_GZ_DAILY",
+      "template_version": "v2025.10.15",
+      "matching_rule_version": "mr-1.2.0",
+      "delta": "unchanged",
+      "updated_at": "2025-10-15T09:28:00+08:00"
+    },
+    {
+      "report_row_id": "R1005",
+      "order_no": "A-0005",
+      "product_key": "PROD_5G_59",
+      "phone": "138***0005",
+      "promoter_unique_id": "T-007",
+      "match_mode": "auto_id",
+      "match_status": "duplicate",
+      "candidate_count": 2,
+      "candidate_top_score": 0.64,
+      "matched_order_id": "O20251015005",
+      "valid": false,
+      "risk_flags": [
+        "duplicate"
+      ],
+      "template_id": "TPL_CMCC_GZ_DAILY",
+      "template_version": "v2025.10.15",
+      "matching_rule_version": "mr-1.2.0",
+      "delta": "updated",
+      "updated_at": "2025-10-15T09:32:00+08:00"
+    },
+    {
+      "report_row_id": "R1006",
+      "order_no": "A-0006",
+      "product_key": "PROD_FAMILY_399",
+      "phone": "138***0006",
+      "promoter_unique_id": null,
+      "match_mode": "manual_form",
+      "match_status": "matched",
+      "candidate_count": 1,
+      "candidate_top_score": 0.88,
+      "matched_order_id": "O20251014011",
+      "valid": true,
+      "risk_flags": [],
+      "template_id": "TPL_CMCC_GZ_MONTHLY",
+      "template_version": "v2025.10.01",
+      "matching_rule_version": "mr-1.2.0",
+      "delta": "unchanged",
+      "updated_at": "2025-10-15T09:35:00+08:00"
+    }
+  ]
+}

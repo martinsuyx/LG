@@ -1,0 +1,17 @@
+{
+  "template_id": "TPL_CMCC_GZ_DAILY",
+  "template_version": "v2025.10.15",
+  "score": 0.96,
+  "matched_columns": [
+    "order_no",
+    "product_key",
+    "phone",
+    "report_date"
+  ],
+  "missing_columns": [
+    "id_number"
+  ],
+  "recommendations": [
+    "检测到 2 列存在空值，请导出问题清单复核。"
+  ]
+}

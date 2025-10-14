@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "report_row_id": "R1004",
+  "risk_flags": [
+    "manual_review",
+    "high_refund"
+  ]
+}

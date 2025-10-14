@@ -31,6 +31,13 @@ export const NAV: NavItem[] = [
       { key: 'orders.review', label: 'nav.orders.review', path: '/review', icon: 'review' },
       { key: 'orders.intake.ai', label: 'nav.orders.intake.ai', path: '/intake/ai', icon: 'sparkles' },
       { key: 'orders.intake.manual', label: 'nav.orders.intake.manual', path: '/intake/manual', icon: 'edit' },
+      {
+        key: 'orders.matching',
+        label: 'nav.orders.matching',
+        path: '/orders/matching',
+        icon: 'link',
+        roles: ['admin', 'reviewer', 'operator', 'risk']
+      },
       { key: 'orders.detail', label: 'nav.orders.detail', path: '/orders/:id', hidden: true }
     ]
   },

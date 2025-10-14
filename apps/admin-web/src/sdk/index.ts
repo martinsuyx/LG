@@ -18,3 +18,4 @@ export * from './reports';
 export { ExportJobsService } from './exports';
 export { AuditService } from './audit';
 export { SystemSettingsService } from './settings';
+export { MatchingService } from './matching';

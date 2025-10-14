@@ -231,6 +231,84 @@ routes:
       examples:
         application/json: !include ./mocks/orders/review.batch.json
 
+  # Order Matching
+  - method: post
+    path: /api/v1/matching/import
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/import.accepted.json
+
+  - method: get
+    path: /api/v1/matching/import/{taskId}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/import.status.json
+
+  - method: get
+    path: /api/v1/matching/results
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/results.page1.json
+
+  - method: get
+    path: /api/v1/matching/results/R1001
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/detail.R1001.json
+
+  - method: get
+    path: /api/v1/matching/results/R1002
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/detail.R1002.json
+
+  - method: get
+    path: /api/v1/matching/results/{report_row_id}
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/detail.R1001.json
+
+  - method: post
+    path: /api/v1/matching/results/{report_row_id}/resolve
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/resolve.success.json
+
+  - method: post
+    path: /api/v1/matching/results/{report_row_id}/set_valid
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/set_valid.success.json
+
+  - method: post
+    path: /api/v1/matching/results/{report_row_id}/risk_flag
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/risk_flag.success.json
+
+  - method: post
+    path: /api/v1/matching/export
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/matching/export.success.json
+
+  - method: post
+    path: /api/v1/report_templates/recognize
+    response:
+      status: 200
+      examples:
+        application/json: !include ./mocks/report_templates/recognize.ok.json
+
   - method: get
     path: /api/v1/review/orders
     response:

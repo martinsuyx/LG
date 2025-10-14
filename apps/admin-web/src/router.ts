@@ -13,6 +13,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/OrdersPage.vue')
   },
   {
+    path: '/orders/matching',
+    name: 'orders-matching',
+    component: () => import('@/pages/orders/MatchingPage.vue')
+  },
+  {
     path: '/orders/:orderId',
     name: 'order-detail',
     component: () => import('@/pages/OrderDetailPage.vue')
